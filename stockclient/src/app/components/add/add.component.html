@@ -1,0 +1,26 @@
+<h2>Add Stock</h2>
+
+<form [formGroup]="form" (ngSubmit)="processform()">
+
+    <table>
+        <tr>
+            <td style="width: 100px;">Market</td>
+            <td><input type="text" formControlName="market"></td>
+        </tr>
+        <tr>
+            <td>Ticker</td>
+            <td><input type="text" formControlName="ticker"></td>
+        </tr>
+        <tr>
+            <td>Stock Name</td>
+            <td><input type="text" formControlName="stockName"></td>
+        </tr>
+        <tr>
+            <td>Last Price</td>
+            <td><input type="number" formControlName="lastprice"></td>
+        </tr>
+    </table>
+    <br>
+    <button type="submit">Submit</button>
+
+</form>

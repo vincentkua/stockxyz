@@ -1,0 +1,58 @@
+<mat-drawer-container class="example-container">
+  <mat-drawer
+    #drawer
+    class="sidenav"
+    mode="push"
+    (click)="sidenav.toggle()"
+    #sidenav
+  >
+    <mat-list>
+      <mat-list-item (click)="routepage('/home')">
+        <mat-icon style="margin-top: -2px">home</mat-icon>
+        <span style="vertical-align: top; margin-left: 10px">All Stocks</span>
+      </mat-list-item>
+      <hr />
+      <mat-list-item (click)="routepage('/add')">
+        <mat-icon style="margin-top: -2px">add</mat-icon>
+        <span style="vertical-align: top; margin-left: 10px">Add Stock</span>
+      </mat-list-item>
+      <hr />
+      <mat-list-item (click)="routepage('/watchlist')">
+        <mat-icon style="margin-top: -2px">grade</mat-icon>
+        <span style="vertical-align: top; margin-left: 10px">Watchlist</span>
+      </mat-list-item>
+      <hr />
+      <mat-list-item (click)="routepage('/portfolio')">
+        <mat-icon style="margin-top: -2px">work</mat-icon>
+        <span style="vertical-align: top; margin-left: 10px">Portfolio</span>
+      </mat-list-item>
+      <hr />
+      <mat-list-item (click)="routepage('/about')">
+        <mat-icon style="margin-top: -2px">info</mat-icon>
+        <span style="vertical-align: top; margin-left: 10px">About</span>
+      </mat-list-item>
+    </mat-list>
+  </mat-drawer>
+
+  <div class="sidenav-content">
+    <mat-toolbar color="primary">
+      <mat-toolbar-row>
+        <button
+          mat-icon-button
+          class="example-icon favorite-icon"
+          (click)="drawer.toggle()"
+        >
+          <mat-icon aria-hidden="menu icon" fontIcon="menu"></mat-icon>
+        </button>
+        <span>Stock XYZ</span>
+        <span style="flex: 1 1 auto"></span>
+        <button mat-icon-button class="example-icon favorite-icon">
+          <mat-icon aria-hidden="home icon" fontIcon="add"></mat-icon>
+        </button>
+      </mat-toolbar-row>
+    </mat-toolbar>
+    <div style="padding: 30px">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</mat-drawer-container>
