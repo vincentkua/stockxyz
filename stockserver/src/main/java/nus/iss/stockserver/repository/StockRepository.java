@@ -25,11 +25,27 @@ public class StockRepository {
 
     }
 
+    private static final String FINDSTOCK = "select * from stocklist where market = ? AND ticker = ? ";
+    public Stock getStock(String market , String ticker){
+        Stock stock = new Stock();
+        stock = jdbcTemplate.queryForObject(FINDSTOCK, BeanPropertyRowMapper.newInstance(Stock.class),market,ticker);
+        return stock;
+    }
+
+
     private static final String INSERTSTOCK = "insert into stocklist (market , ticker , stock_name , lastprice) values (? , ? , ? , ?)";
     public Integer insertStock(Stock stock){
         Integer rowsupdated = jdbcTemplate.update(INSERTSTOCK,stock.getMarket(),stock.getTicker(),stock.getStockName(),stock.getLastprice());
         return rowsupdated;
     }
+
+    private static final String UPDATESTOCK = "update stocklist set stock_name = ? , lastprice = ? where market =? AND ticker=?";
+    public Integer updateStock(Stock stock){
+        Integer rowsupdated = jdbcTemplate.update(UPDATESTOCK,stock.getStockName(),stock.getLastprice(),stock.getMarket(),stock.getTicker());
+        return rowsupdated;
+    }
+
+    
 
 
 }

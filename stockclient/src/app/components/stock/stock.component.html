@@ -1,31 +1,79 @@
-<h2 style="margin-bottom: 5px;">{{market}}:{{ticker}}</h2>
-<p style="margin-bottom: 5px;">stock name</p>
-<p>price</p>
+<a href="/">&lt; back </a>
 
-<hr>
+<br><br>
 
-<div>
-    <p>fundamental data</p>
-    <br><br><br><br>
+<h2 style="margin-bottom: 0px; font-weight: bold; font-size: 25px">
+  {{ lastprice }}
+</h2>
+<h2 style="margin-bottom: 5px; font-size: 16px">
+  {{ market }} {{ ticker }} {{ stockName }} <a href="/edit/{{market}}:{{ ticker }}" style="font-weight: normal; color: red; padding-left: 10px;">Edit</a>
+</h2>
+
+<div style="border: 1px solid black; margin-bottom: 20px ; padding: 10px">
+    <p style="font-weight: bold;">FUNDAMENTAL DATA</p>
+    <table>
+        <tr>
+            <td style="width: 80px;">EPS(LYR)</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td>EPS(TTM)</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td>PE(LYR)</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td>PE(TTM)</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td>DPS</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td>Div Yield</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td>P/B</td>
+            <td>-</td>
+        </tr>
+    </table>
 </div>
 
-<hr>
-
-<div>
-    <p>Chart 1 : Revenue vs Gross Profit vs Net Profit</p>
-    <br><br><br><br>
+<div style="border: 1px solid black; margin-bottom: 20px">
+  <p style="background-color: #3f51b5; padding: 5px; color: white">
+    Chart 1 : Price
+  </p>
+  <br /><br /><br /><br />
 </div>
 
-<hr>
-
-<div>
-    <p>Chart 2 : Asset vs Liability vs Debt</p>
-    <br><br><br><br>
+<div style="border: 1px solid black; margin-bottom: 20px">
+  <p style="background-color: #3f51b5; padding: 5px; color: white">
+    Chart 2 : Revenue vs Gross Profit vs Net Income
+  </p>
+  <br /><br /><br /><br />
 </div>
 
-<hr>
+<div style="border: 1px solid black; margin-bottom: 20px">
+  <p style="background-color: #3f51b5; padding: 5px; color: white">
+    Chart 3 : Asset vs Liability vs Debt
+  </p>  
+  <br /><br /><br /><br />
+</div>
 
-<div>
-    <p>Chart 3 : EPS vs DPS</p>
-    <br><br><br><br>
+<div style="border: 1px solid black; margin-bottom: 20px">
+  <p style="background-color: #3f51b5; padding: 5px; color: white">
+    Chart 4 : EPS vs DPS
+  </p>
+  <br /><br /><br /><br />
+</div>
+
+<div style="border: 1px solid black; margin-bottom: 20px">
+  <p style="background-color: #3f51b5; padding: 5px; color: white">
+    Chart 5 : Cash Flow
+  </p>
+  <br /><br /><br /><br />
 </div>

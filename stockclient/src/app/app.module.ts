@@ -15,6 +15,7 @@ import { AllComponent } from './components/all/all.component';
 import { WatchlistComponent } from './components/watchlist/watchlist.component';
 import { PortfolioComponent } from './components/portfolio/portfolio.component';
 import { AddComponent } from './components/add/add.component';
+import { EditComponent } from './components/edit/edit.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { AddComponent } from './components/add/add.component';
     AllComponent,
     AddComponent,
     WatchlistComponent,
-    PortfolioComponent
+    PortfolioComponent,
+    EditComponent
   ],
   imports: [
     BrowserModule,

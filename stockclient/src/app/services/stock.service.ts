@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { lastValueFrom, map } from 'rxjs';
 import { Stock } from '../models/models';
 
-const URL = "http://localhost:8080/api/stocks"
+const URL = "http://localhost:8080/api"
 
 
 @Injectable({
@@ -15,9 +15,10 @@ export class StockService {
 
 
   getStocks(searchstring : string) : Promise<any>{
+    const GETSTOCKSURL = URL + "/stocks"
     const params = new HttpParams().set("search", searchstring)
     return lastValueFrom(
-      this.http.get<any>(URL, { params })
+      this.http.get<any>(GETSTOCKSURL, { params })
       .pipe(
         map((v:any)=>{
           const stocks = v['stocks'] as Stock[]
@@ -27,10 +28,38 @@ export class StockService {
     )
   }
 
+  getStock(market:string , ticker:string) : Promise<any>{
+    const GETSTOCKURL = URL + "/stock"
+    const params = new HttpParams()
+    .set("market", market)
+    .set("ticker", ticker)
+
+    return lastValueFrom(
+      this.http.get<any>(GETSTOCKURL, { params })
+    )
+
+  }
+
   addStocks(stock : Stock) : Promise<any> {
+    const ADDSTOCKURL = URL + "/stocks"
     const payload: any = { stock }
     return lastValueFrom(
-      this.http.post<any>(URL, payload)
+      this.http.post<any>(ADDSTOCKURL, payload)
+      .pipe(
+        map((v:any)=>{
+          const status = v['status'] as string
+          return status
+        })
+      )
+    )
+  }
+
+
+  updateStock(stock : Stock) : Promise<any> {
+    const UPDATESTOCKURL = URL + "/update"
+    const payload: any = { stock }
+    return lastValueFrom(
+      this.http.post<any>(UPDATESTOCKURL, payload)
       .pipe(
         map((v:any)=>{
           const status = v['status'] as string

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,38 +49,79 @@ public class StockController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+    }
 
+    @GetMapping(value = "/stock")
+    public ResponseEntity<String> getStock(@RequestParam String market , @RequestParam String ticker){
 
+        Stock stock = stockRepo.getStock(market, ticker);
+        System.out.println(stock);
+
+        JsonObject jsonObject = Json.createObjectBuilder()
+        .add("id", stock.getId())
+        .add("market", stock.getMarket())
+        .add("ticker", stock.getTicker())
+        .add("stockName", stock.getStockName())
+        .add("lastprice", stock.getLastprice())
+        .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(jsonObject.toString());
     }
 
     @PostMapping(value = "/stocks")
-    public ResponseEntity<String> addStock(@RequestBody String jsonpayload){
+    public ResponseEntity<String> addStock(@RequestBody String jsonpayload) {
 
         JsonReader reader = Json.createReader(new StringReader(jsonpayload));
         JsonObject json = reader.readObject();
         JsonObject stockjson = json.getJsonObject("stock");
 
-        String market= stockjson.getString("market");
-        String ticker= stockjson.getString("ticker");
-        String stockName= stockjson.getString("stockName");
-        Double lastprice= Double.parseDouble(stockjson.getJsonNumber("lastprice").toString());
+        String market = stockjson.getString("market");
+        String ticker = stockjson.getString("ticker");
+        String stockName = stockjson.getString("stockName");
+        Double lastprice = Double.parseDouble(stockjson.getJsonNumber("lastprice").toString());
         Stock stock = new Stock(null, market, ticker, stockName, lastprice);
-        
+
         Integer rowsupdated = stockRepo.insertStock(stock);
 
-        if (rowsupdated == 1){
+        if (rowsupdated == 1) {
             JsonObject responsejson = Json.createObjectBuilder()
-            .add("status", "Stock inserted")
-            .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());            
-        }else{
+                    .add("status", "Stock inserted")
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+        } else {
             JsonObject responsejson = Json.createObjectBuilder()
-            .add("status", "Failed to add stock")
-            .build();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());      
+                    .add("status", "Failed to add stock")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
 
+    }
 
+    @PostMapping(value = "/update")
+    public ResponseEntity<String> updateStock(@RequestBody String jsonpayload){
+        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+        JsonObject json = reader.readObject();
+        JsonObject stockjson = json.getJsonObject("stock");
+
+        String market = stockjson.getString("market");
+        String ticker = stockjson.getString("ticker");
+        String stockName = stockjson.getString("stockName");
+        Double lastprice = Double.parseDouble(stockjson.getJsonNumber("lastprice").toString());
+        Stock stock = new Stock(null, market, ticker, stockName, lastprice);
+
+        Integer rowsupdated = stockRepo.updateStock(stock);
+
+        if (rowsupdated == 1) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Stock updated")
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+        } else {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Failed to update stock")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
     }
 
 }

@@ -7,11 +7,13 @@ import { AllComponent } from './components/all/all.component';
 import { WatchlistComponent } from './components/watchlist/watchlist.component';
 import { PortfolioComponent } from './components/portfolio/portfolio.component';
 import { AddComponent } from './components/add/add.component';
+import { EditComponent } from './components/edit/edit.component';
 
 const routes: Routes = [
   {path:"" , component:AllComponent},
   {path:"all" , component:AllComponent},
   {path:"add" , component:AddComponent},
+  {path:"edit/:ticker" , component:EditComponent},
   {path:"watchlist" , component:WatchlistComponent},
   {path:"portfolio" , component:PortfolioComponent},
   {path:"stock/:ticker" , component:StockComponent},
