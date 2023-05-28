@@ -27,10 +27,16 @@ export class StockService {
     )
   }
 
-  addStocks(stock : Stock) {
+  addStocks(stock : Stock) : Promise<any> {
     const payload: any = { stock }
     return lastValueFrom(
       this.http.post<any>(URL, payload)
+      .pipe(
+        map((v:any)=>{
+          const status = v['status'] as string
+          return status
+        })
+      )
     )
   }
 

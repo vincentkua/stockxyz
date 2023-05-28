@@ -13,11 +13,11 @@
 <table>
   <thead>
     <tr>
-      <th>id</th>
-      <th>market</th>
-      <th>ticker</th>
-      <th>stockname</th>
-      <th>lastprice</th>
+      <th>Id</th>
+      <th>Market</th>
+      <th>Ticker</th>
+      <th>Stock Name</th>
+      <th>Last Price</th>
     </tr>
   </thead>
   <tbody>
@@ -25,7 +25,7 @@
       <td>{{x.id}}</td>
       <td>{{x.market}}</td>
       <td>{{x.ticker}}</td>
-      <td>{{x.stockName}}</td>
+      <td> <a href="/stock/{{x.market}}:{{x.ticker}}" style="color: blue;">{{x.stockName}}</a></td>
       <td>{{x.lastprice}}</td>
     </tr>
   </tbody>

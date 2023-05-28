@@ -14,7 +14,7 @@ const routes: Routes = [
   {path:"add" , component:AddComponent},
   {path:"watchlist" , component:WatchlistComponent},
   {path:"portfolio" , component:PortfolioComponent},
-  {path:"stock" , component:StockComponent},
+  {path:"stock/:ticker" , component:StockComponent},
   {path:"login" , component:LoginComponent},
   {path:"about" , component:AboutComponent},
   {path:"**" , redirectTo:"/", pathMatch:'full'}

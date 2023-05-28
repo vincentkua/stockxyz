@@ -19,7 +19,7 @@ export class AddComponent implements OnInit{
         market : this.fb.control<string>("SGX",Validators.required),
         ticker : this.fb.control<string>("", Validators.required),
         stockName : this.fb.control<string>("",Validators.required),
-        lastprice : this.fb.control<number>(0,Validators.required)
+        lastprice : this.fb.control<number>(0, Validators.required)
       })
   }
 
@@ -28,6 +28,8 @@ export class AddComponent implements OnInit{
     this.stockSvc.addStocks(this.stock)
     .then(v => {
       console.info('resolved: ', v)
+      alert(v)
+      this.ngOnInit()
     }).catch(err => {
       console.error('>>> error: ', err)
     })

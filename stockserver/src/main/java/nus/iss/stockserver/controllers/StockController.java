@@ -1,5 +1,6 @@
 package nus.iss.stockserver.controllers;
 
+import java.io.StringReader;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import nus.iss.stockserver.models.Stock;
 import nus.iss.stockserver.repository.StockRepository;
 
@@ -52,8 +54,32 @@ public class StockController {
 
     @PostMapping(value = "/stocks")
     public ResponseEntity<String> addStock(@RequestBody String jsonpayload){
-        System.out.println(jsonpayload);
-        return null;
+
+        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+        JsonObject json = reader.readObject();
+        JsonObject stockjson = json.getJsonObject("stock");
+
+        String market= stockjson.getString("market");
+        String ticker= stockjson.getString("ticker");
+        String stockName= stockjson.getString("stockName");
+        Double lastprice= Double.parseDouble(stockjson.getJsonNumber("lastprice").toString());
+        Stock stock = new Stock(null, market, ticker, stockName, lastprice);
+        
+        Integer rowsupdated = stockRepo.insertStock(stock);
+
+        if (rowsupdated == 1){
+            JsonObject responsejson = Json.createObjectBuilder()
+            .add("status", "Stock inserted")
+            .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());            
+        }else{
+            JsonObject responsejson = Json.createObjectBuilder()
+            .add("status", "Failed to add stock")
+            .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());      
+        }
+
+
     }
 
 }

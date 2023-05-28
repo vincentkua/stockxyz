@@ -17,7 +17,6 @@ public class StockRepository {
     JdbcTemplate jdbcTemplate;
 
     private static final String FINDBYNAME = "select * from stocklist where stock_name like ? ";
-
     public List<Stock> getStocks(String search) {
 
         List<Stock> stocks = new LinkedList<>();
@@ -25,5 +24,12 @@ public class StockRepository {
         return stocks;
 
     }
+
+    private static final String INSERTSTOCK = "insert into stocklist (market , ticker , stock_name , lastprice) values (? , ? , ? , ?)";
+    public Integer insertStock(Stock stock){
+        Integer rowsupdated = jdbcTemplate.update(INSERTSTOCK,stock.getMarket(),stock.getTicker(),stock.getStockName(),stock.getLastprice());
+        return rowsupdated;
+    }
+
 
 }
