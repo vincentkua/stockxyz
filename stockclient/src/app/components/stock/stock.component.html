@@ -2,57 +2,60 @@
 
 <br /><br />
 
+<h2 style="margin-bottom: 0px; font-weight: bold; font-size: 25px">
+  {{ stock.lastprice }}
+</h2>
+
 <h2 style="margin-bottom: 0px; font-size: 16px">
   {{ market }} {{ ticker }} {{ stock.stockName }}
-  <button style="margin-left: 10px; padding: 1px 10px" (click)="naveditpage()">
-    Manual Edit
-  </button>
-</h2>
+  <button style="padding: 1px 10px" (click)="naveditpage()">Manual Edit</button>
 
-<h2 style="margin-bottom: 15px; font-weight: bold; font-size: 25px">
-  {{ stock.lastprice }}
   <button style="margin-left: 10px; padding: 1px 5px" (click)="priceApi()">
-    Twelve Api
+    Price Api
   </button>
 
+  <button
+    style="margin-left: 10px; padding: 1px 5px"
+    (click)="fundamentalApi()"
+  >
+    Fundamental Api
+  </button>
 </h2>
 
+<p>{{ stock.description }}</p>
+
+<br>
 
 <div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
-  <p style="font-weight: bold">
-    FUNDAMENTAL DATA
-    <button style="margin-left: 10px; padding: 1px 5px" (click)="fundamentalApi()">
-      Alpha Api
-    </button>
-  </p>
+  <p style="font-weight: bold">FUNDAMENTAL DATA</p>
   <table>
     <tr>
-      <td>PE(TTM)</td>
-      <td>{{ stock.pettm }}</td>
-    </tr>
-    <tr>
-      <td>PE(LYR)</td>
-      <td>{{ stock.pelyr }}</td>
-    </tr>
-    <tr>
-      <td>Div Yield</td>
-      <td>{{ stock.divyield }}</td>
-    </tr>
-    <tr>
-      <td>P/B</td>
-      <td>{{ stock.pb }}</td>
+      <td style="width: 90px">Target Price</td>
+      <td>{{ stock.targetprice }}</td>
     </tr>
     <tr>
       <td>EPS(TTM)</td>
       <td>{{ stock.epsttm }}</td>
     </tr>
     <tr>
-      <td style="width: 80px">EPS(LYR)</td>
-      <td>{{ stock.epslyr }}</td>
+      <td>PE(TTM)</td>
+      <td>{{ stock.pettm == 0 ? "Loss" : stock.pettm}}</td>
+    </tr>
+    <tr>
+      <td>PE(FWD)</td>
+      <td>{{ stock.pefwd == 0 ? "Loss" : stock.pefwd}}</td>
+    </tr>
+    <tr>
+      <td>P/B</td>
+      <td>{{ stock.pb }}</td>
     </tr>
     <tr>
       <td>DPS</td>
       <td>{{ stock.dps }}</td>
+    </tr>
+    <tr>
+      <td>Div Yield</td>
+      <td>{{ (stock.divyield * 100).toPrecision(4)}}%</td>
     </tr>
   </table>
 </div>

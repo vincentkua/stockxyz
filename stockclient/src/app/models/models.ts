@@ -3,10 +3,11 @@ export interface Stock{
     market : string
     ticker : string
     stockName : string
+    description : string
     lastprice : number
-    epslyr: number
+    targetprice : number
     epsttm : number
-    pelyr : number
+    pefwd : number
     pettm : number
     dps : number
     divyield : number

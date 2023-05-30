@@ -16,10 +16,9 @@ export class AddComponent implements OnInit{
 
   ngOnInit(): void {
       this.form = this.fb.group({
-        market : this.fb.control<string>("SGX",Validators.required),
+        market : this.fb.control<string>("NASDAQ",Validators.required),
         ticker : this.fb.control<string>("", Validators.required),
-        stockName : this.fb.control<string>("",Validators.required),
-        lastprice : this.fb.control<number>(0, Validators.required)
+        stockName : this.fb.control<string>("",Validators.required)
       })
   }
 

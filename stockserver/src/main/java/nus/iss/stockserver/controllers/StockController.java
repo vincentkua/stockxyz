@@ -42,11 +42,12 @@ public class StockController {
                     .add("market", x.getMarket())
                     .add("ticker", x.getTicker())
                     .add("stockName", x.getStockName())
-                    .add("lastprice", x.getLastprice())
-                    .add("epslyr", x.getEpslyr() == null ? 0 : x.getEpslyr())
+                    .add("description", x.getDescription()== null ? "" : x.getDescription())
+                    .add("lastprice", x.getLastprice()== null ? 0 : x.getLastprice())
+                    .add("targetprice", x.getTargetprice()== null ? 0 : x.getTargetprice())
                     .add("epsttm", x.getEpsttm() == null ? 0 : x.getEpsttm())
-                    .add("pelyr", x.getPelyr() == null ? 0 : x.getPelyr())
                     .add("pettm", x.getPettm() == null ? 0 : x.getPettm())
+                    .add("pefwd", x.getPefwd() == null ? 0 : x.getPefwd())
                     .add("dps", x.getDps() == null ? 0 : x.getDps())
                     .add("divyield", x.getDivyield() == null ? 0 : x.getDivyield())
                     .add("pb", x.getPb() == null ? 0 : x.getPb())
@@ -72,10 +73,11 @@ public class StockController {
                 .add("market", stock.getMarket())
                 .add("ticker", stock.getTicker())
                 .add("stockName", stock.getStockName())
-                .add("lastprice", stock.getLastprice())
-                .add("epslyr", stock.getEpslyr() == null ? 0 : stock.getEpslyr())
+                .add("description", stock.getDescription()== null ? "" : stock.getDescription())
+                .add("lastprice", stock.getLastprice()== null ? 0 : stock.getLastprice())
+                .add("targetprice", stock.getTargetprice()== null ? 0 : stock.getTargetprice())
                 .add("epsttm", stock.getEpsttm() == null ? 0 : stock.getEpsttm())
-                .add("pelyr", stock.getPelyr() == null ? 0 : stock.getPelyr())
+                .add("pefwd", stock.getPefwd() == null ? 0 : stock.getPefwd())
                 .add("pettm", stock.getPettm() == null ? 0 : stock.getPettm())
                 .add("dps", stock.getDps() == null ? 0 : stock.getDps())
                 .add("divyield", stock.getDivyield() == null ? 0 : stock.getDivyield())
@@ -95,10 +97,9 @@ public class StockController {
         String market = stockjson.getString("market");
         String ticker = stockjson.getString("ticker");
         String stockName = stockjson.getString("stockName");
-        Double lastprice = Double.parseDouble(stockjson.getJsonNumber("lastprice").toString());
-        Stock stock = new Stock(null, market, ticker, stockName, lastprice, null, null, null, null, null, null, null);
+        
 
-        Integer rowsupdated = stockRepo.insertStock(stock);
+        Integer rowsupdated = stockRepo.insertStock(market,ticker,stockName);
 
         if (rowsupdated == 1) {
             JsonObject responsejson = Json.createObjectBuilder()
@@ -123,16 +124,16 @@ public class StockController {
         String market = stockjson.getString("market");
         String ticker = stockjson.getString("ticker");
         String stockName = stockjson.getString("stockName");
+        String description = stockjson.getString("description");
         Double lastprice = Double.parseDouble(stockjson.getJsonNumber("lastprice").toString());
-        Double epslyr = Double.parseDouble(stockjson.getJsonNumber("epslyr").toString());
+        Double targetprice = Double.parseDouble(stockjson.getJsonNumber("targetprice").toString());
         Double epsttm = Double.parseDouble(stockjson.getJsonNumber("epsttm").toString());
-        Double pelyr = Double.parseDouble(stockjson.getJsonNumber("pelyr").toString());
+        Double pefwd = Double.parseDouble(stockjson.getJsonNumber("pefwd").toString());
         Double pettm = Double.parseDouble(stockjson.getJsonNumber("pettm").toString());
         Double dps = Double.parseDouble(stockjson.getJsonNumber("dps").toString());
         Double divyield = Double.parseDouble(stockjson.getJsonNumber("divyield").toString());
         Double pb = Double.parseDouble(stockjson.getJsonNumber("pb").toString());
-        Stock stock = new Stock(null, market, ticker, stockName, lastprice, epslyr, epsttm, pelyr, pettm, dps, divyield,
-                pb);
+        Stock stock = new Stock(null, market,ticker,stockName,description,lastprice,targetprice,epsttm,pefwd,pettm,dps,divyield,pb);
 
         Integer rowsupdated = stockRepo.updateStock(stock);
 
