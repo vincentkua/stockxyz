@@ -69,8 +69,8 @@ export class StockService {
     )
   }
 
-  getStockApi(market:string , ticker:string) : Promise<any>{
-    const GETSTOCKAPIURL = URL + "/stockapi"
+  getFundamentalApi(market:string , ticker:string) : Promise<any>{
+    const GETSTOCKAPIURL = URL + "/fundamentalapi"
     const params = new HttpParams()
     .set("market", market)
     .set("ticker", ticker)
@@ -79,6 +79,17 @@ export class StockService {
       this.http.get<any>(GETSTOCKAPIURL, { params })
     )
 
+  }
+
+  getPriceApi(market:string , ticker:string){
+    const GETSTOCKAPIURL = URL + "/priceapi"
+    const params = new HttpParams()
+    .set("market", market)
+    .set("ticker", ticker)
+
+    return lastValueFrom(
+      this.http.get<any>(GETSTOCKAPIURL, { params })
+    )
   }
 
 

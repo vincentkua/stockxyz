@@ -20,20 +20,24 @@ import nus.iss.stockserver.repository.StockRepository;
 @Service
 public class StockService {
 
+        public final static String ALPHAURL = "https://www.alphavantage.co/query";
+        public final static String TWELVEURL = "https://api.twelvedata.com/price";
+
         @Autowired
         StockRepository stockRepo;
 
-        public final static String URL = "https://www.alphavantage.co/query";
-
         @Value("${alphavantage.key}")
-        private String apikey;
+        private String alphaapikey;
 
-        public Integer getAlphavantage(String market ,String ticker) {
+        @Value("${twelvedata.key}")
+        private String twelveapikey;
 
-                String url = UriComponentsBuilder.fromUriString(URL)
+        public Integer getAlphaFundamental(String market, String ticker) {
+
+                String url = UriComponentsBuilder.fromUriString(ALPHAURL)
                                 .queryParam("function", "OVERVIEW")
                                 .queryParam("symbol", ticker)
-                                .queryParam("apikey", apikey)
+                                .queryParam("apikey", alphaapikey)
                                 .toUriString();
 
                 RequestEntity<Void> req = RequestEntity.get(url)
@@ -55,13 +59,37 @@ public class StockService {
                 Double divyield = Double.parseDouble(json.getString("DividendYield"));
                 Double pb = Double.parseDouble(json.getString("PriceToBookRatio"));
 
-                Stock stock = new Stock(null, market, ticker, null, null,epslyr ,epsttm,pelyr,pettm,dps,divyield,pb);
+                Stock stock = new Stock(null, market, ticker, null, null, epslyr, epsttm, pelyr, pettm, dps, divyield,
+                                pb);
                 System.out.println("######");
                 System.out.println(stock);
 
-                Integer rowsupdated = stockRepo.updateAlpha(stock);
+                Integer rowsupdated = stockRepo.updateFundamental(stock);
 
                 return rowsupdated;
 
+        }
+
+        public Integer getTwelveDataPrice(String market, String ticker) {
+                String url = UriComponentsBuilder.fromUriString(TWELVEURL)
+                                .queryParam("symbol", ticker)
+                                .queryParam("apikey", twelveapikey)
+                                .toUriString();
+
+                RequestEntity<Void> req = RequestEntity.get(url)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .build();
+
+                RestTemplate template = new RestTemplate();
+                ResponseEntity<String> resp = template.exchange(req, String.class);
+                String payload = resp.getBody();
+                JsonReader reader = Json.createReader(new StringReader(payload));
+                JsonObject json = reader.readObject();
+                System.out.println(json);
+                Double price = Double.parseDouble(json.getString("price"));
+
+                Integer rowsupdated = stockRepo.updatePrice(price,market,ticker);
+
+                return rowsupdated;
         }
 }

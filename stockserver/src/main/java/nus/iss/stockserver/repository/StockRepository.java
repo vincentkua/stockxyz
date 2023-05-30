@@ -51,13 +51,19 @@ public class StockRepository {
         return rowsupdated;
     }
 
-
     private static final String UPDATEALPHA = "update stocklist set epslyr = ? , epsttm = ? , pelyr = ? , pettm = ? , dps = ? , divyield = ? , pb= ? where market =? AND ticker=?";
 
-    public Integer updateAlpha(Stock stock) {
+    public Integer updateFundamental(Stock stock) {
         Integer rowsupdated = jdbcTemplate.update(UPDATEALPHA,
                 stock.getEpslyr(), stock.getEpsttm(), stock.getPelyr(), stock.getPettm(), stock.getDps(),
                 stock.getDivyield(), stock.getPb(), stock.getMarket(), stock.getTicker());
+        return rowsupdated;
+    }
+
+    private static final String UPDATEPRICE = "update stocklist set lastprice = ? where market =? AND ticker=?";
+
+    public Integer updatePrice(Double lastprice , String market , String ticker) {
+        Integer rowsupdated = jdbcTemplate.update(UPDATEPRICE,lastprice,market,ticker);
         return rowsupdated;
     }
 

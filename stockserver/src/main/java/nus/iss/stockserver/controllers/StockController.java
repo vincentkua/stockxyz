@@ -65,7 +65,7 @@ public class StockController {
     public ResponseEntity<String> getStock(@RequestParam String market, @RequestParam String ticker) {
 
         Stock stock = stockRepo.getStock(market, ticker);
-        System.out.println(stock);
+        // System.out.println(stock);
 
         JsonObject jsonObject = Json.createObjectBuilder()
                 .add("id", stock.getId())
@@ -149,10 +149,10 @@ public class StockController {
         }
     }
 
-    @GetMapping(value = "/stockapi")
+    @GetMapping(value = "/fundamentalapi")
     public ResponseEntity<String> getStockApi(@RequestParam String market, @RequestParam String ticker) {
 
-        Integer rowsupdated = stockSvc.getAlphavantage(market, ticker);
+        Integer rowsupdated = stockSvc.getAlphaFundamental(market, ticker);
 
         if (rowsupdated == 1) {
             JsonObject responsejson = Json.createObjectBuilder()
@@ -165,6 +165,26 @@ public class StockController {
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
+    }
+
+    @GetMapping(value = "/priceapi")
+    public ResponseEntity<String> getPriceApi(@RequestParam String market, @RequestParam String ticker) {
+
+        Integer rowsupdated = stockSvc.getTwelveDataPrice(market, ticker);
+
+        if (rowsupdated == 1) {
+        JsonObject responsejson = Json.createObjectBuilder()
+        .add("status", "Stock updated")
+        .build();
+        return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+        } else {
+        JsonObject responsejson = Json.createObjectBuilder()
+        .add("status", "Failed to update stock")
+        .build();
+        return
+        ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+
     }
 
 }

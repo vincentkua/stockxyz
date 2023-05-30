@@ -59,8 +59,8 @@ export class StockComponent implements OnInit {
     this.router.navigate(['/edit/'+this.market + ":" + this.ticker])
   }
 
-  getStockApi(){
-    this.stockSvc.getStockApi(this.market , this.ticker)
+  fundamentalApi(){
+    this.stockSvc.getFundamentalApi(this.market , this.ticker)
     .then(v => {
       console.info('resolved: ', v)
       this.getFundamental()
@@ -69,5 +69,18 @@ export class StockComponent implements OnInit {
     })
 
   }
+
+  priceApi(){
+    this.stockSvc.getPriceApi(this.market , this.ticker)
+    .then(v => {
+      console.info('resolved: ', v)
+      this.getFundamental()
+    }).catch(err => {
+      console.error('>>> error: ', err)
+    })
+
+  }
+
+
 
 }
