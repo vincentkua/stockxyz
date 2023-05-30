@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +19,7 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import nus.iss.stockserver.models.Stock;
 import nus.iss.stockserver.repository.StockRepository;
+import nus.iss.stockserver.services.StockService;
 
 @RestController
 @RequestMapping(path = "/api")
@@ -27,6 +27,9 @@ public class StockController {
 
     @Autowired
     StockRepository stockRepo;
+
+    @Autowired
+    StockService stockSvc;
 
     @GetMapping(value = "/stocks")
     public ResponseEntity<String> getStocks(@RequestParam String search) {
@@ -40,6 +43,13 @@ public class StockController {
                     .add("ticker", x.getTicker())
                     .add("stockName", x.getStockName())
                     .add("lastprice", x.getLastprice())
+                    .add("epslyr", x.getEpslyr() == null ? 0 : x.getEpslyr())
+                    .add("epsttm", x.getEpsttm() == null ? 0 : x.getEpsttm())
+                    .add("pelyr", x.getPelyr() == null ? 0 : x.getPelyr())
+                    .add("pettm", x.getPettm() == null ? 0 : x.getPettm())
+                    .add("dps", x.getDps() == null ? 0 : x.getDps())
+                    .add("divyield", x.getDivyield() == null ? 0 : x.getDivyield())
+                    .add("pb", x.getPb() == null ? 0 : x.getPb())
                     .build();
             jsonArray.add(jsonObject);
         }
@@ -52,18 +62,25 @@ public class StockController {
     }
 
     @GetMapping(value = "/stock")
-    public ResponseEntity<String> getStock(@RequestParam String market , @RequestParam String ticker){
+    public ResponseEntity<String> getStock(@RequestParam String market, @RequestParam String ticker) {
 
         Stock stock = stockRepo.getStock(market, ticker);
         System.out.println(stock);
 
         JsonObject jsonObject = Json.createObjectBuilder()
-        .add("id", stock.getId())
-        .add("market", stock.getMarket())
-        .add("ticker", stock.getTicker())
-        .add("stockName", stock.getStockName())
-        .add("lastprice", stock.getLastprice())
-        .build();
+                .add("id", stock.getId())
+                .add("market", stock.getMarket())
+                .add("ticker", stock.getTicker())
+                .add("stockName", stock.getStockName())
+                .add("lastprice", stock.getLastprice())
+                .add("epslyr", stock.getEpslyr() == null ? 0 : stock.getEpslyr())
+                .add("epsttm", stock.getEpsttm() == null ? 0 : stock.getEpsttm())
+                .add("pelyr", stock.getPelyr() == null ? 0 : stock.getPelyr())
+                .add("pettm", stock.getPettm() == null ? 0 : stock.getPettm())
+                .add("dps", stock.getDps() == null ? 0 : stock.getDps())
+                .add("divyield", stock.getDivyield() == null ? 0 : stock.getDivyield())
+                .add("pb", stock.getPb() == null ? 0 : stock.getPb())
+                .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(jsonObject.toString());
     }
@@ -79,7 +96,7 @@ public class StockController {
         String ticker = stockjson.getString("ticker");
         String stockName = stockjson.getString("stockName");
         Double lastprice = Double.parseDouble(stockjson.getJsonNumber("lastprice").toString());
-        Stock stock = new Stock(null, market, ticker, stockName, lastprice);
+        Stock stock = new Stock(null, market, ticker, stockName, lastprice, null, null, null, null, null, null, null);
 
         Integer rowsupdated = stockRepo.insertStock(stock);
 
@@ -98,7 +115,7 @@ public class StockController {
     }
 
     @PostMapping(value = "/update")
-    public ResponseEntity<String> updateStock(@RequestBody String jsonpayload){
+    public ResponseEntity<String> updateStock(@RequestBody String jsonpayload) {
         JsonReader reader = Json.createReader(new StringReader(jsonpayload));
         JsonObject json = reader.readObject();
         JsonObject stockjson = json.getJsonObject("stock");
@@ -107,9 +124,35 @@ public class StockController {
         String ticker = stockjson.getString("ticker");
         String stockName = stockjson.getString("stockName");
         Double lastprice = Double.parseDouble(stockjson.getJsonNumber("lastprice").toString());
-        Stock stock = new Stock(null, market, ticker, stockName, lastprice);
+        Double epslyr = Double.parseDouble(stockjson.getJsonNumber("epslyr").toString());
+        Double epsttm = Double.parseDouble(stockjson.getJsonNumber("epsttm").toString());
+        Double pelyr = Double.parseDouble(stockjson.getJsonNumber("pelyr").toString());
+        Double pettm = Double.parseDouble(stockjson.getJsonNumber("pettm").toString());
+        Double dps = Double.parseDouble(stockjson.getJsonNumber("dps").toString());
+        Double divyield = Double.parseDouble(stockjson.getJsonNumber("divyield").toString());
+        Double pb = Double.parseDouble(stockjson.getJsonNumber("pb").toString());
+        Stock stock = new Stock(null, market, ticker, stockName, lastprice, epslyr, epsttm, pelyr, pettm, dps, divyield,
+                pb);
 
         Integer rowsupdated = stockRepo.updateStock(stock);
+
+        if (rowsupdated == 1) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Stock updated")
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+        } else {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Failed to update stock")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+    }
+
+    @GetMapping(value = "/stockapi")
+    public ResponseEntity<String> getStockApi(@RequestParam String market, @RequestParam String ticker) {
+
+        Integer rowsupdated = stockSvc.getAlphavantage(market, ticker);
 
         if (rowsupdated == 1) {
             JsonObject responsejson = Json.createObjectBuilder()

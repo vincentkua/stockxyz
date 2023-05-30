@@ -69,6 +69,18 @@ export class StockService {
     )
   }
 
+  getStockApi(market:string , ticker:string) : Promise<any>{
+    const GETSTOCKAPIURL = URL + "/stockapi"
+    const params = new HttpParams()
+    .set("market", market)
+    .set("ticker", ticker)
+
+    return lastValueFrom(
+      this.http.get<any>(GETSTOCKAPIURL, { params })
+    )
+
+  }
+
 
 
 }

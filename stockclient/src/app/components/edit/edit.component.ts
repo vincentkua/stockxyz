@@ -11,11 +11,22 @@ import { StockService } from 'src/app/services/stock.service';
 })
 
 export class EditComponent implements OnInit {
+  stock : Stock = {
+    id: 0,
+    market: '',
+    ticker: '',
+    stockName: '',
+    lastprice: 0,
+    epslyr: 0,
+    epsttm: 0,
+    pelyr: 0,
+    pettm: 0,
+    dps: 0,
+    divyield: 0,
+    pb: 0
+  }
   market : string = ""
   ticker : string = ""
-  stockName : string = ""
-  lastprice : number = 0
-  stock !: Stock
   form!:FormGroup
 
   constructor(private activatedRoute: ActivatedRoute , private fb:FormBuilder , private stockSvc : StockService , private router : Router){}
@@ -34,6 +45,13 @@ export class EditComponent implements OnInit {
         ticker : this.fb.control<string>("",Validators.required),
         stockName : this.fb.control<string>("",Validators.required),
         lastprice : this.fb.control<number>(0,Validators.required),
+        epslyr : this.fb.control<number>(0,Validators.required),
+        epsttm : this.fb.control<number>(0,Validators.required),
+        pelyr : this.fb.control<number>(0,Validators.required),
+        pettm : this.fb.control<number>(0,Validators.required),
+        dps : this.fb.control<number>(0,Validators.required),
+        divyield : this.fb.control<number>(0,Validators.required),
+        pb : this.fb.control<number>(0,Validators.required),
       })
 
       this.getStock()
@@ -44,14 +62,18 @@ export class EditComponent implements OnInit {
     .then(v => {
       console.info('resolved: ', v)
       const stock : Stock = v;
-      this.stockName = stock.stockName
-      this.lastprice = stock.lastprice
-
       this.form = this.fb.group({
         market : this.fb.control<string>(this.market , Validators.required),
         ticker : this.fb.control<string>(this.ticker,Validators.required),
-        stockName : this.fb.control<string>(this.stockName,Validators.required),
-        lastprice : this.fb.control<number>(this.lastprice,Validators.required),
+        stockName : this.fb.control<string>(stock.stockName,Validators.required),
+        lastprice : this.fb.control<number>(stock.lastprice,Validators.required),
+        epslyr : this.fb.control<number>(stock.epslyr,Validators.required),
+        epsttm : this.fb.control<number>(stock.epsttm,Validators.required),
+        pelyr : this.fb.control<number>(stock.pelyr,Validators.required),
+        pettm : this.fb.control<number>(stock.pettm,Validators.required),
+        dps : this.fb.control<number>(stock.dps,Validators.required),
+        divyield : this.fb.control<number>(stock.divyield,Validators.required),
+        pb : this.fb.control<number>(stock.pb,Validators.required),
       })
 
     }).catch(err => {
@@ -66,8 +88,7 @@ export class EditComponent implements OnInit {
     .then(v => {
       console.info('resolved: ', v)
       alert(v)
-      this.backtostock()
-      
+      this.backtostock()      
       
     }).catch(err => {
       console.error('>>> error: ', err)

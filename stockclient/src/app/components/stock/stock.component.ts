@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Stock } from 'src/app/models/models';
 import { StockService } from 'src/app/services/stock.service';
 
@@ -9,12 +9,25 @@ import { StockService } from 'src/app/services/stock.service';
   styleUrls: ['./stock.component.css']
 })
 export class StockComponent implements OnInit {
+  stock : Stock = {
+    id: 0,
+    market: '',
+    ticker: '',
+    stockName: '',
+    lastprice: 0,
+    epslyr: 0,
+    epsttm: 0,
+    pelyr: 0,
+    pettm: 0,
+    dps: 0,
+    divyield: 0,
+    pb: 0
+  }
   market : string = ""
   ticker : string = ""
-  stockName : string = "xxx"
-  lastprice : number = 0
 
-  constructor(private activatedRoute : ActivatedRoute , private stockSvc : StockService){}
+
+  constructor(private activatedRoute : ActivatedRoute , private stockSvc : StockService , private router: Router){}
 
 
   ngOnInit(): void {
@@ -34,13 +47,26 @@ export class StockComponent implements OnInit {
     this.stockSvc.getStock(this.market , this.ticker)
     .then(v => {
       console.info('resolved: ', v)
-      const stock : Stock = v;
-      this.stockName = stock.stockName
-      this.lastprice = stock.lastprice
+      this.stock = v;
     }).catch(err => {
       console.error('>>> error: ', err)
     })
 
+
+  }
+
+  naveditpage(){
+    this.router.navigate(['/edit/'+this.market + ":" + this.ticker])
+  }
+
+  getStockApi(){
+    this.stockSvc.getStockApi(this.market , this.ticker)
+    .then(v => {
+      console.info('resolved: ', v)
+      this.getFundamental()
+    }).catch(err => {
+      console.error('>>> error: ', err)
+    })
 
   }
 

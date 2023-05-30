@@ -17,35 +17,48 @@ public class StockRepository {
     JdbcTemplate jdbcTemplate;
 
     private static final String FINDBYNAME = "select * from stocklist where stock_name like ? ";
+
     public List<Stock> getStocks(String search) {
 
         List<Stock> stocks = new LinkedList<>();
-        stocks = jdbcTemplate.query(FINDBYNAME, BeanPropertyRowMapper.newInstance(Stock.class), "%" + search + "%");        
+        stocks = jdbcTemplate.query(FINDBYNAME, BeanPropertyRowMapper.newInstance(Stock.class), "%" + search + "%");
         return stocks;
 
     }
 
     private static final String FINDSTOCK = "select * from stocklist where market = ? AND ticker = ? ";
-    public Stock getStock(String market , String ticker){
+
+    public Stock getStock(String market, String ticker) {
         Stock stock = new Stock();
-        stock = jdbcTemplate.queryForObject(FINDSTOCK, BeanPropertyRowMapper.newInstance(Stock.class),market,ticker);
+        stock = jdbcTemplate.queryForObject(FINDSTOCK, BeanPropertyRowMapper.newInstance(Stock.class), market, ticker);
         return stock;
     }
 
-
     private static final String INSERTSTOCK = "insert into stocklist (market , ticker , stock_name , lastprice) values (? , ? , ? , ?)";
-    public Integer insertStock(Stock stock){
-        Integer rowsupdated = jdbcTemplate.update(INSERTSTOCK,stock.getMarket(),stock.getTicker(),stock.getStockName(),stock.getLastprice());
+
+    public Integer insertStock(Stock stock) {
+        Integer rowsupdated = jdbcTemplate.update(INSERTSTOCK, stock.getMarket(), stock.getTicker(),
+                stock.getStockName(), stock.getLastprice());
         return rowsupdated;
     }
 
-    private static final String UPDATESTOCK = "update stocklist set stock_name = ? , lastprice = ? where market =? AND ticker=?";
-    public Integer updateStock(Stock stock){
-        Integer rowsupdated = jdbcTemplate.update(UPDATESTOCK,stock.getStockName(),stock.getLastprice(),stock.getMarket(),stock.getTicker());
+    private static final String UPDATESTOCK = "update stocklist set stock_name = ? , lastprice = ? , epslyr = ? , epsttm = ? , pelyr = ? , pettm = ? , dps = ? , divyield = ? , pb= ? where market =? AND ticker=?";
+
+    public Integer updateStock(Stock stock) {
+        Integer rowsupdated = jdbcTemplate.update(UPDATESTOCK, stock.getStockName(), stock.getLastprice(),
+                stock.getEpslyr(), stock.getEpsttm(), stock.getPelyr(), stock.getPettm(), stock.getDps(),
+                stock.getDivyield(), stock.getPb(), stock.getMarket(), stock.getTicker());
         return rowsupdated;
     }
 
-    
 
+    private static final String UPDATEALPHA = "update stocklist set epslyr = ? , epsttm = ? , pelyr = ? , pettm = ? , dps = ? , divyield = ? , pb= ? where market =? AND ticker=?";
+
+    public Integer updateAlpha(Stock stock) {
+        Integer rowsupdated = jdbcTemplate.update(UPDATEALPHA,
+                stock.getEpslyr(), stock.getEpsttm(), stock.getPelyr(), stock.getPettm(), stock.getDps(),
+                stock.getDivyield(), stock.getPb(), stock.getMarket(), stock.getTicker());
+        return rowsupdated;
+    }
 
 }
