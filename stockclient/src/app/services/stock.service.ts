@@ -92,6 +92,17 @@ export class StockService {
     )
   }
 
+  getByWebScraper(market:string , ticker:string){
+    const GETSTOCKAPIURL = URL + "/webscraper"
+    const params = new HttpParams()
+    .set("market", market)
+    .set("ticker", ticker)
+
+    return lastValueFrom(
+      this.http.get<any>(GETSTOCKAPIURL, { params })
+    )
+  }
+
 
 
 }

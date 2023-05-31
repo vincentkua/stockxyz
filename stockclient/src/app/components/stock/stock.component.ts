@@ -82,6 +82,17 @@ export class StockComponent implements OnInit {
 
   }
 
+  webscraper(){
+    this.stockSvc.getByWebScraper(this.market , this.ticker)
+    .then(v => {
+      console.info('resolved: ', v)
+      this.getFundamental()
+    }).catch(err => {
+      console.error('>>> error: ', err)
+    })
+
+  }
+
 
 
 }

@@ -62,4 +62,11 @@ public class StockRepository {
         return rowsupdated;
     }
 
+    private static final String UPDATEPRICEANDTARGET = "update stocklist set lastprice = ?, targetprice = ?  where market =? AND ticker=?";
+
+    public Integer updatePriceAndTarget(Double lastprice,Double targetprice, String market, String ticker) {
+        Integer rowsupdated = jdbcTemplate.update(UPDATEPRICEANDTARGET, lastprice, targetprice, market, ticker);
+        return rowsupdated;
+    }
+
 }
