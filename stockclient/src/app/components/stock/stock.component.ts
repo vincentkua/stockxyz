@@ -18,10 +18,10 @@ export class StockComponent implements OnInit {
     lastprice: 0,
     targetprice:0,
     epsttm: 0,
-    pefwd: 0,
     pettm: 0,
     dps: 0,
     divyield: 0,
+    bookvalue : 0,
     pb: 0
   }
   market : string = ""

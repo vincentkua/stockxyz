@@ -20,10 +20,10 @@ export class EditComponent implements OnInit {
     lastprice: 0,
     targetprice :0 ,
     epsttm: 0,
-    pefwd: 0,
     pettm: 0,
     dps: 0,
     divyield: 0,
+    bookvalue :0,
     pb: 0
   }
   market : string = ""
@@ -42,17 +42,17 @@ export class EditComponent implements OnInit {
 
       //Initiate the form with empty data , reassign with value after getStock asyn method is completed
       this.form = this.fb.group({
-        market : this.fb.control<string>("" , Validators.required),
-        ticker : this.fb.control<string>("",Validators.required),
-        stockName : this.fb.control<string>("",Validators.required),
-        description : this.fb.control<string>("",Validators.required),
+        market : this.fb.control<string>("-" , Validators.required),
+        ticker : this.fb.control<string>("-",Validators.required),
+        stockName : this.fb.control<string>("-",Validators.required),
+        description : this.fb.control<string>("-",Validators.required),
         lastprice : this.fb.control<number>(0,Validators.required),
         targetprice : this.fb.control<number>(0,Validators.required),
         epsttm : this.fb.control<number>(0,Validators.required),
-        pefwd : this.fb.control<number>(0,Validators.required),
         pettm : this.fb.control<number>(0,Validators.required),
         dps : this.fb.control<number>(0,Validators.required),
         divyield : this.fb.control<number>(0,Validators.required),
+        bookvalue : this.fb.control<number>(0,Validators.required),
         pb : this.fb.control<number>(0,Validators.required),
       })
 
@@ -68,14 +68,14 @@ export class EditComponent implements OnInit {
         market : this.fb.control<string>(this.market , Validators.required),
         ticker : this.fb.control<string>(this.ticker,Validators.required),
         stockName : this.fb.control<string>(stock.stockName,Validators.required),
-        description : this.fb.control<string>(stock.description,Validators.required),
+        description : this.fb.control<string>(stock.description=="" ? "-" : stock.description,Validators.required),
         lastprice : this.fb.control<number>(stock.lastprice,Validators.required),
         targetprice : this.fb.control<number>(stock.targetprice,Validators.required),
         epsttm : this.fb.control<number>(stock.epsttm,Validators.required),
-        pefwd : this.fb.control<number>(stock.pefwd,Validators.required),
         pettm : this.fb.control<number>(stock.pettm,Validators.required),
         dps : this.fb.control<number>(stock.dps,Validators.required),
         divyield : this.fb.control<number>(stock.divyield,Validators.required),
+        bookvalue : this.fb.control<number>(stock.bookvalue,Validators.required),
         pb : this.fb.control<number>(stock.pb,Validators.required),
       })
 

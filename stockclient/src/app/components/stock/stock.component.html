@@ -3,11 +3,11 @@
 <br /><br />
 
 <h2 style="margin-bottom: 0px; font-weight: bold; font-size: 25px">
-  {{ stock.lastprice }}
+  {{ stock.lastprice.toPrecision(5) }}
 </h2>
 
 <h2 style="margin-bottom: 0px; font-size: 16px">
-  {{ market }} {{ ticker }} {{ stock.stockName }}
+  {{ stock.stockName }} ({{ market }} {{ ticker }} )
   <button style="padding: 1px 10px" (click)="naveditpage()">Manual Edit</button>
 
   <button style="margin-left: 10px; padding: 1px 5px" (click)="priceApi()">
@@ -43,15 +43,15 @@
     </tr>
     <tr>
       <td>PE(TTM)</td>
-      <td>{{ stock.pettm == 0 ? "Loss" : stock.pettm}}</td>
+      <td>{{ stock.pettm == 0 ? "-" : (stock.pettm).toPrecision(4)}}</td>
     </tr>
     <tr>
-      <td>PE(FWD)</td>
-      <td>{{ stock.pefwd == 0 ? "Loss" : stock.pefwd}}</td>
+      <td>Book Value</td>
+      <td>{{ stock.bookvalue }}</td>
     </tr>
     <tr>
       <td>P/B</td>
-      <td>{{ stock.pb }}</td>
+      <td>{{ stock.pb.toPrecision(4) }}</td>
     </tr>
     <tr>
       <td>DPS</td>

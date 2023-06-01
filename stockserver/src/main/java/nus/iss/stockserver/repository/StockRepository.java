@@ -41,17 +41,17 @@ public class StockRepository {
         return rowsupdated;
     }
 
-    private static final String UPDATESTOCK = "update stocklist set stock_name = ? , description = ?, lastprice = ? , targetprice = ?,  epsttm = ? , pefwd = ? , pettm = ? , dps = ? , divyield = ? , pb= ? where market =? AND ticker=?";
+    private static final String UPDATESTOCK = "update stocklist set stock_name = ? , description = ?, lastprice = ? , targetprice = ?,  epsttm = ? , pettm = ? , dps = ? , divyield = ? ,bookvalue = ? , pb= ? where market =? AND ticker=?";
 
     public Integer updateStock(Stock stock) {
-        Integer rowsupdated = jdbcTemplate.update(UPDATESTOCK, stock.getStockName(), stock.getDescription() , stock.getLastprice(),stock.getTargetprice(),stock.getEpsttm(),stock.getPefwd(),stock.getPettm(),stock.getDps(),stock.getDivyield(),stock.getPb(),stock.getMarket(),stock.getTicker());
+        Integer rowsupdated = jdbcTemplate.update(UPDATESTOCK, stock.getStockName(), stock.getDescription() , stock.getLastprice(),stock.getTargetprice(),stock.getEpsttm(),stock.getPettm(),stock.getDps(),stock.getDivyield(),stock.getBookvalue(), stock.getPb(),stock.getMarket(),stock.getTicker());
         return rowsupdated;
     }
 
-    private static final String UPDATEALPHA = "update stocklist set  description = ?, targetprice = ? , epsttm = ? , pefwd = ? , pettm = ? , dps = ? , divyield = ? , pb= ? where market =? AND ticker=?";
+    private static final String UPDATEALPHA = "update stocklist set  description = ?, targetprice = ? , epsttm = ? , pettm = ? , dps = ? , divyield = ?, bookvalue= ? , pb= ? where market =? AND ticker=?";
 
     public Integer updateFundamental(Stock stock) {
-        Integer rowsupdated = jdbcTemplate.update(UPDATEALPHA, stock.getDescription(),stock.getTargetprice(),stock.getEpsttm(), stock.getPefwd(),stock.getPettm(),stock.getDps(),stock.getDivyield(),stock.getPb(),stock.getMarket(),stock.getTicker());
+        Integer rowsupdated = jdbcTemplate.update(UPDATEALPHA, stock.getDescription(),stock.getTargetprice(),stock.getEpsttm(),stock.getPettm(),stock.getDps(),stock.getDivyield(),stock.getBookvalue(),stock.getPb(),stock.getMarket(),stock.getTicker());
         return rowsupdated;
     }
 
@@ -62,10 +62,10 @@ public class StockRepository {
         return rowsupdated;
     }
 
-    private static final String UPDATEPRICEANDTARGET = "update stocklist set lastprice = ?, targetprice = ?  where market =? AND ticker=?";
+    private static final String UPDATEPRICEANDTARGET = "update stocklist set lastprice = ?, targetprice = ? , pettm = ? , pb = ? , divyield = ?  where market =? AND ticker=?";
 
-    public Integer updatePriceAndTarget(Double lastprice,Double targetprice, String market, String ticker) {
-        Integer rowsupdated = jdbcTemplate.update(UPDATEPRICEANDTARGET, lastprice, targetprice, market, ticker);
+    public Integer updatePriceAndTarget(Double lastprice,Double targetprice, Double pettm, Double pb , Double divyield, String market, String ticker) {
+        Integer rowsupdated = jdbcTemplate.update(UPDATEPRICEANDTARGET, lastprice, targetprice,pettm,pb,divyield, market, ticker);
         return rowsupdated;
     }
 

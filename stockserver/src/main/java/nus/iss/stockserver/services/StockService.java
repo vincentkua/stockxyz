@@ -49,19 +49,19 @@ public class StockService {
                 String payload = resp.getBody();
                 JsonReader reader = Json.createReader(new StringReader(payload));
                 JsonObject json = reader.readObject();
-                System.out.println(json);
                 String description = json.getString("Description");
                 Double pettm = Double.parseDouble(json.getString("TrailingPE").equals("-") ? "0" : json.getString("TrailingPE"));
-                Double pefwd = Double.parseDouble(json.getString("ForwardPE").equals("-") ? "0" : json.getString("ForwardPE"));
                 Double epsttm = Double.parseDouble(json.getString("DilutedEPSTTM"));
                 Double dps = Double.parseDouble(json.getString("DividendPerShare"));
                 Double divyield = Double.parseDouble(json.getString("DividendYield"));
+                Double bookvalue = Double.parseDouble(json.getString("BookValue"));                
                 Double pb = Double.parseDouble(json.getString("PriceToBookRatio"));
                 Double targetprice = Double.parseDouble(json.getString("AnalystTargetPrice"));
-
-                Stock stock = new Stock(null,market,ticker,null,description,null,targetprice,epsttm,pefwd,pettm,dps,divyield,pb);
-                System.out.println("######");
-                System.out.println(stock);
+                Stock stock = new Stock(null,market,ticker,null,description,null,targetprice,epsttm,pettm,dps,divyield,bookvalue,pb);
+                System.out.println("########################");
+                System.out.println("AlphaAPI Called");
+                System.out.println("Ticker : " + ticker);
+                System.out.println("Stock Data : " + stock);
 
                 Integer rowsupdated = stockRepo.updateFundamental(stock);
 
@@ -89,8 +89,12 @@ public class StockService {
                 String payload = resp.getBody();
                 JsonReader reader = Json.createReader(new StringReader(payload));
                 JsonObject json = reader.readObject();
-                System.out.println(json);
                 Double price = Double.parseDouble(json.getString("price"));
+
+                System.out.println("########################");
+                System.out.println("Twelvedata Api Called");
+                System.out.println("Ticker : " + ticker);
+                System.out.println("Stock Price :" + price);
 
                 Integer rowsupdated = stockRepo.updatePrice(price,market,ticker);
 

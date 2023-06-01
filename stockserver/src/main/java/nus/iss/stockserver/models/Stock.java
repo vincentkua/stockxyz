@@ -9,18 +9,19 @@ public class Stock {
     private Double lastprice;
     private Double targetprice;
     private Double epsttm;
-    private Double pefwd;
     private Double pettm;
     private Double dps;
     private Double divyield;
+    private Double bookvalue;
     private Double pb;
     
 
     public Stock() {
     }
 
+
     public Stock(Integer id, String market, String ticker, String stockName, String description, Double lastprice,
-            Double targetprice, Double epsttm, Double pefwd, Double pettm, Double dps, Double divyield, Double pb) {
+            Double targetprice, Double epsttm, Double pettm, Double dps, Double divyield, Double bookvalue, Double pb) {
         this.id = id;
         this.market = market;
         this.ticker = ticker;
@@ -29,12 +30,13 @@ public class Stock {
         this.lastprice = lastprice;
         this.targetprice = targetprice;
         this.epsttm = epsttm;
-        this.pefwd = pefwd;
         this.pettm = pettm;
         this.dps = dps;
         this.divyield = divyield;
+        this.bookvalue = bookvalue;
         this.pb = pb;
     }
+
 
     public Integer getId() {
         return id;
@@ -100,14 +102,6 @@ public class Stock {
         this.epsttm = epsttm;
     }
 
-    public Double getPefwd() {
-        return pefwd;
-    }
-
-    public void setPefwd(Double pefwd) {
-        this.pefwd = pefwd;
-    }
-
     public Double getPettm() {
         return pettm;
     }
@@ -140,13 +134,26 @@ public class Stock {
         this.pb = pb;
     }
 
+    public Double getBookvalue() {
+        return bookvalue;
+    }
+
+
+    public void setBookvalue(Double bookvalue) {
+        this.bookvalue = bookvalue;
+    }
+
+
     @Override
     public String toString() {
         return "Stock [id=" + id + ", market=" + market + ", ticker=" + ticker + ", stockName=" + stockName
                 + ", description=" + description + ", lastprice=" + lastprice + ", targetprice=" + targetprice
-                + ", epsttm=" + epsttm + ", pefwd=" + pefwd + ", pettm=" + pettm + ", dps=" + dps + ", divyield="
-                + divyield + ", pb=" + pb + "]";
+                + ", epsttm=" + epsttm + ", pettm=" + pettm + ", dps=" + dps + ", divyield=" + divyield + ", bookvalue="
+                + bookvalue + ", pb=" + pb + "]";
     }
+
+    
+
 
     
 

@@ -7,9 +7,9 @@ export interface Stock{
     lastprice : number
     targetprice : number
     epsttm : number
-    pefwd : number
     pettm : number
     dps : number
     divyield : number
+    bookvalue : number
     pb : number
 }
