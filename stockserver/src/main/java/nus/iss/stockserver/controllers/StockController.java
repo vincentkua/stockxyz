@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -231,5 +232,24 @@ public class StockController {
         }
 
     }
+
+    @PostMapping(value = "/delete/{id}")
+    public ResponseEntity<String> deleteStock(@PathVariable Integer id){
+        System.out.println("Delete Request Received..." + id);
+
+        Integer rowdeleted = stockRepo.deleteStock(id);
+
+        if (rowdeleted == 1) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Stock deleted")
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+        } else {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Failed to delete stock")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+    } 
 
 }

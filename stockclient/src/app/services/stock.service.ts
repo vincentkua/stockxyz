@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { lastValueFrom, map } from 'rxjs';
 import { Stock } from '../models/models';
 
-const URL = "http://localhost:8080/api"
+const URL = "http://127.0.0.1:8080/api"
 
 
 @Injectable({
@@ -52,6 +52,20 @@ export class StockService {
         })
       )
     )
+  }
+
+  deleteStock(id : number ){
+    const DELETEURL = URL + "/delete/" + id 
+    return lastValueFrom(
+      this.http.post<any>(DELETEURL,null)
+      .pipe(
+        map((v:any)=>{
+          const status = v['status'] as string
+          return status
+        })
+      )
+    )
+
   }
 
 

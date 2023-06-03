@@ -69,4 +69,11 @@ public class StockRepository {
         return rowsupdated;
     }
 
+    private static final String DELETESTOCK = "delete from stocklist where id = ?";
+    public Integer deleteStock(Integer id){
+        Integer rowsupdated = jdbcTemplate.update(DELETESTOCK, id);
+        return rowsupdated;
+
+    }
+
 }

@@ -60,6 +60,19 @@ export class StockComponent implements OnInit {
     this.router.navigate(['/edit/'+this.market + ":" + this.ticker])
   }
 
+  navinvestingnote(){
+    window.open("https://www.investingnote.com/stocks/" + this.market + ":" + this.ticker, "_blank");
+  }
+
+  navyahoofinance(){
+    let path = this.ticker;
+    if (!(this.market == "NASDAQ" || this.market == "NYSE")){
+      if(this.market == "SGX"){path = this.ticker + ".SI"}
+      if(this.market == "HKEX"){path = this.ticker + ".HK"}
+    }
+    window.open("https://sg.finance.yahoo.com/quote/" + path + "/key-statistics", "_blank");
+  }
+
   fundamentalApi(){
     this.stockSvc.getFundamentalApi(this.market , this.ticker)
     .then(v => {

@@ -63,20 +63,20 @@ export class EditComponent implements OnInit {
     this.stockSvc.getStock(this.market, this.ticker)
     .then(v => {
       console.info('resolved: ', v)
-      const stock : Stock = v;
+      this.stock = v;
       this.form = this.fb.group({
         market : this.fb.control<string>(this.market , Validators.required),
         ticker : this.fb.control<string>(this.ticker,Validators.required),
-        stockName : this.fb.control<string>(stock.stockName,Validators.required),
-        description : this.fb.control<string>(stock.description=="" ? "-" : stock.description,Validators.required),
-        lastprice : this.fb.control<number>(stock.lastprice,Validators.required),
-        targetprice : this.fb.control<number>(stock.targetprice,Validators.required),
-        epsttm : this.fb.control<number>(stock.epsttm,Validators.required),
-        pettm : this.fb.control<number>(stock.pettm,Validators.required),
-        dps : this.fb.control<number>(stock.dps,Validators.required),
-        divyield : this.fb.control<number>(stock.divyield,Validators.required),
-        bookvalue : this.fb.control<number>(stock.bookvalue,Validators.required),
-        pb : this.fb.control<number>(stock.pb,Validators.required),
+        stockName : this.fb.control<string>(this.stock.stockName,Validators.required),
+        description : this.fb.control<string>(this.stock.description=="" ? "-" : this.stock.description,Validators.required),
+        lastprice : this.fb.control<number>(this.stock.lastprice,Validators.required),
+        targetprice : this.fb.control<number>(this.stock.targetprice,Validators.required),
+        epsttm : this.fb.control<number>(this.stock.epsttm,Validators.required),
+        pettm : this.fb.control<number>(this.stock.pettm,Validators.required),
+        dps : this.fb.control<number>(this.stock.dps,Validators.required),
+        divyield : this.fb.control<number>(this.stock.divyield,Validators.required),
+        bookvalue : this.fb.control<number>(this.stock.bookvalue,Validators.required),
+        pb : this.fb.control<number>(this.stock.pb,Validators.required),
       })
 
     }).catch(err => {
@@ -97,6 +97,18 @@ export class EditComponent implements OnInit {
       console.error('>>> error: ', err)
     })
 
+  }
+
+  deletestock(id : number){
+    alert(id)
+    this.stockSvc.deleteStock(id)
+    .then(v => {
+      console.info('resolved: ', v)
+      alert(v)
+      this.router.navigate(['/'])   
+    }).catch(err => {
+      console.error('>>> error: ', err)
+    })
   }
 
   backtostock(){

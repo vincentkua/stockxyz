@@ -6,11 +6,13 @@
   {{ stock.lastprice.toPrecision(5) }}
 </h2>
 
-<h2 style="margin-bottom: 0px; font-size: 16px">
-  {{ stock.stockName }} ({{ market }} {{ ticker }} )
-  <button style="padding: 1px 10px" (click)="naveditpage()">Manual Edit</button>
+<h2 style="margin-bottom: 15px; font-size: 16px">
+  {{ stock.stockName }} ({{ market }} {{ ticker }} ) <br>
+  <span class="spanlink" (click)="naveditpage()">Edit</span>
+  <span class="spanlink" (click)="navinvestingnote()">Investing Note</span>
+  <span class="spanlink" (click)="navyahoofinance()">Yahoo Finance</span>
 
-  <button style="margin-left: 10px; padding: 1px 5px" (click)="priceApi()">
+  <!-- <button style="margin-left: 10px; padding: 1px 5px" (click)="priceApi()">
     Price Api
   </button>
 
@@ -23,10 +25,10 @@
 
   <button style="margin-left: 10px; padding: 1px 5px" (click)="webscraper()">
     Price Yahoo 
-  </button>
+  </button> -->
 </h2>
 
-<p>{{ stock.description }}</p>
+<p style="text-align: justify;" >{{ stock.description }}</p>
 
 <br>
 
