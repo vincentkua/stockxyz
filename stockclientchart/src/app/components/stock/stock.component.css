@@ -3,10 +3,20 @@
     margin: 0;
 }
 
-.spanlink{
+.spanbtn{
     color: white;
     background-color: blue;
     border-radius: 10px;
+    padding: 2px 12px;
+    cursor: pointer;
+    font-weight: normal;
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+.spanlink{
+    color: blue;
+    text-decoration: underline;
     padding: 2px 12px;
     cursor: pointer;
     font-weight: normal;

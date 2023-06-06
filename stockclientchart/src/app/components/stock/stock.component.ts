@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Stock } from 'src/app/models/models';
 import { StockService } from 'src/app/services/stock.service';
@@ -8,7 +8,8 @@ import { StockService } from 'src/app/services/stock.service';
   templateUrl: './stock.component.html',
   styleUrls: ['./stock.component.css']
 })
-export class StockComponent implements OnInit {
+
+export class StockComponent implements OnInit , AfterViewInit {
   stock : Stock = {
     id: 0,
     market: '',
@@ -26,6 +27,7 @@ export class StockComponent implements OnInit {
   }
   market : string = ""
   ticker : string = ""
+  pricechartmode : string = "default"
 
 
   constructor(private activatedRoute : ActivatedRoute , private stockSvc : StockService , private router: Router){}
@@ -42,6 +44,10 @@ export class StockComponent implements OnInit {
 
         }
       )
+  }
+  
+  ngAfterViewInit(): void {
+    
   }
 
   getFundamental(){
@@ -62,6 +68,26 @@ export class StockComponent implements OnInit {
 
   navinvestingnote(){
     window.open("https://www.investingnote.com/stocks/" + this.market + ":" + this.ticker, "_blank");
+  }
+
+  navtradingview(){
+    window.open("https://www.tradingview.com/symbols/" + this.market + "-" + this.ticker, "_blank");
+  }
+
+  navsgx(){
+    window.open("https://investors.sgx.com/_security-types/stocks/" + this.ticker, "_blank");
+  }
+
+  navsgdividends(){
+    window.open("https://www.dividends.sg/view/" + this.ticker, "_blank");
+  }
+  
+  togglepricechartmode(){
+    if(this.pricechartmode == "default"){
+      this.pricechartmode = "tradingview"
+    }else{
+      this.pricechartmode = "default"
+    }
   }
 
   navyahoofinance(){

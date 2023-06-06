@@ -7,20 +7,17 @@
 </h2>
 
 <h2 style="margin-bottom: 15px; font-size: 16px">
-  {{ stock.stockName }} ({{ market }} {{ ticker }} ) <br>
-  <span class="spanlink" (click)="naveditpage()">Edit</span>
-  <span class="spanlink" (click)="navinvestingnote()">Investing Note</span>
-  <span class="spanlink" (click)="navyahoofinance()">Yahoo Finance</span>
+  {{ stock.stockName }} ({{ market }} {{ ticker }} )
+  <span class="spanlink" (click)="naveditpage()">Edit Stock</span>
+  <br />
+  <span class="spanbtn" (click)="navinvestingnote()">Investing Note</span>
+  <span class="spanbtn" (click)="navyahoofinance()">Yahoo Finance</span>
+  <span class="spanbtn" (click)="navtradingview()">Trading View</span>
+  <span class="spanbtn" (click)="navsgx()" *ngIf="market=='SGX'">SGX.com</span>
+  <span class="spanbtn" (click)="navsgdividends()" *ngIf="market=='SGX'">dividends.sg</span>
 
   <!-- <button style="margin-left: 10px; padding: 1px 5px" (click)="priceApi()">
     Price Api
-  </button>
-
-  <button
-    style="margin-left: 10px; padding: 1px 5px"
-    (click)="fundamentalApi()"
-  >
-    Fundamental Api
   </button>
 
   <button style="margin-left: 10px; padding: 1px 5px" (click)="webscraper()">
@@ -28,12 +25,13 @@
   </button> -->
 </h2>
 
-<p style="text-align: justify;" >{{ stock.description }}</p>
+<p style="text-align: justify">{{ stock.description }}</p>
 
-<br>
+<br />
 
 <div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
-  <p style="font-weight: bold">FUNDAMENTAL DATA</p>
+  <p style="font-weight: bold">FUNDAMENTAL DATA
+    <span class="spanlink" (click)="fundamentalApi()">Fundamental Api</span></p>
   <table>
     <tr>
       <td style="width: 90px">Target Price</td>
@@ -45,7 +43,7 @@
     </tr>
     <tr>
       <td>PE(TTM)</td>
-      <td>{{ stock.pettm == 0 ? "-" : (stock.pettm).toPrecision(4)}}</td>
+      <td>{{ stock.pettm == 0 ? "-" : stock.pettm.toPrecision(4) }}</td>
     </tr>
     <tr>
       <td>Book Value</td>
@@ -61,16 +59,22 @@
     </tr>
     <tr>
       <td>Div Yield</td>
-      <td>{{ (stock.divyield * 100).toPrecision(4)}}%</td>
+      <td>{{ (stock.divyield * 100).toPrecision(4) }}%</td>
     </tr>
   </table>
 </div>
 
-<div style="border: 1px solid black; margin-bottom: 20px">
-  <p style="background-color: #3f51b5; padding: 5px; color: white">
-    Chart 1 : Price
+<div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
+  <p style="font-weight: bold">
+    PRICE CHART
+    <span class="spanlink" (click)="togglepricechartmode()" style="float:right">Trading View</span>
   </p>
-  <br /><br /><br /><br />
+  <div *ngIf="pricechartmode == 'default'">
+    <app-pricechart></app-pricechart>
+  </div>
+  <div *ngIf="pricechartmode == 'tradingview'">
+    <app-tradingview market="{{market}}" ticker="{{ticker}}"></app-tradingview>
+  </div>
 </div>
 
 <div style="border: 1px solid black; margin-bottom: 20px">

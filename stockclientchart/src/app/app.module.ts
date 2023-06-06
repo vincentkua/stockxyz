@@ -16,6 +16,9 @@ import { WatchlistComponent } from './components/watchlist/watchlist.component';
 import { PortfolioComponent } from './components/portfolio/portfolio.component';
 import { AddComponent } from './components/add/add.component';
 import { EditComponent } from './components/edit/edit.component';
+import { NgChartsModule } from 'ng2-charts';
+import { PricechartComponent } from './components/charts/pricechart/pricechart.component';
+import { TradingviewComponent } from './components/charts/tradingview/tradingview.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +30,9 @@ import { EditComponent } from './components/edit/edit.component';
     AddComponent,
     WatchlistComponent,
     PortfolioComponent,
-    EditComponent
+    EditComponent,
+    PricechartComponent,
+    TradingviewComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +46,8 @@ import { EditComponent } from './components/edit/edit.component';
       // Register the ServiceWorker as soon as the application is stable
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
-    })
+    }),
+    NgChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

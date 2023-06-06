@@ -76,7 +76,6 @@ public class StockController {
             // Use API to get Update Data
             try {
                 stockSvc.getTwelveDataPrice(market, ticker);
-                stockSvc.getAlphaFundamental(market, ticker);
 
             } catch (Exception e) {
                 System.out.println("######################");
