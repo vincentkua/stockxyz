@@ -75,7 +75,7 @@ public class StockController {
         if (market.equals("NASDAQ") || market.equals("NYSE")) {
             // Use API to get Update Data
             try {
-                stockSvc.getTwelveDataPrice(market, ticker);
+                stockSvc.getTwelveDataPriceAndCalculateRatio(market, ticker);
 
             } catch (Exception e) {
                 System.out.println("######################");
@@ -183,7 +183,7 @@ public class StockController {
 
         if (rowsupdated == 1) {
             JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Stock updated")
+                    .add("status", "Stock Fundamental updated")
                     .build();
             return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
         } else {
@@ -201,7 +201,7 @@ public class StockController {
 
         if (rowsupdated == 1) {
             JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Stock updated")
+                    .add("status", "Stock Price updated")
                     .build();
             return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
         } else {

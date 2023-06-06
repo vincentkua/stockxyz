@@ -36,17 +36,19 @@ public class WebScraperService {
             String price = priceElement.text();
    
 
-            Element targetElement = doc.select("td[data-test=ONE_YEAR_TARGET_PRICE-value]").first();
-            String target = targetElement.text();
+
             
             System.out.println("################################ ");
             System.out.println("Yahoo Web Scraper Method Called ");
             System.out.println("Stock: " + ticker);
             System.out.println("Price: " + price);
-            System.out.println("Target: " + target);
+            // Element targetElement = doc.select("td[data-test=ONE_YEAR_TARGET_PRICE-value]").first();
+            // String target = targetElement.text();
+            // System.out.println("Target: " + target);
+            // Double targetprice = Double.parseDouble(target.equals("N/A") ? "0" : target);
 
             Double lastprice = Double.parseDouble(price.equals("N/A") ? "0" : price);
-            Double targetprice = Double.parseDouble(target.equals("N/A") ? "0" : target);
+  
 
             // get stock fundamental and update PE , Dividend % and PB
             Stock stock = stockRepo.getStock(market, ticker);
@@ -70,11 +72,8 @@ public class WebScraperService {
                     }
                 }    
             }
-  
 
-
-
-            Integer rowsupdated = stockRepo.updatePriceAndTarget(lastprice, targetprice,newPE,newPB,newdivyield, market, ticker);
+            Integer rowsupdated = stockRepo.updatePriceAndFundamental(lastprice,newPE,newPB,newdivyield, market, ticker);
 
             return rowsupdated;
 

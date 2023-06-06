@@ -100,15 +100,18 @@ export class EditComponent implements OnInit {
   }
 
   deletestock(id : number){
-    alert(id)
-    this.stockSvc.deleteStock(id)
-    .then(v => {
-      console.info('resolved: ', v)
-      alert(v)
-      this.router.navigate(['/'])   
-    }).catch(err => {
-      console.error('>>> error: ', err)
-    })
+    const comfirmdelete =  confirm("Are you sure to delete this stock?")
+    if(comfirmdelete){
+      this.stockSvc.deleteStock(id)
+      .then(v => {
+        console.info('resolved: ', v)
+        alert(v)
+        this.router.navigate(['/'])   
+      }).catch(err => {
+        console.error('>>> error: ', err)
+      })
+    }
+    
   }
 
   backtostock(){

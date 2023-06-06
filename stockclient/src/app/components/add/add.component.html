@@ -1,3 +1,5 @@
+<a href="/">&lt; back </a>
+<br><br>
 <h2>Add Stock</h2>
 
 <form [formGroup]="form" (ngSubmit)="processform()">
@@ -17,6 +19,8 @@
         </tr>
     </table>
     <br>
+    <button type="button" [routerLink]="['/']" style="margin-right: 10px;">Back</button>
     <button type="submit" [disabled]="form.invalid">Submit</button>
+    
 
 </form>

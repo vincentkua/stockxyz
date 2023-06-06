@@ -103,9 +103,11 @@ export class StockComponent implements OnInit , AfterViewInit {
     this.stockSvc.getFundamentalApi(this.market , this.ticker)
     .then(v => {
       console.info('resolved: ', v)
+      alert(v)
       this.getFundamental()
     }).catch(err => {
       console.error('>>> error: ', err)
+      alert("Failed to get fundamental data api")
     })
 
   }
@@ -117,6 +119,7 @@ export class StockComponent implements OnInit , AfterViewInit {
       this.getFundamental()
     }).catch(err => {
       console.error('>>> error: ', err)
+      alert("Failed to get price api")
     })
 
   }

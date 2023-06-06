@@ -91,6 +91,12 @@ export class StockService {
 
     return lastValueFrom(
       this.http.get<any>(GETSTOCKAPIURL, { params })
+      .pipe(
+        map((v:any)=>{
+          const status = v['status'] as string
+          return status
+        })
+      )
     )
 
   }
