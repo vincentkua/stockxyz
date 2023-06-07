@@ -58,9 +58,9 @@ export class StockComponent implements OnInit , AfterViewInit {
     }).catch(err => {
       console.error('>>> error: ', err)
     })
-
-
   }
+
+
 
   naveditpage(){
     this.router.navigate(['/edit/'+this.market + ":" + this.ticker])
@@ -109,7 +109,6 @@ export class StockComponent implements OnInit , AfterViewInit {
       console.error('>>> error: ', err)
       alert("Failed to get fundamental data api")
     })
-
   }
 
   priceApi(){

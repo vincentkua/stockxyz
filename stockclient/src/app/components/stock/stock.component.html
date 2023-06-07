@@ -67,13 +67,14 @@
 <div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
   <p style="font-weight: bold">
     PRICE CHART
+    <!-- <span class="spanlink" (click)="getPriceChartData()">Get Chart</span> -->
     <span class="spanlink" (click)="togglepricechartmode()" style="float:right">Trading View</span>
   </p>
   <div *ngIf="pricechartmode == 'default'">
-    <app-pricechart></app-pricechart>
+    <app-pricechart  [market]=market [ticker]=ticker ></app-pricechart>
   </div>
   <div *ngIf="pricechartmode == 'tradingview'">
-    <app-tradingview market="{{market}}" ticker="{{ticker}}"></app-tradingview>
+    <app-tradingview [market]=market [ticker]=ticker></app-tradingview>
   </div>
 </div>
 

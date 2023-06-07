@@ -64,7 +64,7 @@ public class StockController {
                 .build();
 
         System.out.println("##################");
-        System.out.println("Stocks List Requested " + search );
+        System.out.println("Stocks List Requested " + search);
 
         return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
     }
@@ -108,6 +108,21 @@ public class StockController {
                 .add("divyield", stock.getDivyield() == null ? 0 : stock.getDivyield())
                 .add("bookvalue", stock.getBookvalue() == null ? 0 : stock.getBookvalue())
                 .add("pb", stock.getPb() == null ? 0 : stock.getPb())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(jsonObject.toString());
+    }
+
+    @GetMapping(value = "/pricechart")
+    public ResponseEntity<String> getPriceData(@RequestParam String market, @RequestParam String ticker) {
+
+        // String[] labels = {"data1" , "data2" , "data3" , "data4"} ;
+        // Double[] pricedata = {1.09,2.22,3.33,4.44} ;
+
+
+        JsonObject jsonObject = Json.createObjectBuilder()
+                .add("labels", Json.createArrayBuilder().add("aaa").add("bbb").add("ccc").add("ddd"))
+                .add("pricedata", Json.createArrayBuilder().add(123).add(456).add(222).add(555))
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(jsonObject.toString());
@@ -233,7 +248,7 @@ public class StockController {
     }
 
     @PostMapping(value = "/delete/{id}")
-    public ResponseEntity<String> deleteStock(@PathVariable Integer id){
+    public ResponseEntity<String> deleteStock(@PathVariable Integer id) {
         System.out.println("Delete Request Received..." + id);
 
         Integer rowdeleted = stockRepo.deleteStock(id);
@@ -249,6 +264,6 @@ public class StockController {
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
-    } 
+    }
 
 }

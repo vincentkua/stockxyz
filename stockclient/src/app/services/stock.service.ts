@@ -37,7 +37,17 @@ export class StockService {
     return lastValueFrom(
       this.http.get<any>(GETSTOCKURL, { params })
     )
+  }
 
+  getPriceChartdata(market:string , ticker:string) : Promise<any>{
+    const GETPRICECHARTURL = URL + "/pricechart"
+    const params = new HttpParams()
+    .set("market", market)
+    .set("ticker", ticker)
+
+    return lastValueFrom(
+      this.http.get<any>(GETPRICECHARTURL, { params })
+    )
   }
 
   addStocks(stock : Stock) : Promise<any> {
