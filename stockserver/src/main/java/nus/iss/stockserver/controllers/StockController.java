@@ -3,6 +3,7 @@ package nus.iss.stockserver.controllers;
 import java.io.StringReader;
 import java.util.List;
 
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import nus.iss.stockserver.models.Stock;
+import nus.iss.stockserver.repository.ChartRepository;
 import nus.iss.stockserver.repository.StockRepository;
 import nus.iss.stockserver.services.StockService;
 import nus.iss.stockserver.services.WebScraperService;
@@ -29,6 +31,9 @@ public class StockController {
 
     @Autowired
     StockRepository stockRepo;
+
+    @Autowired
+    ChartRepository chartRepo;
 
     @Autowired
     StockService stockSvc;
@@ -116,16 +121,25 @@ public class StockController {
     @GetMapping(value = "/pricechart")
     public ResponseEntity<String> getPriceData(@RequestParam String market, @RequestParam String ticker) {
 
+        try {
+            Document pricedata = chartRepo.findAllAsBSONDocument(market,ticker);
+            return ResponseEntity.status(HttpStatus.OK).body(pricedata.toJson());
+        } catch (Exception e) {
+            JsonObject responsejson = Json.createObjectBuilder()
+            .add("status", "Price Data Not Found")
+            .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+        
+
         // String[] labels = {"data1" , "data2" , "data3" , "data4"} ;
         // Double[] pricedata = {1.09,2.22,3.33,4.44} ;
+        // JsonObject jsonObject = Json.createObjectBuilder()
+        //         .add("pricechartlabel", Json.createArrayBuilder().add("aaa").add("bbb").add("ccc").add("ddd"))
+        //         .add("pricechartdata", Json.createArrayBuilder().add(123).add(456).add(222).add(555))
+        //         .build();
 
-
-        JsonObject jsonObject = Json.createObjectBuilder()
-                .add("labels", Json.createArrayBuilder().add("aaa").add("bbb").add("ccc").add("ddd"))
-                .add("pricedata", Json.createArrayBuilder().add(123).add(456).add(222).add(555))
-                .build();
-
-        return ResponseEntity.status(HttpStatus.OK).body(jsonObject.toString());
+        
     }
 
     @PostMapping(value = "/stocks")

@@ -11,7 +11,7 @@ import { StockService } from 'src/app/services/stock.service';
 })
 export class PricechartComponent implements AfterViewInit{
 
-  pricechartlabels : string[] = []
+  pricechartlabel : string[] = []
   pricechartdata : number[] = []
 
   @Input()
@@ -69,15 +69,16 @@ export class PricechartComponent implements AfterViewInit{
     // Get Price Chart Data
     this.stockSvc.getPriceChartdata(this.market , this.ticker)
     .then(v => {
-      console.info('labels: ', v['labels'])
-      console.info('pricedata: ', v['pricedata'])
-      this.pricechartlabels = v['labels']
-      this.pricechartdata = v['pricedata']
-      this.ChartData.labels = this.pricechartlabels;
+      console.info('pricechartlabel: ', v['pricechartlabel'])
+      console.info('pricechartdata: ', v['pricechartdata'])
+      this.pricechartlabel = v['pricechartlabel']
+      this.pricechartdata = v['pricechartdata']
+      this.ChartData.labels = this.pricechartlabel;
       this.ChartData.datasets[0].data = this.pricechartdata;
       this.chart?.update();
     }).catch(err => {
       console.error('>>> error: ', err)
+      alert("Price Chart Data Not Found...")
     })
   }
 
