@@ -13,8 +13,12 @@
   <span class="spanbtn" (click)="navinvestingnote()">Investing Note</span>
   <span class="spanbtn" (click)="navyahoofinance()">Yahoo Finance</span>
   <span class="spanbtn" (click)="navtradingview()">Trading View</span>
-  <span class="spanbtn" (click)="navsgx()" *ngIf="market=='SGX'">SGX.com</span>
-  <span class="spanbtn" (click)="navsgdividends()" *ngIf="market=='SGX'">dividends.sg</span>
+  <span class="spanbtn" (click)="navsgx()" *ngIf="market == 'SGX'"
+    >SGX.com</span
+  >
+  <span class="spanbtn" (click)="navsgdividends()" *ngIf="market == 'SGX'"
+    >dividends.sg</span
+  >
 
   <!-- <button style="margin-left: 10px; padding: 1px 5px" (click)="priceApi()">
     Price Api
@@ -30,8 +34,10 @@
 <br />
 
 <div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
-  <p style="font-weight: bold">FUNDAMENTAL DATA
-    <span class="spanlink" (click)="fundamentalApi()">Fundamental Api</span></p>
+  <p style="font-weight: bold">
+    FUNDAMENTAL DATA
+    <span class="spanlink" (click)="fundamentalApi()">Fundamental Api</span>
+  </p>
   <table>
     <tr>
       <td style="width: 90px">Target Price</td>
@@ -67,14 +73,40 @@
 <div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
   <p style="font-weight: bold">
     PRICE CHART
-    <!-- <span class="spanlink" (click)="getPriceChartData()">Get Chart</span> -->
-    <span class="spanlink" (click)="togglepricechartmode()" style="float:right">Trading View</span>
+    <span class="spanlink" (click)="togglepricechartmode('default')">Basic Chart</span>
+    <span class="spanlink" (click)="togglepricechartmode('tradingview')">Trading View</span>
+    <span class="spanlink" (click)="togglepricechartmode('edit')" style="float: right" *ngIf="pricechartmode == 'default'">Edit Chart</span
+    >
   </p>
   <div *ngIf="pricechartmode == 'default'">
-    <app-pricechart  [market]=market [ticker]=ticker ></app-pricechart>
+    <app-pricechart [market]="market" [ticker]="ticker"></app-pricechart>
   </div>
   <div *ngIf="pricechartmode == 'tradingview'">
-    <app-tradingview [market]=market [ticker]=ticker></app-tradingview>
+    <app-tradingview [market]="market" [ticker]="ticker"></app-tradingview>
+  </div>
+  <div *ngIf="pricechartmode == 'edit'" style="padding: 15px 0px;">
+    <form [formGroup]="pricechartform" (ngSubmit)="updatePriceChartData()">
+      <table style="margin-bottom: 10px;">
+        <tr>
+          <td>Label:</td>
+          <!-- <td><input type="text" formControlName="pricelabel"></td> -->
+          <td><textarea formControlName="pricelabel" cols="30" rows="3"></textarea></td>
+
+
+        </tr>
+        <tr>
+          <td>Data:</td>
+          <!-- <td><input type="text" formControlName="pricedata"></td> -->
+          <td><textarea formControlName="pricedata" cols="30" rows="3"></textarea></td>
+        </tr>
+      </table>
+
+      <button type="button" (click)="togglepricechartmode('default')">Cancel</button>
+      &nbsp;
+      <button type="submit">Submit</button>
+      <br><br>
+
+    </form>
   </div>
 </div>
 

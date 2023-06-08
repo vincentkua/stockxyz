@@ -1,6 +1,7 @@
 package nus.iss.stockserver.controllers;
 
 import java.io.StringReader;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bson.Document;
@@ -120,26 +121,63 @@ public class StockController {
 
     @GetMapping(value = "/pricechart")
     public ResponseEntity<String> getPriceData(@RequestParam String market, @RequestParam String ticker) {
-
         try {
-            Document pricedata = chartRepo.findAllAsBSONDocument(market,ticker);
+            Document pricedata = chartRepo.findAllAsBSONDocument(market, ticker);
             return ResponseEntity.status(HttpStatus.OK).body(pricedata.toJson());
         } catch (Exception e) {
             JsonObject responsejson = Json.createObjectBuilder()
-            .add("status", "Price Data Not Found")
-            .build();
+                    .add("status", "Price Data Not Found")
+                    .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
-        
+    }
 
-        // String[] labels = {"data1" , "data2" , "data3" , "data4"} ;
-        // Double[] pricedata = {1.09,2.22,3.33,4.44} ;
-        // JsonObject jsonObject = Json.createObjectBuilder()
-        //         .add("pricechartlabel", Json.createArrayBuilder().add("aaa").add("bbb").add("ccc").add("ddd"))
-        //         .add("pricechartdata", Json.createArrayBuilder().add(123).add(456).add(222).add(555))
-        //         .build();
+    @PostMapping(value = "/pricechart")
+    public ResponseEntity<String> upsertPriceData(@RequestBody String jsonpayload) {
+        System.out.println("Update Chart Request Received");
+        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+        JsonObject pricedatajson = reader.readObject();
 
-        
+        List<String> pricechartlabel = new LinkedList<>();
+        List<Double> pricechartdata = new LinkedList<>();
+
+
+        String market = pricedatajson.getString("market");
+        String ticker = pricedatajson.getString("ticker");
+        String chartlabel = pricedatajson.getString("pricechartlabel");
+        String chartdata = pricedatajson.getString("pricechartdata");
+
+        String[] labelsArray = chartlabel.split("\\s+|\\t|\\n");
+        for (int i = 0; i < labelsArray.length; i++) {
+        System.out.println(labelsArray[i]);
+            pricechartlabel.add(labelsArray[i]);
+        }
+
+        String[] dataArray = chartdata.split("\\s+|\\t|\\n");
+        for (int i = 0; i < dataArray.length; i++) {
+        System.out.println(dataArray[i]);
+        pricechartdata.add(Double.parseDouble(dataArray[i]));
+        }
+
+        // return null;
+
+        // List<String> pricechartlabel = Arrays.asList("data2", "data2", "data3", "data4");
+        // List<Double> pricechartdata = Arrays.asList(1.09, 2.22, 3.33, 8.44);
+
+        try {
+            chartRepo.upsertStockPriceData(market, ticker, pricechartlabel, pricechartdata);
+
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Price Chart Updated")
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+
+        } catch (Exception e) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Unable to Update")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
     }
 
     @PostMapping(value = "/stocks")

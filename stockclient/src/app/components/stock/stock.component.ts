@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Stock } from 'src/app/models/models';
 import { StockService } from 'src/app/services/stock.service';
@@ -10,6 +11,8 @@ import { StockService } from 'src/app/services/stock.service';
 })
 
 export class StockComponent implements OnInit , AfterViewInit {
+  pricechartform !:FormGroup
+
   stock : Stock = {
     id: 0,
     market: '',
@@ -30,7 +33,7 @@ export class StockComponent implements OnInit , AfterViewInit {
   pricechartmode : string = "default"
 
 
-  constructor(private activatedRoute : ActivatedRoute , private stockSvc : StockService , private router: Router){}
+  constructor(private activatedRoute : ActivatedRoute , private stockSvc : StockService , private router: Router , private fb:FormBuilder){}
 
 
   ngOnInit(): void {
@@ -41,9 +44,13 @@ export class StockComponent implements OnInit , AfterViewInit {
           this.market = market
           this.ticker = ticker
           this.getFundamental()
-
         }
       )
+
+      this.pricechartform= this.fb.group({
+        pricelabel : this.fb.control<string>("" , Validators.required),
+        pricedata : this.fb.control<string>("",Validators.required),
+      })
   }
   
   ngAfterViewInit(): void {
@@ -82,12 +89,8 @@ export class StockComponent implements OnInit , AfterViewInit {
     window.open("https://www.dividends.sg/view/" + this.ticker, "_blank");
   }
   
-  togglepricechartmode(){
-    if(this.pricechartmode == "default"){
-      this.pricechartmode = "tradingview"
-    }else{
-      this.pricechartmode = "default"
-    }
+  togglepricechartmode(mode : string){
+    this.pricechartmode = mode
   }
 
   navyahoofinance(){
@@ -132,6 +135,20 @@ export class StockComponent implements OnInit , AfterViewInit {
       console.error('>>> error: ', err)
     })
 
+  }
+
+  updatePriceChartData(){
+    const pricelabel : string = this.pricechartform.value["pricelabel"]
+    const pricedata : string = this.pricechartform.value["pricedata"]
+
+    this.stockSvc.updatePriceChart(this.market , this.ticker , pricelabel , pricedata)
+    .then(v => {
+      console.info('resolved: ', v)
+      this.togglepricechartmode("default");
+    }).catch(err => {
+      console.error('>>> error: ', err)
+      alert("Failed to update the Chart !!!")
+    })
   }
 
 

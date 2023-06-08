@@ -50,6 +50,21 @@ export class StockService {
     )
   }
 
+  updatePriceChart(market:string , ticker:string , pricechartlabel : string , pricechartdata : string ) : Promise<any>{
+    const POSTPRICECHARTURL = URL + "/pricechart"
+
+    const payload: any = { 
+      market : market ,
+      ticker : ticker ,
+      pricechartlabel : pricechartlabel,
+      pricechartdata: pricechartdata  
+    }
+
+    return lastValueFrom(
+      this.http.post<any>(POSTPRICECHARTURL,payload)
+    )
+  }  
+
   addStocks(stock : Stock) : Promise<any> {
     const ADDSTOCKURL = URL + "/stocks"
     const payload: any = { stock }

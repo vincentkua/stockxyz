@@ -18,9 +18,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .spanlink{
     color: blue;
     text-decoration: underline;
-    padding: 2px 12px;
+    padding: 2px 0px;
     cursor: pointer;
     font-weight: normal;
     font-size: 12px;
-    margin-right: 5px;
+    margin-left: 8px;
 }
