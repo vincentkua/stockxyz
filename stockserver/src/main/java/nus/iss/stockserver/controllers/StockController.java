@@ -42,10 +42,12 @@ public class StockController {
     @Autowired
     WebScraperService webScraperSvc;
 
+    // =================================================================================
+    // Main Page Request (Stock List)
+    // =================================================================================
     @GetMapping(value = "/stocks")
     public ResponseEntity<String> getStocks(@RequestParam String search) {
         List<Stock> stocks = stockRepo.getStocks(search);
-
         JsonArrayBuilder jsonArray = Json.createArrayBuilder();
         for (Stock x : stocks) {
             JsonObject jsonObject = Json.createObjectBuilder()
@@ -75,11 +77,13 @@ public class StockController {
         return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
     }
 
+    // =================================================================================
+    // Stock Detail Page Request
+    // =================================================================================
+
     @GetMapping(value = "/stock")
     public ResponseEntity<String> getStock(@RequestParam String market, @RequestParam String ticker) {
-
         if (market.equals("NASDAQ") || market.equals("NYSE")) {
-            // Use API to get Update Data
             try {
                 stockSvc.getTwelveDataPriceAndCalculateRatio(market, ticker);
 
@@ -89,7 +93,6 @@ public class StockController {
                 System.out.println(e.getMessage());
             }
         } else {
-            // Use Web Scrapper to Update Price Related Data
             try {
                 webScraperSvc.scrapeYahooPrice(market, ticker);
             } catch (Exception e) {
@@ -117,130 +120,6 @@ public class StockController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(jsonObject.toString());
-    }
-
-    @GetMapping(value = "/pricechart")
-    public ResponseEntity<String> getPriceData(@RequestParam String market, @RequestParam String ticker) {
-        try {
-            Document pricedata = chartRepo.findAllAsBSONDocument(market, ticker);
-            return ResponseEntity.status(HttpStatus.OK).body(pricedata.toJson());
-        } catch (Exception e) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Price Data Not Found")
-                    .build();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
-        }
-    }
-
-    @PostMapping(value = "/pricechart")
-    public ResponseEntity<String> upsertPriceData(@RequestBody String jsonpayload) {
-        System.out.println("Update Chart Request Received");
-        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
-        JsonObject pricedatajson = reader.readObject();
-
-        List<String> pricechartlabel = new LinkedList<>();
-        List<Double> pricechartdata = new LinkedList<>();
-
-
-        String market = pricedatajson.getString("market");
-        String ticker = pricedatajson.getString("ticker");
-        String chartlabel = pricedatajson.getString("pricechartlabel");
-        String chartdata = pricedatajson.getString("pricechartdata");
-
-        String[] labelsArray = chartlabel.split("\\s+|\\t|\\n");
-        for (int i = 0; i < labelsArray.length; i++) {
-        System.out.println(labelsArray[i]);
-            pricechartlabel.add(labelsArray[i]);
-        }
-
-        String[] dataArray = chartdata.split("\\s+|\\t|\\n");
-        for (int i = 0; i < dataArray.length; i++) {
-        System.out.println(dataArray[i]);
-        pricechartdata.add(Double.parseDouble(dataArray[i]));
-        }
-
-        // return null;
-
-        // List<String> pricechartlabel = Arrays.asList("data2", "data2", "data3", "data4");
-        // List<Double> pricechartdata = Arrays.asList(1.09, 2.22, 3.33, 8.44);
-
-        try {
-            chartRepo.upsertStockPriceData(market, ticker, pricechartlabel, pricechartdata);
-
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Price Chart Updated")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
-
-        } catch (Exception e) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Unable to Update")
-                    .build();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
-        }
-    }
-
-    @PostMapping(value = "/stocks")
-    public ResponseEntity<String> addStock(@RequestBody String jsonpayload) {
-
-        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
-        JsonObject json = reader.readObject();
-        JsonObject stockjson = json.getJsonObject("stock");
-
-        String market = stockjson.getString("market");
-        String ticker = stockjson.getString("ticker");
-        String stockName = stockjson.getString("stockName");
-
-        Integer rowsupdated = stockRepo.insertStock(market, ticker, stockName);
-
-        if (rowsupdated == 1) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Stock inserted")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
-        } else {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Failed to add stock")
-                    .build();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
-        }
-
-    }
-
-    @PostMapping(value = "/update")
-    public ResponseEntity<String> updateStock(@RequestBody String jsonpayload) {
-        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
-        JsonObject json = reader.readObject();
-        JsonObject stockjson = json.getJsonObject("stock");
-
-        String market = stockjson.getString("market");
-        String ticker = stockjson.getString("ticker");
-        String stockName = stockjson.getString("stockName");
-        String description = stockjson.getString("description");
-        Double lastprice = Double.parseDouble(stockjson.getJsonNumber("lastprice").toString());
-        Double targetprice = Double.parseDouble(stockjson.getJsonNumber("targetprice").toString());
-        Double epsttm = Double.parseDouble(stockjson.getJsonNumber("epsttm").toString());
-        Double pettm = Double.parseDouble(stockjson.getJsonNumber("pettm").toString());
-        Double dps = Double.parseDouble(stockjson.getJsonNumber("dps").toString());
-        Double divyield = Double.parseDouble(stockjson.getJsonNumber("divyield").toString());
-        Double bookvalue = Double.parseDouble(stockjson.getJsonNumber("bookvalue").toString());
-        Double pb = Double.parseDouble(stockjson.getJsonNumber("pb").toString());
-        Stock stock = new Stock(null, market, ticker, stockName, description, lastprice, targetprice, epsttm, pettm,
-                dps, divyield, bookvalue, pb);
-
-        Integer rowsupdated = stockRepo.updateStock(stock);
-
-        if (rowsupdated == 1) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Stock updated")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
-        } else {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Failed to update stock")
-                    .build();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
-        }
     }
 
     @GetMapping(value = "/fundamentalapi")
@@ -318,4 +197,206 @@ public class StockController {
         }
     }
 
+    @GetMapping(value = "/pricechart")
+    public ResponseEntity<String> getPriceData(@RequestParam String market, @RequestParam String ticker) {
+        System.out.println("Get Price Chart Request Received");
+        try {
+            Document pricedata = chartRepo.findPriceAsBSONDocument(market, ticker);
+            return ResponseEntity.status(HttpStatus.OK).body(pricedata.toJson());
+        } catch (Exception e) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Price Data Not Found")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+    }
+
+    @GetMapping(value = "/earningchart")
+    public ResponseEntity<String> getEarningData(@RequestParam String market, @RequestParam String ticker) {
+        System.out.println("Get Earning Chart Request Received");
+
+        try {
+            Document pricedata = chartRepo.findEarningAsBSONDocument(market, ticker);
+            return ResponseEntity.status(HttpStatus.OK).body(pricedata.toJson());
+        } catch (Exception e) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Price Data Not Found")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+    }
+
+    @PostMapping(value = "/pricechart")
+    public ResponseEntity<String> upsertPriceData(@RequestBody String jsonpayload) {
+        System.out.println("Update Chart Request Received");
+        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+        JsonObject pricedatajson = reader.readObject();
+
+        List<String> pricechartlabel = new LinkedList<>();
+        List<Double> pricechartdata = new LinkedList<>();
+
+        String market = pricedatajson.getString("market");
+        String ticker = pricedatajson.getString("ticker");
+        String chartlabel = pricedatajson.getString("pricechartlabel");
+        String chartdata = pricedatajson.getString("pricechartdata");
+
+        String[] labelsArray = chartlabel.split("\\s+|\\t|\\n");
+        for (int i = 0; i < labelsArray.length; i++) {
+            System.out.println(labelsArray[i]);
+            pricechartlabel.add(labelsArray[i]);
+        }
+
+        String[] dataArray = chartdata.split("\\s+|\\t|\\n");
+        for (int i = 0; i < dataArray.length; i++) {
+            System.out.println(dataArray[i]);
+            pricechartdata.add(Double.parseDouble(dataArray[i]));
+        }
+
+        try {
+            chartRepo.upsertStockPriceData(market, ticker, pricechartlabel, pricechartdata);
+
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Price Chart Updated")
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+
+        } catch (Exception e) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Unable to Update")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+    }
+
+    @PostMapping(value = "/earningchart")
+    public ResponseEntity<String> upsertEarningData(@RequestBody String jsonpayload) {
+        System.out.println("Update Earning Chart Request Received");
+        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+        JsonObject pricedatajson = reader.readObject();
+
+
+        List<String> labelList = new LinkedList<>();
+        List<Double> revenueList= new LinkedList<>();
+        List<Double> grossprofitList = new LinkedList<>();
+        List<Double> netprofitList= new LinkedList<>();
+
+        String market = pricedatajson.getString("market");
+        String ticker = pricedatajson.getString("ticker");
+        String label = pricedatajson.getString("label");
+        String revenue = pricedatajson.getString("revenue");
+        String grossprofit = pricedatajson.getString("grossprofit");
+        String netprofit = pricedatajson.getString("netprofit");
+
+
+        String[] labelArray = label.split("\\s+|\\t|\\n");
+        for (int i = 0; i < labelArray.length; i++) {
+            System.out.println(labelArray[i]);
+            labelList.add(labelArray[i]);
+        }
+
+        String[] revenueArray = revenue.replace(",", "").split("\\s+|\\t|\\n");
+        for (int i = 0; i < revenueArray.length; i++) {
+            System.out.println(revenueArray[i]);
+            revenueList.add(Double.parseDouble(revenueArray[i]));
+        }
+
+        String[] grossprofitArray = grossprofit.replace(",", "").split("\\s+|\\t|\\n");
+        for (int i = 0; i < grossprofitArray.length; i++) {
+            System.out.println(grossprofitArray[i]);
+            grossprofitList.add(Double.parseDouble(grossprofitArray[i]));
+        }
+
+        String[] netprofitArray = netprofit.replace(",", "").split("\\s+|\\t|\\n");
+        for (int i = 0; i < netprofitArray.length; i++) {
+            System.out.println(netprofitArray[i]);
+            netprofitList.add(Double.parseDouble(netprofitArray[i]));
+        }
+
+        try {
+            chartRepo.upsertEarningData(market, ticker, labelList, revenueList , grossprofitList,netprofitList );
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Earning Chart Updated")
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+
+        } catch (Exception e) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Unable to Update")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+
+
+    }
+
+    // =================================================================================
+    // Add Stock Page
+    // =================================================================================
+
+    @PostMapping(value = "/stocks")
+    public ResponseEntity<String> addStock(@RequestBody String jsonpayload) {
+
+        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+        JsonObject json = reader.readObject();
+        JsonObject stockjson = json.getJsonObject("stock");
+
+        String market = stockjson.getString("market");
+        String ticker = stockjson.getString("ticker");
+        String stockName = stockjson.getString("stockName");
+
+        Integer rowsupdated = stockRepo.insertStock(market, ticker, stockName);
+
+        if (rowsupdated == 1) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Stock inserted")
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+        } else {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Failed to add stock")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+
+    }
+
+    // =================================================================================
+    // Update Stock Page
+    // =================================================================================
+
+    @PostMapping(value = "/update")
+    public ResponseEntity<String> updateStock(@RequestBody String jsonpayload) {
+        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+        JsonObject json = reader.readObject();
+        JsonObject stockjson = json.getJsonObject("stock");
+
+        String market = stockjson.getString("market");
+        String ticker = stockjson.getString("ticker");
+        String stockName = stockjson.getString("stockName");
+        String description = stockjson.getString("description");
+        Double lastprice = Double.parseDouble(stockjson.getJsonNumber("lastprice").toString());
+        Double targetprice = Double.parseDouble(stockjson.getJsonNumber("targetprice").toString());
+        Double epsttm = Double.parseDouble(stockjson.getJsonNumber("epsttm").toString());
+        Double pettm = Double.parseDouble(stockjson.getJsonNumber("pettm").toString());
+        Double dps = Double.parseDouble(stockjson.getJsonNumber("dps").toString());
+        Double divyield = Double.parseDouble(stockjson.getJsonNumber("divyield").toString());
+        Double bookvalue = Double.parseDouble(stockjson.getJsonNumber("bookvalue").toString());
+        Double pb = Double.parseDouble(stockjson.getJsonNumber("pb").toString());
+        Stock stock = new Stock(null, market, ticker, stockName, description, lastprice, targetprice, epsttm, pettm,
+                dps, divyield, bookvalue, pb);
+
+        Integer rowsupdated = stockRepo.updateStock(stock);
+
+        if (rowsupdated == 1) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Stock updated")
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+        } else {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Failed to update stock")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+    }
 }

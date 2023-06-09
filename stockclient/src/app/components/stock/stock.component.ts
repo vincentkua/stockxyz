@@ -12,25 +12,12 @@ import { StockService } from 'src/app/services/stock.service';
 
 export class StockComponent implements OnInit , AfterViewInit {
   pricechartform !:FormGroup
-
-  stock : Stock = {
-    id: 0,
-    market: '',
-    ticker: '',
-    stockName: '',
-    description: '',
-    lastprice: 0,
-    targetprice:0,
-    epsttm: 0,
-    pettm: 0,
-    dps: 0,
-    divyield: 0,
-    bookvalue : 0,
-    pb: 0
-  }
+  earningchartform !:FormGroup
+  stock !: Stock
   market : string = ""
   ticker : string = ""
   pricechartmode : string = "default"
+  earningchartmode : string = "default"
 
 
   constructor(private activatedRoute : ActivatedRoute , private stockSvc : StockService , private router: Router , private fb:FormBuilder){}
@@ -50,6 +37,13 @@ export class StockComponent implements OnInit , AfterViewInit {
       this.pricechartform= this.fb.group({
         pricelabel : this.fb.control<string>("" , Validators.required),
         pricedata : this.fb.control<string>("",Validators.required),
+      })
+
+      this.earningchartform= this.fb.group({
+        earninglabel : this.fb.control<string>("" , Validators.required),
+        revenuedata : this.fb.control<string>("",Validators.required),
+        grossprofitdata : this.fb.control<string>("",Validators.required),
+        netprofitdata : this.fb.control<string>("",Validators.required),
       })
   }
   
@@ -91,6 +85,10 @@ export class StockComponent implements OnInit , AfterViewInit {
   
   togglepricechartmode(mode : string){
     this.pricechartmode = mode
+  }
+
+  toggleearningchartmode(mode : string){
+    this.earningchartmode = mode
   }
 
   navyahoofinance(){
@@ -145,6 +143,22 @@ export class StockComponent implements OnInit , AfterViewInit {
     .then(v => {
       console.info('resolved: ', v)
       this.togglepricechartmode("default");
+    }).catch(err => {
+      console.error('>>> error: ', err)
+      alert("Failed to update the Chart !!!")
+    })
+  }
+
+  updateEarningChartData(){
+    const earninglabel : string = this.earningchartform.value["earninglabel"]
+    const revenuedata : string = this.earningchartform.value["revenuedata"]
+    const grossprofitdata : string = this.earningchartform.value["grossprofitdata"]
+    const netprofitdata : string = this.earningchartform.value["netprofitdata"]
+
+    this.stockSvc.updateEarningChart(this.market , this.ticker , earninglabel , revenuedata , grossprofitdata , netprofitdata)
+    .then(v => {
+      console.info('resolved: ', v)
+      this.toggleearningchartmode("default");
     }).catch(err => {
       console.error('>>> error: ', err)
       alert("Failed to update the Chart !!!")

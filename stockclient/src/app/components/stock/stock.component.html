@@ -2,138 +2,200 @@
 
 <br /><br />
 
-<h2 style="margin-bottom: 0px; font-weight: bold; font-size: 25px">
-  {{ stock.lastprice.toPrecision(5) }}
-</h2>
+<div *ngIf="stock != null">
+  <h2 style="margin-bottom: 0px; font-weight: bold; font-size: 25px">
+    {{ stock.lastprice.toPrecision(5) }}
+  </h2>
 
-<h2 style="margin-bottom: 15px; font-size: 16px">
-  {{ stock.stockName }} ({{ market }} {{ ticker }} )
-  <span class="spanlink" (click)="naveditpage()">Edit Stock</span>
-  <br />
-  <span class="spanbtn" (click)="navinvestingnote()">Investing Note</span>
-  <span class="spanbtn" (click)="navyahoofinance()">Yahoo Finance</span>
-  <span class="spanbtn" (click)="navtradingview()">Trading View</span>
-  <span class="spanbtn" (click)="navsgx()" *ngIf="market == 'SGX'"
-    >SGX.com</span
-  >
-  <span class="spanbtn" (click)="navsgdividends()" *ngIf="market == 'SGX'"
-    >dividends.sg</span
-  >
-
-  <!-- <button style="margin-left: 10px; padding: 1px 5px" (click)="priceApi()">
-    Price Api
-  </button>
-
-  <button style="margin-left: 10px; padding: 1px 5px" (click)="webscraper()">
-    Price Yahoo 
-  </button> -->
-</h2>
-
-<p style="text-align: justify">{{ stock.description }}</p>
-
-<br />
-
-<div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
-  <p style="font-weight: bold">
-    FUNDAMENTAL DATA
-    <span class="spanlink" (click)="fundamentalApi()">Fundamental Api</span>
-  </p>
-  <table>
-    <tr>
-      <td style="width: 90px">Target Price</td>
-      <td>{{ stock.targetprice }}</td>
-    </tr>
-    <tr>
-      <td>EPS(TTM)</td>
-      <td>{{ stock.epsttm }}</td>
-    </tr>
-    <tr>
-      <td>PE(TTM)</td>
-      <td>{{ stock.pettm == 0 ? "-" : stock.pettm.toPrecision(4) }}</td>
-    </tr>
-    <tr>
-      <td>Book Value</td>
-      <td>{{ stock.bookvalue }}</td>
-    </tr>
-    <tr>
-      <td>P/B</td>
-      <td>{{ stock.pb.toPrecision(4) }}</td>
-    </tr>
-    <tr>
-      <td>DPS</td>
-      <td>{{ stock.dps }}</td>
-    </tr>
-    <tr>
-      <td>Div Yield</td>
-      <td>{{ (stock.divyield * 100).toPrecision(4) }}%</td>
-    </tr>
-  </table>
-</div>
-
-<div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
-  <p style="font-weight: bold">
-    PRICE CHART
-    <span class="spanlink" (click)="togglepricechartmode('default')">Basic Chart</span>
-    <span class="spanlink" (click)="togglepricechartmode('tradingview')">Trading View</span>
-    <span class="spanlink" (click)="togglepricechartmode('edit')" style="float: right" *ngIf="pricechartmode == 'default'">Edit Chart</span
+  <h2 style="margin-bottom: 15px; font-size: 16px">
+    {{ stock.stockName }} ({{ market }} {{ ticker }} )
+    <span class="spanlink" (click)="naveditpage()">Edit Stock</span>
+    <br />
+    <span class="spanbtn" (click)="navinvestingnote()">Investing Note</span>
+    <span class="spanbtn" (click)="navyahoofinance()">Yahoo Finance</span>
+    <span class="spanbtn" (click)="navtradingview()">Trading View</span>
+    <span class="spanbtn" (click)="navsgx()" *ngIf="market == 'SGX'"
+      >SGX.com</span
     >
-  </p>
-  <div *ngIf="pricechartmode == 'default'">
-    <app-pricechart [market]="market" [ticker]="ticker"></app-pricechart>
+    <span class="spanbtn" (click)="navsgdividends()" *ngIf="market == 'SGX'"
+      >dividends.sg</span
+    >
+  </h2>
+
+  <p style="text-align: justify">{{ stock.description }}</p>
+
+  <br />
+
+  <div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
+    <p style="font-weight: bold">
+      FUNDAMENTAL DATA
+      <span class="spanlink" (click)="fundamentalApi()">Fundamental Api</span>
+    </p>
+    <table>
+      <tr>
+        <td style="width: 90px">Target Price</td>
+        <td>{{ stock.targetprice }}</td>
+      </tr>
+      <tr>
+        <td>EPS(TTM)</td>
+        <td>{{ stock.epsttm }}</td>
+      </tr>
+      <tr>
+        <td>PE(TTM)</td>
+        <td>{{ stock.pettm == 0 ? "-" : stock.pettm.toPrecision(4) }}</td>
+      </tr>
+      <tr>
+        <td>Book Value</td>
+        <td>{{ stock.bookvalue }}</td>
+      </tr>
+      <tr>
+        <td>P/B</td>
+        <td>{{ stock.pb.toPrecision(4) }}</td>
+      </tr>
+      <tr>
+        <td>DPS</td>
+        <td>{{ stock.dps }}</td>
+      </tr>
+      <tr>
+        <td>Div Yield</td>
+        <td>{{ (stock.divyield * 100).toPrecision(4) }}%</td>
+      </tr>
+    </table>
   </div>
-  <div *ngIf="pricechartmode == 'tradingview'">
-    <app-tradingview [market]="market" [ticker]="ticker"></app-tradingview>
+
+  <div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
+    <p style="font-weight: bold">
+      PRICE CHART
+      <span class="spanlink" (click)="togglepricechartmode('default')"
+        >Basic Chart</span
+      >
+      <span class="spanlink" (click)="togglepricechartmode('tradingview')"
+        >Trading View</span
+      >
+      <span
+        class="spanlink"
+        (click)="togglepricechartmode('edit')"
+        style="float: right"
+        *ngIf="pricechartmode == 'default'"
+        >Edit Chart</span
+      >
+    </p>
+    <div *ngIf="pricechartmode == 'default'">
+      <app-pricechart [market]="market" [ticker]="ticker"></app-pricechart>
+    </div>
+
+    <div *ngIf="pricechartmode == 'tradingview'">
+      <app-tradingview [market]="market" [ticker]="ticker"></app-tradingview>
+    </div>
+
+    <div *ngIf="pricechartmode == 'edit'" style="padding: 15px 0px">
+      <form [formGroup]="pricechartform" (ngSubmit)="updatePriceChartData()">
+        <table style="margin-bottom: 10px">
+          <tr>
+            <td>Label:</td>
+            <td>
+              <textarea formControlName="pricelabel"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td>Data:</td>
+            <td>
+              <textarea formControlName="pricedata"></textarea>
+            </td>
+          </tr>
+        </table>
+
+        <button type="button" (click)="togglepricechartmode('default')">
+          Cancel
+        </button>
+        &nbsp;
+        <button type="submit">Submit</button>
+        <br /><br />
+      </form>
+    </div>
   </div>
-  <div *ngIf="pricechartmode == 'edit'" style="padding: 15px 0px;">
-    <form [formGroup]="pricechartform" (ngSubmit)="updatePriceChartData()">
-      <table style="margin-bottom: 10px;">
-        <tr>
-          <td>Label:</td>
-          <!-- <td><input type="text" formControlName="pricelabel"></td> -->
-          <td><textarea formControlName="pricelabel" cols="30" rows="3"></textarea></td>
 
+  <div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
+    <p style="font-weight: bold">
+      REVENUE / GROSSPROFIT / NETPROFIT
+      <span
+        class="spanlink"
+        (click)="toggleearningchartmode('edit')"
+        style="float: right"
+        *ngIf="earningchartmode == 'default'"
+        >Edit Chart</span
+      >
+    </p>
+    <div *ngIf="earningchartmode == 'default'">
+      <app-earningchart [market]="market" [ticker]="ticker"></app-earningchart>
+    </div>
 
-        </tr>
-        <tr>
-          <td>Data:</td>
-          <!-- <td><input type="text" formControlName="pricedata"></td> -->
-          <td><textarea formControlName="pricedata" cols="30" rows="3"></textarea></td>
-        </tr>
-      </table>
+    <div *ngIf="earningchartmode == 'edit'" style="padding: 15px 0px">
+      <hr>
+      <form
+        [formGroup]="earningchartform"
+        (ngSubmit)="updateEarningChartData()"
+      >
+        <table style="margin-bottom: 10px">
+          <tr>
+            <td>Label:</td>
+            <td>
+              <textarea formControlName="earninglabel"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td>Revenue:</td>
+            <td>
+              <textarea formControlName="revenuedata"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td>Gross Profit:</td>
+            <td>
+              <textarea formControlName="grossprofitdata"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td>Net Profit:</td>
+            <td>
+              <textarea formControlName="netprofitdata"></textarea>
+            </td>
+          </tr>
+        </table>
 
-      <button type="button" (click)="togglepricechartmode('default')">Cancel</button>
-      &nbsp;
-      <button type="submit">Submit</button>
-      <br><br>
+        <button type="button" (click)="toggleearningchartmode('default')">
+          Cancel
+        </button>
+        &nbsp;
+        <button type="submit">Submit</button>
+        <br /><br />
+      </form>
+    </div>
+  </div>
 
-    </form>
+  <div style="border: 1px solid black; margin-bottom: 20px">
+    <p style="background-color: #3f51b5; padding: 5px; color: white">
+      Chart 3 : Asset vs Liability vs Debt
+    </p>
+    <br /><br /><br /><br />
+  </div>
+
+  <div style="border: 1px solid black; margin-bottom: 20px">
+    <p style="background-color: #3f51b5; padding: 5px; color: white">
+      Chart 4 : EPS vs DPS
+    </p>
+    <br /><br /><br /><br />
+  </div>
+
+  <div style="border: 1px solid black; margin-bottom: 20px">
+    <p style="background-color: #3f51b5; padding: 5px; color: white">
+      Chart 5 : Cash Flow
+    </p>
+    <br /><br /><br /><br />
   </div>
 </div>
 
-<div style="border: 1px solid black; margin-bottom: 20px">
-  <p style="background-color: #3f51b5; padding: 5px; color: white">
-    Chart 2 : Revenue vs Gross Profit vs Net Income
-  </p>
-  <br /><br /><br /><br />
-</div>
-
-<div style="border: 1px solid black; margin-bottom: 20px">
-  <p style="background-color: #3f51b5; padding: 5px; color: white">
-    Chart 3 : Asset vs Liability vs Debt
-  </p>
-  <br /><br /><br /><br />
-</div>
-
-<div style="border: 1px solid black; margin-bottom: 20px">
-  <p style="background-color: #3f51b5; padding: 5px; color: white">
-    Chart 4 : EPS vs DPS
-  </p>
-  <br /><br /><br /><br />
-</div>
-
-<div style="border: 1px solid black; margin-bottom: 20px">
-  <p style="background-color: #3f51b5; padding: 5px; color: white">
-    Chart 5 : Cash Flow
-  </p>
-  <br /><br /><br /><br />
+<div *ngIf="stock == null">
+  <p>Loading...</p>
+  <mat-progress-bar mode="query" style="width: 200px"></mat-progress-bar>
 </div>

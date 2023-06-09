@@ -50,6 +50,17 @@ export class StockService {
     )
   }
 
+  getEarningChartdata(market:string , ticker:string) : Promise<any>{
+    const GETEARNINGCHARTURL = URL + "/earningchart"
+    const params = new HttpParams()
+    .set("market", market)
+    .set("ticker", ticker)
+
+    return lastValueFrom(
+      this.http.get<any>(GETEARNINGCHARTURL, { params })
+    )
+  }
+
   updatePriceChart(market:string , ticker:string , pricechartlabel : string , pricechartdata : string ) : Promise<any>{
     const POSTPRICECHARTURL = URL + "/pricechart"
 
@@ -62,6 +73,23 @@ export class StockService {
 
     return lastValueFrom(
       this.http.post<any>(POSTPRICECHARTURL,payload)
+    )
+  }  
+
+  updateEarningChart(market:string , ticker:string , label : string , revenue : string , grossprofit : string  , netprofit : string  ) : Promise<any>{
+    const POSTEARNINGCHARTURL = URL + "/earningchart"
+
+    const payload: any = { 
+      market : market ,
+      ticker : ticker ,
+      label : label,
+      revenue: revenue ,
+      grossprofit : grossprofit ,
+      netprofit : netprofit
+    }
+
+    return lastValueFrom(
+      this.http.post<any>(POSTEARNINGCHARTURL,payload)
     )
   }  
 

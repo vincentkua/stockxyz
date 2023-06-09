@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
-import { ChartConfiguration, ChartData, ChartEvent, ChartType } from 'chart.js';
+import { ChartConfiguration, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 import { StockService } from 'src/app/services/stock.service';
@@ -69,8 +69,7 @@ export class PricechartComponent implements AfterViewInit{
     // Get Price Chart Data
     this.stockSvc.getPriceChartdata(this.market , this.ticker)
     .then(v => {
-      console.info('pricechartlabel: ', v['pricechartlabel'])
-      console.info('pricechartdata: ', v['pricechartdata'])
+      console.log('>>> Resolved: ', v)
       this.pricechartlabel = v['pricechartlabel']
       this.pricechartdata = v['pricechartdata']
       this.ChartData.labels = this.pricechartlabel;

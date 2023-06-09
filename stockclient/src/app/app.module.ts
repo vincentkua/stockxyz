@@ -19,6 +19,7 @@ import { EditComponent } from './components/edit/edit.component';
 import { NgChartsModule } from 'ng2-charts';
 import { PricechartComponent } from './components/charts/pricechart/pricechart.component';
 import { TradingviewComponent } from './components/charts/tradingview/tradingview.component';
+import { EarningchartComponent } from './components/charts/earningchart/earningchart.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { TradingviewComponent } from './components/charts/tradingview/tradingvie
     PortfolioComponent,
     EditComponent,
     PricechartComponent,
-    TradingviewComponent
+    TradingviewComponent,
+    EarningchartComponent
   ],
   imports: [
     BrowserModule,
