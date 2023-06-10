@@ -243,7 +243,7 @@ public class StockController {
 
     @GetMapping(value = "/epsdpschart")
     public ResponseEntity<String> getEpsDpsData(@RequestParam String market, @RequestParam String ticker) {
-        System.out.println("Get Eps Dps Chart Request Received");
+        System.out.println("Get Epsdps Chart Request Received");
 
         try {
             Document pricedata = chartRepo.findEpsDpsAsBSONDocument(market, ticker);
@@ -251,6 +251,21 @@ public class StockController {
         } catch (Exception e) {
             JsonObject responsejson = Json.createObjectBuilder()
                     .add("status", "Balance Data Not Found")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+    }
+
+    @GetMapping(value = "/cashflowchart")
+    public ResponseEntity<String> getCashflowData(@RequestParam String market, @RequestParam String ticker) {
+        System.out.println("Get Cashflow Chart Request Received");
+
+        try {
+            Document pricedata = chartRepo.findCashflowAsBSONDocument(market, ticker);
+            return ResponseEntity.status(HttpStatus.OK).body(pricedata.toJson());
+        } catch (Exception e) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Cashflow Data Not Found")
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
@@ -414,7 +429,6 @@ public class StockController {
 
     }
 
-
     @PostMapping(value = "/epsdpschart")
     public ResponseEntity<String> upsertEpsDpsData(@RequestBody String jsonpayload) {
         System.out.println("Update Eps Dps Chart Request Received");
@@ -453,6 +467,64 @@ public class StockController {
             chartRepo.upsertEpsDpsData(market, ticker, labelList, epsList, dpsList);
             JsonObject responsejson = Json.createObjectBuilder()
                     .add("status", "EPS DPS Chart Updated")
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+
+        } catch (Exception e) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Unable to Update")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+
+    }
+
+    @PostMapping(value = "/cashflowchart")
+    public ResponseEntity<String> upsertCashflowData(@RequestBody String jsonpayload) {
+        System.out.println("Update Cashflow Chart Request Received");
+        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+        JsonObject datajson = reader.readObject();
+
+        List<String> labelList = new LinkedList<>();
+        List<Double> operatingList = new LinkedList<>();
+        List<Double> investingList = new LinkedList<>();
+        List<Double> financingList = new LinkedList<>();
+
+        String market = datajson.getString("market");
+        String ticker = datajson.getString("ticker");
+        String label = datajson.getString("label");
+        String operating = datajson.getString("operating");
+        String investing = datajson.getString("investing");
+        String financing = datajson.getString("financing");
+
+        String[] labelArray = label.split("\\s+|\\t|\\n");
+        for (int i = 0; i < labelArray.length; i++) {
+            System.out.println(labelArray[i]);
+            labelList.add(labelArray[i]);
+        }
+
+        String[] operatingArray = operating.replace(",", "").split("\\s+|\\t|\\n");
+        for (int i = 0; i < operatingArray.length; i++) {
+            System.out.println(operatingArray[i]);
+            operatingList.add(Double.parseDouble(operatingArray[i]));
+        }
+
+        String[] investingArray = investing.replace(",", "").split("\\s+|\\t|\\n");
+        for (int i = 0; i < investingArray.length; i++) {
+            System.out.println(investingArray[i]);
+            investingList.add(Double.parseDouble(investingArray[i]));
+        }
+
+        String[] financingArray = financing.replace(",", "").split("\\s+|\\t|\\n");
+        for (int i = 0; i < financingArray.length; i++) {
+            System.out.println(financingArray[i]);
+            financingList.add(Double.parseDouble(financingArray[i]));
+        }
+
+        try {
+            chartRepo.upsertCashflowData(market, ticker, labelList, operatingList, investingList , financingList);
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Cashflow Chart Updated")
                     .build();
             return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
 

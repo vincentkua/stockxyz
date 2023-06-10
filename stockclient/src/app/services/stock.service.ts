@@ -83,6 +83,17 @@ export class StockService {
     )
   }
 
+  getCashflowChartdata(market:string , ticker:string) : Promise<any>{
+    const GETCASHFLOWURL = URL + "/cashflowchart"
+    const params = new HttpParams()
+    .set("market", market)
+    .set("ticker", ticker)
+
+    return lastValueFrom(
+      this.http.get<any>(GETCASHFLOWURL, { params })
+    )
+  }
+
   updatePriceChart(market:string , ticker:string , pricechartlabel : string , pricechartdata : string ) : Promise<any>{
     const POSTPRICECHARTURL = URL + "/pricechart"
 
@@ -142,7 +153,22 @@ export class StockService {
       eps: eps ,
       dps : dps 
     }
+    return lastValueFrom(
+      this.http.post<any>(POSTURL,payload)
+    )
+  }  
 
+  updateCashflowChart(market:string , ticker:string , label : string , operating : string , investing : string , financing : string  ) : Promise<any>{
+    const POSTURL = URL + "/cashflowchart"
+
+    const payload: any = { 
+      market : market ,
+      ticker : ticker ,
+      label : label,
+      operating: operating ,
+      investing : investing ,
+      financing : financing  
+    }
     return lastValueFrom(
       this.http.post<any>(POSTURL,payload)
     )

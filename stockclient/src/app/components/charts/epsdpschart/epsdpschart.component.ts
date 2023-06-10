@@ -40,17 +40,21 @@ export class EpsdpschartComponent implements AfterViewInit{
     plugins: {
       
       tooltip:{
-        position:"average"
+        position:"nearest"
       },
       legend: {
-        display: true,
+        display: true   
       },
       datalabels: {
         display: true,
         anchor: 'end',
-        align: 'end'
+        align: 'end' 
       }
-    }
+    },
+    interaction:{
+      mode: 'index',
+      axis: 'y'
+  }
   };
 
   ChartPlugins = [
@@ -69,9 +73,6 @@ export class EpsdpschartComponent implements AfterViewInit{
     this.stockSvc.getEpsDpsChartdata(this.market , this.ticker)
     .then(v => {
       console.log('>>> Resolved: ', v)
-      console.info('chartlabel: ', v['chartlabel'])
-      console.info('charteps: ', v['charteps'])
-      console.info('chartdps: ', v['chartdps'])
       this.chartlabel = v['chartlabel']
       this.charteps = v['charteps']
       this.chartdps = v['chartdps']

@@ -15,6 +15,7 @@ export class StockComponent implements OnInit , AfterViewInit {
   earningchartform !:FormGroup
   balancechartform !:FormGroup
   epsdpschartform !:FormGroup
+  cashflowchartform !:FormGroup
   stock !: Stock
   market : string = ""
   ticker : string = ""
@@ -22,6 +23,7 @@ export class StockComponent implements OnInit , AfterViewInit {
   earningchartmode : string = "default"
   balancechartmode : string = "default"
   epsdpschartmode : string = "default"
+  cashflowchartmode : string = "default"
 
 
   constructor(private activatedRoute : ActivatedRoute , private stockSvc : StockService , private router: Router , private fb:FormBuilder){}
@@ -61,6 +63,13 @@ export class StockComponent implements OnInit , AfterViewInit {
         epsdpslabel : this.fb.control<string>("" , Validators.required),
         epsdata : this.fb.control<string>("",Validators.required),
         dpsdata : this.fb.control<string>("",Validators.required),
+      })
+
+      this.cashflowchartform= this.fb.group({
+        cashflowlabel : this.fb.control<string>("" , Validators.required),
+        operatingdata : this.fb.control<string>("",Validators.required),
+        investingdata : this.fb.control<string>("",Validators.required),
+        financingdata : this.fb.control<string>("",Validators.required),
       })
   }
   
@@ -114,6 +123,10 @@ export class StockComponent implements OnInit , AfterViewInit {
 
   toggleepsdpschartmode(mode : string){
     this.epsdpschartmode = mode
+  }
+
+  togglecashflowchartmode(mode : string){
+    this.cashflowchartmode = mode
   }
 
   navyahoofinance(){
@@ -218,6 +231,22 @@ export class StockComponent implements OnInit , AfterViewInit {
     }).catch(err => {
       console.error('>>> error: ', err)
       alert("Failed to update Balance Chart !!!")
+    })
+  }
+
+  updateCashflowChartData(){
+    const cashflowlabel : string = this.cashflowchartform.value["cashflowlabel"]
+    const operatingdata : string = this.cashflowchartform.value["operatingdata"]
+    const investingdata : string = this.cashflowchartform.value["investingdata"]
+    const financingdata : string = this.cashflowchartform.value["financingdata"]
+
+    this.stockSvc.updateCashflowChart(this.market , this.ticker , cashflowlabel , operatingdata , investingdata , financingdata)
+    .then(v => {
+      console.info('resolved: ', v)
+      this.togglecashflowchartmode("default");
+    }).catch(err => {
+      console.error('>>> error: ', err)
+      alert("Failed to update Cash Flow Chart !!!")
     })
   }
 

@@ -310,11 +310,62 @@
   <!-- CASHFLOW CHART AREA -->
   <!-- ###################################################################### -->
 
-  <div style="border: 1px solid black; margin-bottom: 20px">
-    <p style="background-color: #3f51b5; padding: 5px; color: white">
-      Chart 5 : Cash Flow
+  <div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
+    <p style="font-weight: bold">
+      CASH FLOW
+      <span
+        class="spanlink"
+        (click)="togglecashflowchartmode('edit')"
+        style="float: right"
+        *ngIf="cashflowchartmode == 'default'"
+        >Edit Chart</span
+      >
     </p>
-    <br /><br /><br /><br />
+    <div *ngIf="cashflowchartmode == 'default'">
+      <app-cashflowchart [market]="market" [ticker]="ticker"></app-cashflowchart>
+    </div>
+
+    <div *ngIf="cashflowchartmode == 'edit'" style="padding: 15px 0px">
+      <hr />
+      <form
+        [formGroup]="cashflowchartform"
+        (ngSubmit)="updateCashflowChartData()"
+      >
+        <table style="margin-bottom: 10px">
+          <tr>
+            <td>Label:</td>
+            <td>
+              <textarea formControlName="cashflowlabel"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td>Operating:</td>
+            <td>
+              <textarea formControlName="operatingdata"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td>Investing:</td>
+            <td>
+              <textarea formControlName="investingdata"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td>Financing:</td>
+            <td>
+              <textarea formControlName="financingdata"></textarea>
+            </td>
+          </tr>
+        </table>
+
+        <button type="button" (click)="togglecashflowchartmode('default')">
+          Cancel
+        </button>
+        &nbsp;
+        <button type="submit">Submit</button>
+        <br /><br />
+      </form>
+    </div>
   </div>
 </div>
 

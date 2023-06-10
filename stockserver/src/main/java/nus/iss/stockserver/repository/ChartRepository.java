@@ -21,8 +21,6 @@ public class ChartRepository {
         Document pricedata = new Document();
         Query query = Query.query(Criteria.where("market").is(market).and("ticker").is(ticker));
         pricedata = mongoTemplate.findOne(query, Document.class, "pricedb");
-        // System.out.println("Price BSON Data");
-        // System.out.println(pricedata.toJson());
         return pricedata;
     }
 
@@ -30,8 +28,6 @@ public class ChartRepository {
         Document earningdata = new Document();
         Query query = Query.query(Criteria.where("market").is(market).and("ticker").is(ticker));
         earningdata = mongoTemplate.findOne(query, Document.class, "earningdb");
-        // System.out.println("Earning BSON Data");
-        // System.out.println(pricedata.toJson());
         return earningdata;
     }
 
@@ -39,8 +35,6 @@ public class ChartRepository {
         Document balancedata = new Document();
         Query query = Query.query(Criteria.where("market").is(market).and("ticker").is(ticker));
         balancedata = mongoTemplate.findOne(query, Document.class, "balancedb");
-        // System.out.println("Earning BSON Data");
-        // System.out.println(pricedata.toJson());
         return balancedata;
     }
 
@@ -48,8 +42,13 @@ public class ChartRepository {
         Document chartdata = new Document();
         Query query = Query.query(Criteria.where("market").is(market).and("ticker").is(ticker));
         chartdata = mongoTemplate.findOne(query, Document.class, "epsdpsdb");
-        // System.out.println("Earning BSON Data");
-        // System.out.println(pricedata.toJson());
+        return chartdata;
+    }
+
+    public Document findCashflowAsBSONDocument(String market, String ticker) {
+        Document chartdata = new Document();
+        Query query = Query.query(Criteria.where("market").is(market).and("ticker").is(ticker));
+        chartdata = mongoTemplate.findOne(query, Document.class, "cashflowdb");
         return chartdata;
     }
 
@@ -122,7 +121,8 @@ public class ChartRepository {
 
     }
 
-    public Boolean upsertEpsDpsData(String market, String ticker, List<String> label, List<Double> eps, List<Double> dps) {
+    public Boolean upsertEpsDpsData(String market, String ticker, List<String> label, List<Double> eps,
+            List<Double> dps) {
 
         Query query = new Query(Criteria.where("market").is(market).and("ticker").is(ticker));
 
@@ -135,6 +135,30 @@ public class ChartRepository {
 
         FindAndModifyOptions options = new FindAndModifyOptions().upsert(true);
         Document newDoc = mongoTemplate.findAndModify(query, update, options, Document.class, "epsdpsdb");
+
+        if (newDoc != null) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    public Boolean upsertCashflowData(String market, String ticker, List<String> label, List<Double> operating,
+            List<Double> investing, List<Double> financing) {
+
+        Query query = new Query(Criteria.where("market").is(market).and("ticker").is(ticker));
+
+        Update update = new Update()
+                .set("market", market)
+                .set("ticker", ticker)
+                .set("chartlabel", label)
+                .set("chartoperating", operating)
+                .set("chartinvesting", investing)
+                .set("chartfinancing", financing);
+
+        FindAndModifyOptions options = new FindAndModifyOptions().upsert(true);
+        Document newDoc = mongoTemplate.findAndModify(query, update, options, Document.class, "cashflowdb");
 
         if (newDoc != null) {
             return true;
