@@ -220,7 +220,22 @@ public class StockController {
             return ResponseEntity.status(HttpStatus.OK).body(pricedata.toJson());
         } catch (Exception e) {
             JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Price Data Not Found")
+                    .add("status", "Earning Data Not Found")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+    }
+
+    @GetMapping(value = "/balancechart")
+    public ResponseEntity<String> getBalanceData(@RequestParam String market, @RequestParam String ticker) {
+        System.out.println("Get Balance Chart Request Received");
+
+        try {
+            Document pricedata = chartRepo.findBalanceAsBSONDocument(market, ticker);
+            return ResponseEntity.status(HttpStatus.OK).body(pricedata.toJson());
+        } catch (Exception e) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Balance Data Not Found")
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
@@ -274,11 +289,10 @@ public class StockController {
         JsonReader reader = Json.createReader(new StringReader(jsonpayload));
         JsonObject pricedatajson = reader.readObject();
 
-
         List<String> labelList = new LinkedList<>();
-        List<Double> revenueList= new LinkedList<>();
+        List<Double> revenueList = new LinkedList<>();
         List<Double> grossprofitList = new LinkedList<>();
-        List<Double> netprofitList= new LinkedList<>();
+        List<Double> netprofitList = new LinkedList<>();
 
         String market = pricedatajson.getString("market");
         String ticker = pricedatajson.getString("ticker");
@@ -286,7 +300,6 @@ public class StockController {
         String revenue = pricedatajson.getString("revenue");
         String grossprofit = pricedatajson.getString("grossprofit");
         String netprofit = pricedatajson.getString("netprofit");
-
 
         String[] labelArray = label.split("\\s+|\\t|\\n");
         for (int i = 0; i < labelArray.length; i++) {
@@ -313,7 +326,7 @@ public class StockController {
         }
 
         try {
-            chartRepo.upsertEarningData(market, ticker, labelList, revenueList , grossprofitList,netprofitList );
+            chartRepo.upsertEarningData(market, ticker, labelList, revenueList, grossprofitList, netprofitList);
             JsonObject responsejson = Json.createObjectBuilder()
                     .add("status", "Earning Chart Updated")
                     .build();
@@ -326,6 +339,63 @@ public class StockController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
 
+    }
+
+     @PostMapping(value = "/balancechart")
+    public ResponseEntity<String> upsertBalanceData(@RequestBody String jsonpayload) {
+        System.out.println("Update Balance Chart Request Received");
+        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+        JsonObject datajson = reader.readObject();
+
+        List<String> labelList = new LinkedList<>();
+        List<Double> assetList = new LinkedList<>();
+        List<Double> liabilityList = new LinkedList<>();
+        List<Double> debtList = new LinkedList<>();
+
+        String market = datajson.getString("market");
+        String ticker = datajson.getString("ticker");
+        String label = datajson.getString("label");
+        String asset = datajson.getString("asset");
+        String liability = datajson.getString("liability");
+        String debt = datajson.getString("debt");
+
+        String[] labelArray = label.split("\\s+|\\t|\\n");
+        for (int i = 0; i < labelArray.length; i++) {
+            System.out.println(labelArray[i]);
+            labelList.add(labelArray[i]);
+        }
+
+        String[] assetArray = asset.replace(",", "").split("\\s+|\\t|\\n");
+        for (int i = 0; i < assetArray.length; i++) {
+            System.out.println(assetArray[i]);
+            assetList.add(Double.parseDouble(assetArray[i]));
+        }
+
+        String[] liabilityArray = liability.replace(",", "").split("\\s+|\\t|\\n");
+        for (int i = 0; i < liabilityArray.length; i++) {
+            System.out.println(liabilityArray[i]);
+            liabilityList.add(Double.parseDouble(liabilityArray[i]));
+        }
+
+        String[] debtArray = debt.replace(",", "").split("\\s+|\\t|\\n");
+        for (int i = 0; i < debtArray.length; i++) {
+            System.out.println(debtArray[i]);
+            debtList.add(Double.parseDouble(debtArray[i]));
+        }
+
+        try {
+            chartRepo.upsertBalanceData(market, ticker, labelList, assetList, liabilityList, debtList);
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Balance Chart Updated")
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+
+        } catch (Exception e) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Unable to Update")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
 
     }
 

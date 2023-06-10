@@ -21,21 +21,30 @@ public class ChartRepository {
         Document pricedata = new Document();
         Query query = Query.query(Criteria.where("market").is(market).and("ticker").is(ticker));
         pricedata = mongoTemplate.findOne(query, Document.class, "pricedb");
-        System.out.println("Price BSON Data");
-        System.out.println(pricedata.toJson());
+        // System.out.println("Price BSON Data");
+        // System.out.println(pricedata.toJson());
         return pricedata;
     }
 
     public Document findEarningAsBSONDocument(String market, String ticker) {
-        Document pricedata = new Document();
+        Document earningdata = new Document();
         Query query = Query.query(Criteria.where("market").is(market).and("ticker").is(ticker));
-        pricedata = mongoTemplate.findOne(query, Document.class, "earningdb");
-        System.out.println("Earning BSON Data");
-        System.out.println(pricedata.toJson());
-        return pricedata;
+        earningdata = mongoTemplate.findOne(query, Document.class, "earningdb");
+        // System.out.println("Earning BSON Data");
+        // System.out.println(pricedata.toJson());
+        return earningdata;
     }
 
-    public Boolean upsertStockPriceData(String market, String ticker , List<String> labels , List<Double> pricedata) {
+    public Document findBalanceAsBSONDocument(String market, String ticker) {
+        Document balancedata = new Document();
+        Query query = Query.query(Criteria.where("market").is(market).and("ticker").is(ticker));
+        balancedata = mongoTemplate.findOne(query, Document.class, "balancedb");
+        // System.out.println("Earning BSON Data");
+        // System.out.println(pricedata.toJson());
+        return balancedata;
+    }
+
+    public Boolean upsertStockPriceData(String market, String ticker, List<String> labels, List<Double> pricedata) {
 
         Query query = new Query(Criteria.where("market").is(market).and("ticker").is(ticker));
 
@@ -48,15 +57,16 @@ public class ChartRepository {
         FindAndModifyOptions options = new FindAndModifyOptions().upsert(true);
         Document newDoc = mongoTemplate.findAndModify(query, update, options, Document.class, "pricedb");
 
-        if (newDoc != null){
+        if (newDoc != null) {
             return true;
-        }else{
+        } else {
             return false;
         }
 
     }
 
-    public Boolean upsertEarningData(String market, String ticker , List<String> label , List<Double> revenue, List<Double> grossprofit, List<Double> netprofit) {
+    public Boolean upsertEarningData(String market, String ticker, List<String> label, List<Double> revenue,
+            List<Double> grossprofit, List<Double> netprofit) {
 
         Query query = new Query(Criteria.where("market").is(market).and("ticker").is(ticker));
 
@@ -71,9 +81,33 @@ public class ChartRepository {
         FindAndModifyOptions options = new FindAndModifyOptions().upsert(true);
         Document newDoc = mongoTemplate.findAndModify(query, update, options, Document.class, "earningdb");
 
-        if (newDoc != null){
+        if (newDoc != null) {
             return true;
-        }else{
+        } else {
+            return false;
+        }
+
+    }
+
+        public Boolean upsertBalanceData(String market, String ticker, List<String> label, List<Double> asset,
+            List<Double> liability, List<Double> debt) {
+
+        Query query = new Query(Criteria.where("market").is(market).and("ticker").is(ticker));
+
+        Update update = new Update()
+                .set("market", market)
+                .set("ticker", ticker)
+                .set("chartlabel", label)
+                .set("chartasset", asset)
+                .set("chartliability", liability)
+                .set("chartdebt", debt);
+
+        FindAndModifyOptions options = new FindAndModifyOptions().upsert(true);
+        Document newDoc = mongoTemplate.findAndModify(query, update, options, Document.class, "balancedb");
+
+        if (newDoc != null) {
+            return true;
+        } else {
             return false;
         }
 

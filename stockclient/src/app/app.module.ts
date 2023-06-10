@@ -20,6 +20,9 @@ import { NgChartsModule } from 'ng2-charts';
 import { PricechartComponent } from './components/charts/pricechart/pricechart.component';
 import { TradingviewComponent } from './components/charts/tradingview/tradingview.component';
 import { EarningchartComponent } from './components/charts/earningchart/earningchart.component';
+import { BalancechartComponent } from './components/charts/balancechart/balancechart.component';
+import { EpsdpschartComponent } from './components/charts/epsdpschart/epsdpschart.component';
+import { CashflowchartComponent } from './components/charts/cashflowchart/cashflowchart.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +37,10 @@ import { EarningchartComponent } from './components/charts/earningchart/earningc
     EditComponent,
     PricechartComponent,
     TradingviewComponent,
-    EarningchartComponent
+    EarningchartComponent,
+    BalancechartComponent,
+    EpsdpschartComponent,
+    CashflowchartComponent
   ],
   imports: [
     BrowserModule,

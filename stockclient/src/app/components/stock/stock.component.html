@@ -173,11 +173,62 @@
     </div>
   </div>
 
-  <div style="border: 1px solid black; margin-bottom: 20px">
-    <p style="background-color: #3f51b5; padding: 5px; color: white">
-      Chart 3 : Asset vs Liability vs Debt
+  <div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
+    <p style="font-weight: bold">
+      ASSET / LIABILITY / DEBT
+      <span
+        class="spanlink"
+        (click)="togglebalancechartmode('edit')"
+        style="float: right"
+        *ngIf="balancechartmode == 'default'"
+        >Edit Chart</span
+      >
     </p>
-    <br /><br /><br /><br />
+    <div *ngIf="balancechartmode == 'default'">
+      <app-balancechart [market]="market" [ticker]="ticker"></app-balancechart>
+    </div>
+
+    <div *ngIf="balancechartmode == 'edit'" style="padding: 15px 0px">
+      <hr>
+      <form
+        [formGroup]="balancechartform"
+        (ngSubmit)="updateBalanceChartData()"
+      >
+        <table style="margin-bottom: 10px">
+          <tr>
+            <td>Label:</td>
+            <td>
+              <textarea formControlName="balancelabel"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td>Asset:</td>
+            <td>
+              <textarea formControlName="assetdata"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td>Liability:</td>
+            <td>
+              <textarea formControlName="liabilitydata"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td>Debt:</td>
+            <td>
+              <textarea formControlName="debtdata"></textarea>
+            </td>
+          </tr>
+        </table>
+
+        <button type="button" (click)="togglebalancechartmode('default')">
+          Cancel
+        </button>
+        &nbsp;
+        <button type="submit">Submit</button>
+        <br /><br />
+      </form>
+    </div>
   </div>
 
   <div style="border: 1px solid black; margin-bottom: 20px">

@@ -13,11 +13,13 @@ import { StockService } from 'src/app/services/stock.service';
 export class StockComponent implements OnInit , AfterViewInit {
   pricechartform !:FormGroup
   earningchartform !:FormGroup
+  balancechartform !:FormGroup
   stock !: Stock
   market : string = ""
   ticker : string = ""
   pricechartmode : string = "default"
   earningchartmode : string = "default"
+  balancechartmode : string = "default"
 
 
   constructor(private activatedRoute : ActivatedRoute , private stockSvc : StockService , private router: Router , private fb:FormBuilder){}
@@ -44,6 +46,13 @@ export class StockComponent implements OnInit , AfterViewInit {
         revenuedata : this.fb.control<string>("",Validators.required),
         grossprofitdata : this.fb.control<string>("",Validators.required),
         netprofitdata : this.fb.control<string>("",Validators.required),
+      })
+
+      this.balancechartform= this.fb.group({
+        balancelabel : this.fb.control<string>("" , Validators.required),
+        assetdata : this.fb.control<string>("",Validators.required),
+        liabilitydata : this.fb.control<string>("",Validators.required),
+        debtdata : this.fb.control<string>("",Validators.required),
       })
   }
   
@@ -89,6 +98,10 @@ export class StockComponent implements OnInit , AfterViewInit {
 
   toggleearningchartmode(mode : string){
     this.earningchartmode = mode
+  }
+
+  togglebalancechartmode(mode : string){
+    this.balancechartmode = mode
   }
 
   navyahoofinance(){
@@ -161,7 +174,23 @@ export class StockComponent implements OnInit , AfterViewInit {
       this.toggleearningchartmode("default");
     }).catch(err => {
       console.error('>>> error: ', err)
-      alert("Failed to update the Chart !!!")
+      alert("Failed to update Price Chart !!!")
+    })
+  }
+
+  updateBalanceChartData(){
+    const balancelabel : string = this.balancechartform.value["balancelabel"]
+    const assetdata : string = this.balancechartform.value["assetdata"]
+    const liabilitydata : string = this.balancechartform.value["liabilitydata"]
+    const debtdata : string = this.balancechartform.value["debtdata"]
+
+    this.stockSvc.updateBalanceChart(this.market , this.ticker , balancelabel , assetdata , liabilitydata , debtdata)
+    .then(v => {
+      console.info('resolved: ', v)
+      this.togglebalancechartmode("default");
+    }).catch(err => {
+      console.error('>>> error: ', err)
+      alert("Failed to update Balance Chart !!!")
     })
   }
 
