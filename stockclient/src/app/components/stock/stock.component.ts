@@ -14,12 +14,14 @@ export class StockComponent implements OnInit , AfterViewInit {
   pricechartform !:FormGroup
   earningchartform !:FormGroup
   balancechartform !:FormGroup
+  epsdpschartform !:FormGroup
   stock !: Stock
   market : string = ""
   ticker : string = ""
   pricechartmode : string = "default"
   earningchartmode : string = "default"
   balancechartmode : string = "default"
+  epsdpschartmode : string = "default"
 
 
   constructor(private activatedRoute : ActivatedRoute , private stockSvc : StockService , private router: Router , private fb:FormBuilder){}
@@ -53,6 +55,12 @@ export class StockComponent implements OnInit , AfterViewInit {
         assetdata : this.fb.control<string>("",Validators.required),
         liabilitydata : this.fb.control<string>("",Validators.required),
         debtdata : this.fb.control<string>("",Validators.required),
+      })
+
+      this.epsdpschartform= this.fb.group({
+        epsdpslabel : this.fb.control<string>("" , Validators.required),
+        epsdata : this.fb.control<string>("",Validators.required),
+        dpsdata : this.fb.control<string>("",Validators.required),
       })
   }
   
@@ -102,6 +110,10 @@ export class StockComponent implements OnInit , AfterViewInit {
 
   togglebalancechartmode(mode : string){
     this.balancechartmode = mode
+  }
+
+  toggleepsdpschartmode(mode : string){
+    this.epsdpschartmode = mode
   }
 
   navyahoofinance(){
@@ -188,6 +200,21 @@ export class StockComponent implements OnInit , AfterViewInit {
     .then(v => {
       console.info('resolved: ', v)
       this.togglebalancechartmode("default");
+    }).catch(err => {
+      console.error('>>> error: ', err)
+      alert("Failed to update Balance Chart !!!")
+    })
+  }
+
+  updateEpsDpsChartData(){
+    const epsdpslabel : string = this.epsdpschartform.value["epsdpslabel"]
+    const epsdata : string = this.epsdpschartform.value["epsdata"]
+    const dpsdata : string = this.epsdpschartform.value["dpsdata"]
+
+    this.stockSvc.updateEpsDpsChart(this.market , this.ticker , epsdpslabel , epsdata , dpsdata)
+    .then(v => {
+      console.info('resolved: ', v)
+      this.toggleepsdpschartmode("default");
     }).catch(err => {
       console.error('>>> error: ', err)
       alert("Failed to update Balance Chart !!!")

@@ -241,6 +241,21 @@ public class StockController {
         }
     }
 
+    @GetMapping(value = "/epsdpschart")
+    public ResponseEntity<String> getEpsDpsData(@RequestParam String market, @RequestParam String ticker) {
+        System.out.println("Get Eps Dps Chart Request Received");
+
+        try {
+            Document pricedata = chartRepo.findEpsDpsAsBSONDocument(market, ticker);
+            return ResponseEntity.status(HttpStatus.OK).body(pricedata.toJson());
+        } catch (Exception e) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Balance Data Not Found")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+    }
+
     @PostMapping(value = "/pricechart")
     public ResponseEntity<String> upsertPriceData(@RequestBody String jsonpayload) {
         System.out.println("Update Chart Request Received");
@@ -341,7 +356,7 @@ public class StockController {
 
     }
 
-     @PostMapping(value = "/balancechart")
+    @PostMapping(value = "/balancechart")
     public ResponseEntity<String> upsertBalanceData(@RequestBody String jsonpayload) {
         System.out.println("Update Balance Chart Request Received");
         JsonReader reader = Json.createReader(new StringReader(jsonpayload));
@@ -387,6 +402,57 @@ public class StockController {
             chartRepo.upsertBalanceData(market, ticker, labelList, assetList, liabilityList, debtList);
             JsonObject responsejson = Json.createObjectBuilder()
                     .add("status", "Balance Chart Updated")
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+
+        } catch (Exception e) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Unable to Update")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+
+    }
+
+
+    @PostMapping(value = "/epsdpschart")
+    public ResponseEntity<String> upsertEpsDpsData(@RequestBody String jsonpayload) {
+        System.out.println("Update Eps Dps Chart Request Received");
+        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+        JsonObject datajson = reader.readObject();
+
+        List<String> labelList = new LinkedList<>();
+        List<Double> epsList = new LinkedList<>();
+        List<Double> dpsList = new LinkedList<>();
+
+        String market = datajson.getString("market");
+        String ticker = datajson.getString("ticker");
+        String label = datajson.getString("label");
+        String eps = datajson.getString("eps");
+        String dps = datajson.getString("dps");
+
+        String[] labelArray = label.split("\\s+|\\t|\\n");
+        for (int i = 0; i < labelArray.length; i++) {
+            System.out.println(labelArray[i]);
+            labelList.add(labelArray[i]);
+        }
+
+        String[] epsArray = eps.replace(",", "").split("\\s+|\\t|\\n");
+        for (int i = 0; i < epsArray.length; i++) {
+            System.out.println(epsArray[i]);
+            epsList.add(Double.parseDouble(epsArray[i]));
+        }
+
+        String[] dpsArray = dps.replace(",", "").split("\\s+|\\t|\\n");
+        for (int i = 0; i < dpsArray.length; i++) {
+            System.out.println(dpsArray[i]);
+            dpsList.add(Double.parseDouble(dpsArray[i]));
+        }
+
+        try {
+            chartRepo.upsertEpsDpsData(market, ticker, labelList, epsList, dpsList);
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "EPS DPS Chart Updated")
                     .build();
             return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
 

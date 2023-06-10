@@ -3,6 +3,9 @@
 <br /><br />
 
 <div *ngIf="stock != null">
+  <!-- ###################################################################### -->
+  <!-- STOCK PRICE AND BASIC INFORMATION -->
+  <!-- ###################################################################### -->
   <h2 style="margin-bottom: 0px; font-weight: bold; font-size: 25px">
     {{ stock.lastprice.toPrecision(5) }}
   </h2>
@@ -25,6 +28,10 @@
   <p style="text-align: justify">{{ stock.description }}</p>
 
   <br />
+
+  <!-- ###################################################################### -->
+  <!-- FUNDAMENTAL DATA AREA -->
+  <!-- ###################################################################### -->
 
   <div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
     <p style="font-weight: bold">
@@ -62,6 +69,10 @@
       </tr>
     </table>
   </div>
+
+  <!-- ###################################################################### -->
+  <!-- PRICE CHART AREA -->
+  <!-- ###################################################################### -->
 
   <div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
     <p style="font-weight: bold">
@@ -115,6 +126,10 @@
     </div>
   </div>
 
+  <!-- ###################################################################### -->
+  <!-- EARNING CHART AREA -->
+  <!-- ###################################################################### -->
+
   <div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
     <p style="font-weight: bold">
       REVENUE / GROSSPROFIT / NETPROFIT
@@ -131,7 +146,7 @@
     </div>
 
     <div *ngIf="earningchartmode == 'edit'" style="padding: 15px 0px">
-      <hr>
+      <hr />
       <form
         [formGroup]="earningchartform"
         (ngSubmit)="updateEarningChartData()"
@@ -173,6 +188,10 @@
     </div>
   </div>
 
+  <!-- ###################################################################### -->
+  <!-- BALANCE CHART AREA -->
+  <!-- ###################################################################### -->
+
   <div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
     <p style="font-weight: bold">
       ASSET / LIABILITY / DEBT
@@ -189,7 +208,7 @@
     </div>
 
     <div *ngIf="balancechartmode == 'edit'" style="padding: 15px 0px">
-      <hr>
+      <hr />
       <form
         [formGroup]="balancechartform"
         (ngSubmit)="updateBalanceChartData()"
@@ -231,12 +250,65 @@
     </div>
   </div>
 
-  <div style="border: 1px solid black; margin-bottom: 20px">
-    <p style="background-color: #3f51b5; padding: 5px; color: white">
-      Chart 4 : EPS vs DPS
+  <!-- ###################################################################### -->
+  <!-- EPS VS DPS CHART AREA -->
+  <!-- ###################################################################### -->
+
+  <div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
+    <p style="font-weight: bold">
+      EPS VS DPS
+      <span
+        class="spanlink"
+        (click)="toggleepsdpschartmode('edit')"
+        style="float: right"
+        *ngIf="epsdpschartmode == 'default'"
+        >Edit Chart</span
+      >
     </p>
-    <br /><br /><br /><br />
+    <div *ngIf="epsdpschartmode == 'default'">
+      <app-epsdpschart [market]="market" [ticker]="ticker"></app-epsdpschart>
+    </div>
+
+    <div *ngIf="epsdpschartmode == 'edit'" style="padding: 15px 0px">
+      <hr />
+      <form
+        [formGroup]="epsdpschartform"
+        (ngSubmit)="updateEpsDpsChartData()"
+      >
+        <table style="margin-bottom: 10px">
+          <tr>
+            <td>Label:</td>
+            <td>
+              <textarea formControlName="epsdpslabel"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td>EPS:</td>
+            <td>
+              <textarea formControlName="epsdata"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td>DPS:</td>
+            <td>
+              <textarea formControlName="dpsdata"></textarea>
+            </td>
+          </tr>
+        </table>
+
+        <button type="button" (click)="toggleepsdpschartmode('default')">
+          Cancel
+        </button>
+        &nbsp;
+        <button type="submit">Submit</button>
+        <br /><br />
+      </form>
+    </div>
   </div>
+
+  <!-- ###################################################################### -->
+  <!-- CASHFLOW CHART AREA -->
+  <!-- ###################################################################### -->
 
   <div style="border: 1px solid black; margin-bottom: 20px">
     <p style="background-color: #3f51b5; padding: 5px; color: white">

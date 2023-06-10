@@ -72,6 +72,17 @@ export class StockService {
     )
   }
 
+  getEpsDpsChartdata(market:string , ticker:string) : Promise<any>{
+    const GETBALANCECHARTURL = URL + "/epsdpschart"
+    const params = new HttpParams()
+    .set("market", market)
+    .set("ticker", ticker)
+
+    return lastValueFrom(
+      this.http.get<any>(GETBALANCECHARTURL, { params })
+    )
+  }
+
   updatePriceChart(market:string , ticker:string , pricechartlabel : string , pricechartdata : string ) : Promise<any>{
     const POSTPRICECHARTURL = URL + "/pricechart"
 
@@ -105,7 +116,7 @@ export class StockService {
   }  
 
   updateBalanceChart(market:string , ticker:string , label : string , asset : string , liability : string  , debt : string  ) : Promise<any>{
-    const POSTEARNINGCHARTURL = URL + "/balancechart"
+    const POSTURL = URL + "/balancechart"
 
     const payload: any = { 
       market : market ,
@@ -117,7 +128,23 @@ export class StockService {
     }
 
     return lastValueFrom(
-      this.http.post<any>(POSTEARNINGCHARTURL,payload)
+      this.http.post<any>(POSTURL,payload)
+    )
+  }  
+
+  updateEpsDpsChart(market:string , ticker:string , label : string , eps : string , dps : string   ) : Promise<any>{
+    const POSTURL = URL + "/epsdpschart"
+
+    const payload: any = { 
+      market : market ,
+      ticker : ticker ,
+      label : label,
+      eps: eps ,
+      dps : dps 
+    }
+
+    return lastValueFrom(
+      this.http.post<any>(POSTURL,payload)
     )
   }  
 

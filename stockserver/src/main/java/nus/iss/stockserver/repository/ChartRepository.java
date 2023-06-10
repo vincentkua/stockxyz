@@ -44,6 +44,15 @@ public class ChartRepository {
         return balancedata;
     }
 
+    public Document findEpsDpsAsBSONDocument(String market, String ticker) {
+        Document chartdata = new Document();
+        Query query = Query.query(Criteria.where("market").is(market).and("ticker").is(ticker));
+        chartdata = mongoTemplate.findOne(query, Document.class, "epsdpsdb");
+        // System.out.println("Earning BSON Data");
+        // System.out.println(pricedata.toJson());
+        return chartdata;
+    }
+
     public Boolean upsertStockPriceData(String market, String ticker, List<String> labels, List<Double> pricedata) {
 
         Query query = new Query(Criteria.where("market").is(market).and("ticker").is(ticker));
@@ -89,7 +98,7 @@ public class ChartRepository {
 
     }
 
-        public Boolean upsertBalanceData(String market, String ticker, List<String> label, List<Double> asset,
+    public Boolean upsertBalanceData(String market, String ticker, List<String> label, List<Double> asset,
             List<Double> liability, List<Double> debt) {
 
         Query query = new Query(Criteria.where("market").is(market).and("ticker").is(ticker));
@@ -104,6 +113,28 @@ public class ChartRepository {
 
         FindAndModifyOptions options = new FindAndModifyOptions().upsert(true);
         Document newDoc = mongoTemplate.findAndModify(query, update, options, Document.class, "balancedb");
+
+        if (newDoc != null) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    public Boolean upsertEpsDpsData(String market, String ticker, List<String> label, List<Double> eps, List<Double> dps) {
+
+        Query query = new Query(Criteria.where("market").is(market).and("ticker").is(ticker));
+
+        Update update = new Update()
+                .set("market", market)
+                .set("ticker", ticker)
+                .set("chartlabel", label)
+                .set("charteps", eps)
+                .set("chartdps", dps);
+
+        FindAndModifyOptions options = new FindAndModifyOptions().upsert(true);
+        Document newDoc = mongoTemplate.findAndModify(query, update, options, Document.class, "epsdpsdb");
 
         if (newDoc != null) {
             return true;
