@@ -10,8 +10,6 @@ mat-card-title,mat-card-content {
   justify-content: center;
 }
 
-
-
 .right {
     display: flex;
     justify-content: right;

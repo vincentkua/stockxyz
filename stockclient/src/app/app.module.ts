@@ -23,6 +23,7 @@ import { EarningchartComponent } from './components/charts/earningchart/earningc
 import { BalancechartComponent } from './components/charts/balancechart/balancechart.component';
 import { EpsdpschartComponent } from './components/charts/epsdpschart/epsdpschart.component';
 import { CashflowchartComponent } from './components/charts/cashflowchart/cashflowchart.component';
+import { SignupComponent } from './components/signup/signup.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { CashflowchartComponent } from './components/charts/cashflowchart/cashfl
     EarningchartComponent,
     BalancechartComponent,
     EpsdpschartComponent,
-    CashflowchartComponent
+    CashflowchartComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,
