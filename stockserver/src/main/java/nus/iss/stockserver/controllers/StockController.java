@@ -46,8 +46,8 @@ public class StockController {
     // Main Page Request (Stock List)
     // =================================================================================
     @GetMapping(value = "/stocks")
-    public ResponseEntity<String> getStocks(@RequestParam String search) {
-        List<Stock> stocks = stockRepo.getStocks(search);
+    public ResponseEntity<String> getStocks(@RequestParam String search, @RequestParam String email) {
+        List<Stock> stocks = stockRepo.getStocks(search , email);
         JsonArrayBuilder jsonArray = Json.createArrayBuilder();
         for (Stock x : stocks) {
             JsonObject jsonObject = Json.createObjectBuilder()
@@ -55,14 +55,35 @@ public class StockController {
                     .add("market", x.getMarket())
                     .add("ticker", x.getTicker())
                     .add("stockName", x.getStockName())
-                    .add("description", x.getDescription() == null ? "" : x.getDescription())
                     .add("lastprice", x.getLastprice() == null ? 0 : x.getLastprice())
-                    .add("targetprice", x.getTargetprice() == null ? 0 : x.getTargetprice())
-                    .add("epsttm", x.getEpsttm() == null ? 0 : x.getEpsttm())
-                    .add("pettm", x.getPettm() == null ? 0 : x.getPettm())
-                    .add("dps", x.getDps() == null ? 0 : x.getDps())
-                    .add("divyield", x.getDivyield() == null ? 0 : x.getDivyield())
-                    .add("pb", x.getPb() == null ? 0 : x.getPb())
+                    .add("watchlistid", x.getWatchlistid() == null ? 0 : x.getWatchlistid())
+                    .build();
+            jsonArray.add(jsonObject);
+        }
+
+        JsonObject responsejson = Json.createObjectBuilder()
+                .add("stocks", jsonArray)
+                .build();
+
+        System.out.println("##################");
+        System.out.println("Stocks List Requested " + search);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+    }
+
+
+    @GetMapping(value = "/watchlist")
+    public ResponseEntity<String> getWatchlist(@RequestParam String search, @RequestParam String email) {
+        List<Stock> stocks = stockRepo.getWatchlist(search , email);
+        JsonArrayBuilder jsonArray = Json.createArrayBuilder();
+        for (Stock x : stocks) {
+            JsonObject jsonObject = Json.createObjectBuilder()
+                    .add("id", x.getId())
+                    .add("market", x.getMarket())
+                    .add("ticker", x.getTicker())
+                    .add("stockName", x.getStockName())
+                    .add("lastprice", x.getLastprice() == null ? 0 : x.getLastprice())
+                    .add("watchlistid", x.getWatchlistid() == null ? 0 : x.getWatchlistid())
                     .build();
             jsonArray.add(jsonObject);
         }
@@ -537,6 +558,64 @@ public class StockController {
 
     }
 
+    @PostMapping(value = "/addwatchlist")
+    public ResponseEntity<String> addWatchlist(@RequestBody String jsonpayload) {
+
+        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+        JsonObject json = reader.readObject();
+
+        Integer stockid = json.getInt("stockid");
+        String email = json.getString("email");
+
+        System.out.println(stockid);
+        System.out.println(email);
+
+
+        Integer rowsupdated = stockRepo.addWatchlist(stockid, email);
+
+        if (rowsupdated == 1) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Watchlist Added")
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+        } else {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Failed to add watchlist")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+
+    }
+
+    @PostMapping(value = "/removewatchlist")
+    public ResponseEntity<String> removeWatchlist(@RequestBody String jsonpayload) {
+
+        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+        JsonObject json = reader.readObject();
+
+        Integer watchlistid = json.getInt("watchlistid");
+        String email = json.getString("email");
+
+        System.out.println(watchlistid);
+        System.out.println(email);
+
+
+        Integer rowsupdated = stockRepo.removeWatchlist(watchlistid, email);
+
+        if (rowsupdated == 1) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Watchlist Removed")
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+        } else {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Failed to remove watchlist")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+
+    }
+
     // =================================================================================
     // Add Stock Page
     // =================================================================================
@@ -591,7 +670,7 @@ public class StockController {
         Double bookvalue = Double.parseDouble(stockjson.getJsonNumber("bookvalue").toString());
         Double pb = Double.parseDouble(stockjson.getJsonNumber("pb").toString());
         Stock stock = new Stock(null, market, ticker, stockName, description, lastprice, targetprice, epsttm, pettm,
-                dps, divyield, bookvalue, pb);
+                dps, divyield, bookvalue, pb,null);
 
         Integer rowsupdated = stockRepo.updateStock(stock);
 

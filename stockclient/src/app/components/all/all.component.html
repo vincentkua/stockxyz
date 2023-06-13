@@ -24,6 +24,7 @@
         <th>Ticker</th>
         <th>Stock Name</th>
         <th>Last Price</th>
+        <th>Action</th>
       </tr>
     </thead>
     <tbody>
@@ -33,6 +34,10 @@
         <td>{{x.ticker}}</td>
         <td> <a style="color: blue; text-decoration: underline; cursor: pointer;" (click)="navstockdetailpage(x.market + ':' + x.ticker)">{{x.stockName}}</a></td>
         <td>{{x.lastprice}}</td>
+        <td>
+          <!-- {{x.watchlistid}}  -->
+          <button [disabled]="x.watchlistid>0" (click)="addtowatchlist(x.id)">+ Watchlist</button>
+        </td>
       </tr>
     </tbody>
   </table>

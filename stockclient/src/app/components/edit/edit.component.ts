@@ -24,7 +24,8 @@ export class EditComponent implements OnInit {
     dps: 0,
     divyield: 0,
     bookvalue :0,
-    pb: 0
+    pb: 0,
+    watchlistid :0
   }
   market : string = ""
   ticker : string = ""

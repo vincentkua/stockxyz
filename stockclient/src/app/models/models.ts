@@ -12,4 +12,5 @@ export interface Stock{
     divyield : number
     bookvalue : number
     pb : number
+    watchlistid : number
 }

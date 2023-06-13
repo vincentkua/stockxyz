@@ -17,15 +17,46 @@ public class StockRepository {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    private static final String FINDBYNAME = "select * from stocklist where stock_name like ? ";
+    // private static final String FINDBYNAME = "select * from stocklist where stock_name like ? ";
 
-    public List<Stock> getStocks(String search) {
+    // public List<Stock> getStocks(String search) {
 
+    //     List<Stock> stocks = new LinkedList<>();
+    //     stocks = jdbcTemplate.query(FINDBYNAME, BeanPropertyRowMapper.newInstance(Stock.class), "%" + search + "%");
+    //     return stocks;
+
+    // }
+
+    private static final String FINDBYNAME = """
+            select s.id , s.market , s.ticker , s.stock_name ,s.lastprice , w.id as watchlistid 
+            from stocklist as s
+            left join watchlist as w
+            on s.id = w.stockid and  w.email = ?
+            where s.stock_name like ? 
+            """;
+
+    public List<Stock> getStocks(String search , String email) {
         List<Stock> stocks = new LinkedList<>();
-        stocks = jdbcTemplate.query(FINDBYNAME, BeanPropertyRowMapper.newInstance(Stock.class), "%" + search + "%");
+        stocks = jdbcTemplate.query(FINDBYNAME, BeanPropertyRowMapper.newInstance(Stock.class), email, "%" + search + "%" );
+        // System.out.println(stocks);
         return stocks;
-
     }
+
+    private static final String FINDWATCHLIST = """
+            select s.id , s.market , s.ticker , s.stock_name ,s.lastprice , w.id as watchlistid 
+            from stocklist as s
+            left join watchlist as w
+            on s.id = w.stockid 
+            where w.email = ? and s.stock_name like ? 
+            """;
+
+    public List<Stock> getWatchlist(String search , String email) {
+        List<Stock> stocks = new LinkedList<>();
+        stocks = jdbcTemplate.query(FINDWATCHLIST, BeanPropertyRowMapper.newInstance(Stock.class), email, "%" + search + "%" );
+        // System.out.println(stocks);
+        return stocks;
+    }
+
 
     private static final String FINDSTOCK = "select * from stocklist where market = ? AND ticker = ? ";
 
@@ -39,6 +70,20 @@ public class StockRepository {
 
     public Integer insertStock(String market, String ticker, String stockName) {
         Integer rowsupdated = jdbcTemplate.update(INSERTSTOCK, market, ticker, stockName);
+        return rowsupdated;
+    }
+
+    private static final String ADDWATCHLIST = "insert into watchlist  (email , stockid) values (? , ?) ";
+
+    public Integer addWatchlist(Integer stockid, String email) {
+        Integer rowsupdated = jdbcTemplate.update(ADDWATCHLIST, email,stockid);
+        return rowsupdated;
+    }
+
+    private static final String REMOVEWATCHLIST = "delete from watchlist where id= ? and email=? ";
+
+    public Integer removeWatchlist(Integer watchlistid, String email) {
+        Integer rowsupdated = jdbcTemplate.update(REMOVEWATCHLIST, watchlistid , email);
         return rowsupdated;
     }
 

@@ -15,9 +15,27 @@ export class StockService {
   constructor(private http:HttpClient) { }
 
 
-  getStocks(searchstring : string) : Promise<any>{
+  getStocks(searchstring : string , email : string) : Promise<any>{
     const GETSTOCKSURL = URL + "/stocks"
-    const params = new HttpParams().set("search", searchstring)
+    const params = new HttpParams()
+    .set("search", searchstring)
+    .set("email", email)
+    return lastValueFrom(
+      this.http.get<any>(GETSTOCKSURL, { params })
+      .pipe(
+        map((v:any)=>{
+          const stocks = v['stocks'] as Stock[]
+          return stocks
+        })
+      )
+    )
+  }
+
+  getWatchlist(searchstring : string , email : string) : Promise<any>{
+    const GETSTOCKSURL = URL + "/watchlist"
+    const params = new HttpParams()
+    .set("search", searchstring)
+    .set("email", email)
     return lastValueFrom(
       this.http.get<any>(GETSTOCKSURL, { params })
       .pipe(
@@ -186,6 +204,28 @@ export class StockService {
           return status
         })
       )
+    )
+  }
+
+  addWatchlist(stockid : number , email : string) : Promise<any> {
+    const ADDURL = URL + "/addwatchlist"
+    const payload: any = { 
+      stockid : stockid ,
+      email : email 
+    }
+    return lastValueFrom(
+      this.http.post<any>(ADDURL, payload)
+    )
+  }
+
+  removeWatchlist(watchlistid : number , email : string) : Promise<any> {
+    const REMOVEURL = URL + "/removewatchlist"
+    const payload: any = { 
+      watchlistid : watchlistid ,
+      email : email 
+    }
+    return lastValueFrom(
+      this.http.post<any>(REMOVEURL, payload)
     )
   }
 

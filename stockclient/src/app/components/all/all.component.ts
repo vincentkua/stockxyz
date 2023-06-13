@@ -50,7 +50,7 @@ export class AllComponent implements OnInit {
 
   processform(){
     this.stocksearch = this.form.value["searchstring"]
-    this.stockSvc.getStocks(this.stocksearch)
+    this.stockSvc.getStocks(this.stocksearch, this.email)
     .then(v => {
       console.info('>>> Stock List: ', v)
       this.stocks = v
@@ -61,6 +61,16 @@ export class AllComponent implements OnInit {
 
   navstockdetailpage(stockcode : string){
     this.router.navigate(['/stock/' + stockcode])
+  }
+
+  addtowatchlist(stockid : number){
+    this.stockSvc.addWatchlist(stockid, this.email)
+    .then(v => {
+      console.info('>>> Add Status: ', v)
+      this.processform()
+    }).catch(err => {
+      console.error('>>> error: ', err)
+    })  
   }
 
 
