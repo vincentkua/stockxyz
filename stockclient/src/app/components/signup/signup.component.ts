@@ -25,6 +25,11 @@ export class SignupComponent implements OnInit {
   processform(){
     console.log(this.signupform.value)
     this.authSvc.signupUser(this.signupform.value)
+    .then(v => {
+      console.log('>>> Resolved: ', v)
+    }).catch(err => {
+      console.error('>>> error: ', err)
+    })
   }
 }
 
