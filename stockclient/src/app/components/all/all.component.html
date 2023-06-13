@@ -1,32 +1,46 @@
-<h2>All Stocks   <span class="spanlink" [routerLink]="['/add']">Add Stock</span></h2>
 
-<form [formGroup]="form" (ngSubmit)="processform()">
-  <label for=""></label>
-  <input type="text" formControlName="searchstring" />
-  <button type="submit">Search</button>
-</form>
+<h2>All Stocks   
+  <span class="spanlink" [routerLink]="['/add']" *ngIf="roles=='admin'">Add Stock</span>
+  <a class="userinfo" href="/login">logout</a>
+  <span class="userinfo">{{email}}</span>
+</h2>
 
-<br>
-<br>
+<div *ngIf="validated">
+  <form [formGroup]="form" (ngSubmit)="processform()">
+    <label for=""></label>
+    <input type="text" formControlName="searchstring" />
+    <button type="submit">Search</button>
+  </form>
+  
+  <br>
+  <br>
+  
+  
+  <table>
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Market</th>
+        <th>Ticker</th>
+        <th>Stock Name</th>
+        <th>Last Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let x of stocks">
+        <td>{{x.id}}</td>
+        <td>{{x.market}}</td>
+        <td>{{x.ticker}}</td>
+        <td> <a style="color: blue; text-decoration: underline; cursor: pointer;" (click)="navstockdetailpage(x.market + ':' + x.ticker)">{{x.stockName}}</a></td>
+        <td>{{x.lastprice}}</td>
+      </tr>
+    </tbody>
+  </table>
 
+</div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Id</th>
-      <th>Market</th>
-      <th>Ticker</th>
-      <th>Stock Name</th>
-      <th>Last Price</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let x of stocks">
-      <td>{{x.id}}</td>
-      <td>{{x.market}}</td>
-      <td>{{x.ticker}}</td>
-      <td> <a href="/stock/{{x.market}}:{{x.ticker}}" style="color: blue;">{{x.stockName}}</a></td>
-      <td>{{x.lastprice}}</td>
-    </tr>
-  </tbody>
-</table>
+<div *ngIf="!validated">
+  <p>Loading Page...</p>
+  <mat-progress-bar mode="query" style="width: 200px"></mat-progress-bar>
+</div>
+

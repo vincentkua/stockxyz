@@ -69,7 +69,7 @@ export class PricechartComponent implements AfterViewInit{
     // Get Price Chart Data
     this.stockSvc.getPriceChartdata(this.market , this.ticker)
     .then(v => {
-      console.log('>>> Resolved: ', v)
+      console.log('>>> Price Chart : ', v)
       this.pricechartlabel = v['pricechartlabel']
       this.pricechartdata = v['pricechartdata']
       this.ChartData.labels = this.pricechartlabel;
@@ -80,17 +80,5 @@ export class PricechartComponent implements AfterViewInit{
       alert("Price Chart Data Not Found...")
     })
   }
-
-    // randomize(): void {
-  //   this.ChartData.labels = ["6/3/2023","7/3/2023","8/3/2023","9/3/2023","10/3/2023"];
-  //   this.ChartData.datasets[0].data = [
-  //     Math.round(Math.random() * 100),
-  //     Math.round(Math.random() * 100),
-  //     Math.round(Math.random() * 100),
-  //     Math.round(Math.random() * 100),
-  //     Math.round(Math.random() * 100)];
-  //   this.chart?.update();
-  // }
-
 
 }

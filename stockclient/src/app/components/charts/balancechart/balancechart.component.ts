@@ -69,7 +69,7 @@ export class BalancechartComponent implements AfterViewInit{
   ngAfterViewInit(): void {
     this.stockSvc.getBalanceChartdata(this.market , this.ticker)
     .then(v => {
-      console.log('>>> Resolved: ', v)
+      console.log('>>> Balance Chart : ', v)
       this.chartlabel = v['chartlabel']
       this.chartasset = v['chartasset']
       this.chartliability = v['chartliability']

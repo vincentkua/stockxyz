@@ -1,4 +1,6 @@
-<a href="/">&lt; back </a>
+<a [routerLink]="['/'+ rootpage]">&lt; back </a>
+<a class="userinfo" [routerLink]="['/login']">logout</a>
+<span class="userinfo">{{email}}</span>
 
 <br /><br />
 
@@ -12,7 +14,7 @@
 
   <h2 style="margin-bottom: 15px; font-size: 16px">
     {{ stock.stockName }} ({{ market }} {{ ticker }} )
-    <span class="spanlink" (click)="naveditpage()">Edit Stock</span>
+    <span class="spanlink" (click)="naveditpage()" *ngIf="roles=='admin'">Edit Stock</span>
     <br />
     <span class="spanbtn" (click)="navinvestingnote()">Investing Note</span>
     <span class="spanbtn" (click)="navyahoofinance()">Yahoo Finance</span>
@@ -36,7 +38,7 @@
   <div style="border: 1px solid black; margin-bottom: 20px; padding: 10px">
     <p style="font-weight: bold">
       FUNDAMENTAL DATA
-      <span class="spanlink" (click)="fundamentalApi()">Fundamental Api</span>
+      <span class="spanlink" (click)="fundamentalApi()" *ngIf="roles=='admin'">Fundamental Api</span>
     </p>
     <table>
       <tr>
@@ -87,7 +89,7 @@
         class="spanlink"
         (click)="togglepricechartmode('edit')"
         style="float: right"
-        *ngIf="pricechartmode == 'default'"
+        *ngIf="pricechartmode == 'default' && roles=='admin'"
         >Edit Chart</span
       >
     </p>
@@ -137,7 +139,7 @@
         class="spanlink"
         (click)="toggleearningchartmode('edit')"
         style="float: right"
-        *ngIf="earningchartmode == 'default'"
+        *ngIf="earningchartmode == 'default' && roles=='admin'"
         >Edit Chart</span
       >
     </p>
@@ -199,7 +201,7 @@
         class="spanlink"
         (click)="togglebalancechartmode('edit')"
         style="float: right"
-        *ngIf="balancechartmode == 'default'"
+        *ngIf="balancechartmode == 'default' && roles=='admin'"
         >Edit Chart</span
       >
     </p>
@@ -261,7 +263,7 @@
         class="spanlink"
         (click)="toggleepsdpschartmode('edit')"
         style="float: right"
-        *ngIf="epsdpschartmode == 'default'"
+        *ngIf="epsdpschartmode == 'default' && roles=='admin'"
         >Edit Chart</span
       >
     </p>
@@ -317,7 +319,7 @@
         class="spanlink"
         (click)="togglecashflowchartmode('edit')"
         style="float: right"
-        *ngIf="cashflowchartmode == 'default'"
+        *ngIf="cashflowchartmode == 'default' && roles=='admin'"
         >Edit Chart</span
       >
     </p>

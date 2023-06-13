@@ -1,5 +1,6 @@
 import { Component ,ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from './services/auth.service';
 
 
 
@@ -12,9 +13,11 @@ import { Router } from '@angular/router';
 export class AppComponent {
   title = 'stockxyz';
 
-  constructor(private router:Router){}
+  constructor(private router:Router , private authSvc : AuthService){}
 
   routepage(pagename : string){
-    this.router.navigate([pagename])
+    this.router.navigate(['/' + pagename])
+    this.authSvc.rootpage = pagename
+
   }
 }

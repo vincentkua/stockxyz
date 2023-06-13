@@ -73,7 +73,7 @@ export class CashflowchartComponent implements AfterViewInit{
   ngAfterViewInit(): void {
     this.stockSvc.getCashflowChartdata(this.market , this.ticker)
     .then(v => {
-      console.log('>>> Resolved: ', v)
+      console.log('>>> Cashflow Chart : ', v)
       this.chartlabel = v['chartlabel']
       this.chartoperating = v['chartoperating']
       this.chartinvesting = v['chartinvesting']

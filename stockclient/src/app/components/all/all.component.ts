@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Stock } from 'src/app/models/models';
+import { AuthService } from 'src/app/services/auth.service';
 import { StockService } from 'src/app/services/stock.service';
 
 @Component({
@@ -13,29 +15,52 @@ export class AllComponent implements OnInit {
   form !: FormGroup
   stocksearch : string = ""
   stocks : Stock[] = []
+  email : string = ""
+  roles : string = ""
+  validated : boolean = false
 
-  constructor(private fb: FormBuilder , private stockSvc:StockService){}
+  constructor(private fb: FormBuilder , private stockSvc:StockService , private authSvc : AuthService , private router : Router){}
 
   ngOnInit(): void {
-      this.form = this.fb.group({
-        searchstring : this.fb.control<string>("", Validators.required)
+    this.email = this.authSvc.email
+    this.roles = this.authSvc.roles
+
+    this.form = this.fb.group({
+      searchstring : this.fb.control<string>("", Validators.required)
+    })  
+
+    if (this.email == ""){
+      alert("Please login to continue ...")
+      this.router.navigate(['/login'])
+    }else{
+      this.authSvc.revalidate()
+      .then(v=>{
+        console.log(">>> User Revalidated:" , v)
+        this.validated = true
+        this.processform()
+      })
+      .catch(err=>{
+        console.log(">>> Error :" , err)
+        alert(err["error"]["status"])
+  
       })
 
-      this.processform()
+    }
   }
 
   processform(){
     this.stocksearch = this.form.value["searchstring"]
     this.stockSvc.getStocks(this.stocksearch)
     .then(v => {
-      console.info('resolved: ', v)
+      console.info('>>> Stock List: ', v)
       this.stocks = v
     }).catch(err => {
       console.error('>>> error: ', err)
-    })
+    })  
+  }
 
-    
-
+  navstockdetailpage(stockcode : string){
+    this.router.navigate(['/stock/' + stockcode])
   }
 
 

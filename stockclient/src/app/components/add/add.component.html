@@ -1,4 +1,4 @@
-<a href="/">&lt; back </a>
+<a [routerLink]="['/']">&lt; back </a>
 <br><br>
 <h2>Add Stock</h2>
 
@@ -19,7 +19,7 @@
         </tr>
     </table>
     <br>
-    <button type="button" [routerLink]="['/']" style="margin-right: 10px;">Back</button>
+    <button type="button" [routerLink]="['/']" style="margin-right: 10px;">Cancel</button>
     <button type="submit" [disabled]="form.invalid">Submit</button>
     
 

@@ -72,7 +72,7 @@ export class EpsdpschartComponent implements AfterViewInit{
   ngAfterViewInit(): void {
     this.stockSvc.getEpsDpsChartdata(this.market , this.ticker)
     .then(v => {
-      console.log('>>> Resolved: ', v)
+      console.log('>>> EPS/DPS Chart : ', v)
       this.chartlabel = v['chartlabel']
       this.charteps = v['charteps']
       this.chartdps = v['chartdps']

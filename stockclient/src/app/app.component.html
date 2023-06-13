@@ -7,22 +7,22 @@
     #sidenav
   >
     <mat-list>
-      <mat-list-item (click)="routepage('/home')">
+      <mat-list-item (click)="routepage('all')">
         <mat-icon style="margin-top: -2px">home</mat-icon>
         <span style="vertical-align: top; margin-left: 10px">All Stocks</span>
       </mat-list-item>
       <hr />
-      <mat-list-item (click)="routepage('/watchlist')">
+      <mat-list-item (click)="routepage('watchlist')">
         <mat-icon style="margin-top: -2px">grade</mat-icon>
         <span style="vertical-align: top; margin-left: 10px">Watchlist</span>
       </mat-list-item>
       <hr />
-      <mat-list-item (click)="routepage('/portfolio')">
+      <mat-list-item (click)="routepage('portfolio')">
         <mat-icon style="margin-top: -2px">work</mat-icon>
         <span style="vertical-align: top; margin-left: 10px">Portfolio</span>
       </mat-list-item>
       <hr />
-      <mat-list-item (click)="routepage('/about')">
+      <mat-list-item (click)="routepage('about')">
         <mat-icon style="margin-top: -2px">info</mat-icon>
         <span style="vertical-align: top; margin-left: 10px">About</span>
       </mat-list-item>
@@ -41,11 +41,11 @@
           <mat-icon aria-hidden="menu icon" fontIcon="menu"></mat-icon>
         </button>
         <span>Stock XYZ</span>
-        <span style="flex: 1 1 auto"></span>
-        <button mat-icon-button class="example-icon favorite-icon">
+        <!-- <span style="flex: 1 1 auto"></span> -->
+        <!-- <button mat-icon-button class="example-icon favorite-icon">
           <mat-icon aria-hidden="person icon" fontIcon="person"></mat-icon>
         </button>
-        <span style="font-weight: normal;">Guest</span>
+        <span style="font-weight: normal;">Guest</span> -->
       </mat-toolbar-row>
     </mat-toolbar>
     <div style="padding: 30px">

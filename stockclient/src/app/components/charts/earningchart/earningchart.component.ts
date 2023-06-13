@@ -70,7 +70,7 @@ export class EarningchartComponent implements AfterViewInit{
     // Get Price Chart Data
     this.stockSvc.getEarningChartdata(this.market , this.ticker)
     .then(v => {
-      console.log('>>> Resolved: ', v)
+      console.log('>>> Earning Chart : ', v)
       this.chartlabel = v['chartlabel']
       this.chartrevenue = v['chartrevenue']
       this.chartgrossprofit = v['chartgrossprofit']

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 
@@ -12,17 +12,37 @@ export class AuthService {
 
   islogin : boolean = false
   email : string = ""
+  password : string = ""
+  roles : string = ""
+  rootpage : string = "all"
 
   constructor(private http: HttpClient) { }
 
   signinUser(loginrequest : any){
-    // call restserver and check for credential
-    this.email = loginrequest["email"]
-    this.islogin = true
+    const CHECKUSERURL = APIURL + "/signin"
+
+    const params = new HttpParams()
+    .set("email", loginrequest["email"])
+    .set("password", loginrequest["password"])
+    
+    return lastValueFrom(
+      this.http.get<any>(CHECKUSERURL,{params})
+    )
+  }
+
+  revalidate(){
+    const CHECKUSERURL = APIURL + "/signin"
+
+    const params = new HttpParams()
+    .set("email", this.email)
+    .set("password", this.password)
+    
+    return lastValueFrom(
+      this.http.get<any>(CHECKUSERURL,{params})
+    )
   }
 
   signupUser(signuprequest : any){
-    // call restserver and add new user if it is not existing
     const POSTURL = APIURL + "/signup"
 
     const payload: any = { 

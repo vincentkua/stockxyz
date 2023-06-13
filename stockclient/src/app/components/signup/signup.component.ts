@@ -1,5 +1,6 @@
 import { Component , OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -12,7 +13,7 @@ export class SignupComponent implements OnInit {
   signupform !: FormGroup
 
 
-  constructor(private fb : FormBuilder , private authSvc : AuthService){}
+  constructor(private fb : FormBuilder , private authSvc : AuthService , private router : Router){}
 
   ngOnInit(): void {
     this.signupform = this.fb.group({
@@ -27,8 +28,11 @@ export class SignupComponent implements OnInit {
     this.authSvc.signupUser(this.signupform.value)
     .then(v => {
       console.log('>>> Resolved: ', v)
+      alert("Account Created!!! Login and Enjoy!!!")
+      this.router.navigate(['/login'])
     }).catch(err => {
       console.error('>>> error: ', err)
+      alert("Unable to create account...")
     })
   }
 }

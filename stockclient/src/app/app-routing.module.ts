@@ -11,7 +11,7 @@ import { EditComponent } from './components/edit/edit.component';
 import { SignupComponent } from './components/signup/signup.component';
 
 const routes: Routes = [
-  {path:"" , component:LoginComponent},
+  {path:"" , component:AllComponent},
   {path:"all" , component:AllComponent},
   {path:"add" , component:AddComponent},
   {path:"edit/:ticker" , component:EditComponent},

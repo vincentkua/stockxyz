@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Stock } from 'src/app/models/models';
+import { AuthService } from 'src/app/services/auth.service';
 import { StockService } from 'src/app/services/stock.service';
 
 @Component({
@@ -11,6 +12,11 @@ import { StockService } from 'src/app/services/stock.service';
 })
 
 export class StockComponent implements OnInit , AfterViewInit {
+  email : string = ""
+  roles : string = ""
+  rootpage : string = ""
+  validated : boolean = false
+
   pricechartform !:FormGroup
   earningchartform !:FormGroup
   balancechartform !:FormGroup
@@ -26,51 +32,76 @@ export class StockComponent implements OnInit , AfterViewInit {
   cashflowchartmode : string = "default"
 
 
-  constructor(private activatedRoute : ActivatedRoute , private stockSvc : StockService , private router: Router , private fb:FormBuilder){}
+  constructor(private activatedRoute : ActivatedRoute , private stockSvc : StockService , private router: Router , private fb:FormBuilder , private authSvc : AuthService){}
 
 
   ngOnInit(): void {
-      this.activatedRoute.params.subscribe(
-        (params)=>{
-          const marketticker = params['ticker']
-          const [market, ticker] = marketticker.split(':');
-          this.market = market
-          this.ticker = ticker
-          this.getFundamental()
-        }
-      )
+    this.email = this.authSvc.email
+    this.roles = this.authSvc.roles
+    this.rootpage = this.authSvc.rootpage
 
-      this.pricechartform= this.fb.group({
-        pricelabel : this.fb.control<string>("" , Validators.required),
-        pricedata : this.fb.control<string>("",Validators.required),
+    if (this.email == ""){
+      alert("Please login to continue ...")
+      this.router.navigate(['/login'])
+    }else{
+      this.authSvc.revalidate()
+      .then(v=>{
+        console.log(">>> User Revalidated:" , v)
+        this.validated = true
+        this.loadalldata()
       })
+      .catch(err=>{
+        console.log(">>> Error :" , err)
+        alert(err["error"]["status"])
+        })
 
-      this.earningchartform= this.fb.group({
-        earninglabel : this.fb.control<string>("" , Validators.required),
-        revenuedata : this.fb.control<string>("",Validators.required),
-        grossprofitdata : this.fb.control<string>("",Validators.required),
-        netprofitdata : this.fb.control<string>("",Validators.required),
-      })
+    }
+    
+   
+  }
 
-      this.balancechartform= this.fb.group({
-        balancelabel : this.fb.control<string>("" , Validators.required),
-        assetdata : this.fb.control<string>("",Validators.required),
-        liabilitydata : this.fb.control<string>("",Validators.required),
-        debtdata : this.fb.control<string>("",Validators.required),
-      })
+  loadalldata(){
+    this.activatedRoute.params.subscribe(
+      (params)=>{
+        const marketticker = params['ticker']
+        const [market, ticker] = marketticker.split(':');
+        this.market = market
+        this.ticker = ticker
+        this.getFundamental()
+      }
+    )
 
-      this.epsdpschartform= this.fb.group({
-        epsdpslabel : this.fb.control<string>("" , Validators.required),
-        epsdata : this.fb.control<string>("",Validators.required),
-        dpsdata : this.fb.control<string>("",Validators.required),
-      })
+    this.pricechartform= this.fb.group({
+      pricelabel : this.fb.control<string>("" , Validators.required),
+      pricedata : this.fb.control<string>("",Validators.required),
+    })
 
-      this.cashflowchartform= this.fb.group({
-        cashflowlabel : this.fb.control<string>("" , Validators.required),
-        operatingdata : this.fb.control<string>("",Validators.required),
-        investingdata : this.fb.control<string>("",Validators.required),
-        financingdata : this.fb.control<string>("",Validators.required),
-      })
+    this.earningchartform= this.fb.group({
+      earninglabel : this.fb.control<string>("" , Validators.required),
+      revenuedata : this.fb.control<string>("",Validators.required),
+      grossprofitdata : this.fb.control<string>("",Validators.required),
+      netprofitdata : this.fb.control<string>("",Validators.required),
+    })
+
+    this.balancechartform= this.fb.group({
+      balancelabel : this.fb.control<string>("" , Validators.required),
+      assetdata : this.fb.control<string>("",Validators.required),
+      liabilitydata : this.fb.control<string>("",Validators.required),
+      debtdata : this.fb.control<string>("",Validators.required),
+    })
+
+    this.epsdpschartform= this.fb.group({
+      epsdpslabel : this.fb.control<string>("" , Validators.required),
+      epsdata : this.fb.control<string>("",Validators.required),
+      dpsdata : this.fb.control<string>("",Validators.required),
+    })
+
+    this.cashflowchartform= this.fb.group({
+      cashflowlabel : this.fb.control<string>("" , Validators.required),
+      operatingdata : this.fb.control<string>("",Validators.required),
+      investingdata : this.fb.control<string>("",Validators.required),
+      financingdata : this.fb.control<string>("",Validators.required),
+    })
   }
   
   ngAfterViewInit(): void {
@@ -80,7 +111,7 @@ export class StockComponent implements OnInit , AfterViewInit {
   getFundamental(){
     this.stockSvc.getStock(this.market , this.ticker)
     .then(v => {
-      console.info('resolved: ', v)
+      console.info('>>> Stock Fundamental : ', v)
       this.stock = v;
     }).catch(err => {
       console.error('>>> error: ', err)
@@ -141,7 +172,7 @@ export class StockComponent implements OnInit , AfterViewInit {
   fundamentalApi(){
     this.stockSvc.getFundamentalApi(this.market , this.ticker)
     .then(v => {
-      console.info('resolved: ', v)
+      console.info('Stock: ', v)
       alert(v)
       this.getFundamental()
     }).catch(err => {

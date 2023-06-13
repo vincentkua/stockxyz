@@ -1,67 +1,68 @@
-<a href="/stock/{{market}}:{{ticker}}">&lt; back </a>
+<a [routerLink]="['/stock/' + market + ':' + ticker]">&lt; back </a>
 
-<br><br>
+<br /><br />
 
 <h2>Edit Stock</h2>
 
 <form [formGroup]="form" (ngSubmit)="processform()">
-    <table>
-        <tr>
-            <td style="width: 100px;">Market</td>
-            <td><input type="text" formControlName="market"></td>
-        </tr>
-        <tr>
-            <td>Ticker</td>
-            <td><input type="text" formControlName="ticker"></td>
-        </tr>
-        <tr>
-            <td>Stock Name</td>
-            <td><input type="text" formControlName="stockName"></td>
-        </tr>
-        <tr>
-            <td>Description</td>
-            <td><input type="text" formControlName="description"></td>
-        </tr>
-        <tr>
-            <td>Last Price</td>
-            <td><input type="number" formControlName="lastprice"></td>
-        </tr>
-        <tr>
-            <td>Target Price</td>
-            <td><input type="number" formControlName="targetprice"></td>
-        </tr>
-        <tr>
-            <td>EPS(TTM)</td>
-            <td><input type="number" formControlName="epsttm"></td>
-        </tr>
-        <tr>
-            <td>PE(TTM)</td>
-            <td><input type="number" formControlName="pettm"></td>
-        </tr>
-        <tr>
-            <td>Book Value</td>
-            <td><input type="number" formControlName="bookvalue"></td>
-        </tr>
-        <tr>
-            <td>P/B</td>
-            <td><input type="number" formControlName="pb"></td>
-        </tr>
-        <tr>
-            <td>DPS</td>
-            <td><input type="number" formControlName="dps"></td>
-        </tr>
-        <tr>
-            <td>Div Yield</td>
-            <td><input type="number" formControlName="divyield"></td>
-        </tr>
+  <table>
+    <tr>
+      <td style="width: 100px">Market</td>
+      <td><input type="text" formControlName="market" /></td>
+    </tr>
+    <tr>
+      <td>Ticker</td>
+      <td><input type="text" formControlName="ticker" /></td>
+    </tr>
+    <tr>
+      <td>Stock Name</td>
+      <td><input type="text" formControlName="stockName" /></td>
+    </tr>
+    <tr>
+      <td>Description</td>
+      <td><input type="text" formControlName="description" /></td>
+    </tr>
+    <tr>
+      <td>Last Price</td>
+      <td><input type="number" formControlName="lastprice" /></td>
+    </tr>
+    <tr>
+      <td>Target Price</td>
+      <td><input type="number" formControlName="targetprice" /></td>
+    </tr>
+    <tr>
+      <td>EPS(TTM)</td>
+      <td><input type="number" formControlName="epsttm" /></td>
+    </tr>
+    <tr>
+      <td>PE(TTM)</td>
+      <td><input type="number" formControlName="pettm" /></td>
+    </tr>
+    <tr>
+      <td>Book Value</td>
+      <td><input type="number" formControlName="bookvalue" /></td>
+    </tr>
+    <tr>
+      <td>P/B</td>
+      <td><input type="number" formControlName="pb" /></td>
+    </tr>
+    <tr>
+      <td>DPS</td>
+      <td><input type="number" formControlName="dps" /></td>
+    </tr>
+    <tr>
+      <td>Div Yield</td>
+      <td><input type="number" formControlName="divyield" /></td>
+    </tr>
+  </table>
 
-
-
-
-
-    </table>
-
-    <br>
-    <button type="button" (click)="deletestock(stock.id)" style="margin-right: 10px;">Delete</button>
-    <button type="submit" [disabled]="form.invalid">Update</button>
+  <br />
+  <button
+    type="button"
+    (click)="deletestock(stock.id)"
+    style="margin-right: 10px"
+  >
+    Delete
+  </button>
+  <button type="submit" [disabled]="form.invalid">Update</button>
 </form>

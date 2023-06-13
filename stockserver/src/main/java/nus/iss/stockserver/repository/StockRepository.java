@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import nus.iss.stockserver.models.Account;
 import nus.iss.stockserver.models.Stock;
 
 @Repository
@@ -44,14 +45,18 @@ public class StockRepository {
     private static final String UPDATESTOCK = "update stocklist set stock_name = ? , description = ?, lastprice = ? , targetprice = ?,  epsttm = ? , pettm = ? , dps = ? , divyield = ? ,bookvalue = ? , pb= ? where market =? AND ticker=?";
 
     public Integer updateStock(Stock stock) {
-        Integer rowsupdated = jdbcTemplate.update(UPDATESTOCK, stock.getStockName(), stock.getDescription() , stock.getLastprice(),stock.getTargetprice(),stock.getEpsttm(),stock.getPettm(),stock.getDps(),stock.getDivyield(),stock.getBookvalue(), stock.getPb(),stock.getMarket(),stock.getTicker());
+        Integer rowsupdated = jdbcTemplate.update(UPDATESTOCK, stock.getStockName(), stock.getDescription(),
+                stock.getLastprice(), stock.getTargetprice(), stock.getEpsttm(), stock.getPettm(), stock.getDps(),
+                stock.getDivyield(), stock.getBookvalue(), stock.getPb(), stock.getMarket(), stock.getTicker());
         return rowsupdated;
     }
 
     private static final String UPDATEALPHA = "update stocklist set  description = ?, targetprice = ? , epsttm = ? , pettm = ? , dps = ? , divyield = ?, bookvalue= ? , pb= ? where market =? AND ticker=?";
 
     public Integer updateFundamental(Stock stock) {
-        Integer rowsupdated = jdbcTemplate.update(UPDATEALPHA, stock.getDescription(),stock.getTargetprice(),stock.getEpsttm(),stock.getPettm(),stock.getDps(),stock.getDivyield(),stock.getBookvalue(),stock.getPb(),stock.getMarket(),stock.getTicker());
+        Integer rowsupdated = jdbcTemplate.update(UPDATEALPHA, stock.getDescription(), stock.getTargetprice(),
+                stock.getEpsttm(), stock.getPettm(), stock.getDps(), stock.getDivyield(), stock.getBookvalue(),
+                stock.getPb(), stock.getMarket(), stock.getTicker());
         return rowsupdated;
     }
 
@@ -64,15 +69,47 @@ public class StockRepository {
 
     private static final String UPDATEPRICEANDFUNDAMENTAL = "update stocklist set lastprice = ? , pettm = ? , pb = ? , divyield = ?  where market =? AND ticker=?";
 
-    public Integer updatePriceAndFundamental(Double lastprice, Double pettm, Double pb , Double divyield, String market, String ticker) {
-        Integer rowsupdated = jdbcTemplate.update(UPDATEPRICEANDFUNDAMENTAL, lastprice,pettm,pb,divyield, market, ticker);
+    public Integer updatePriceAndFundamental(Double lastprice, Double pettm, Double pb, Double divyield, String market,
+            String ticker) {
+        Integer rowsupdated = jdbcTemplate.update(UPDATEPRICEANDFUNDAMENTAL, lastprice, pettm, pb, divyield, market,
+                ticker);
         return rowsupdated;
     }
 
     private static final String DELETESTOCK = "delete from stocklist where id = ?";
-    public Integer deleteStock(Integer id){
+
+    public Integer deleteStock(Integer id) {
         Integer rowsupdated = jdbcTemplate.update(DELETESTOCK, id);
         return rowsupdated;
+
+    }
+
+    private static final String INSERTUSER = "insert into userlist  (email , hpassword , roles) values (? , ? , ?) ";
+
+    public Integer addUser(String email, String hpassword) {
+
+        try {
+            Integer rowsupdated = jdbcTemplate.update(INSERTUSER, email, hpassword, "user");
+            return rowsupdated;
+        } catch (Exception e) {
+            System.out.println("error while insert user :" + e.getMessage());
+            return 0;
+        }
+
+    }
+
+    private static final String GETUSER = "select * from  userlist where email = ?";
+
+    public Account getUser(String email) {
+
+        try {
+            Account account = new Account();
+            account = jdbcTemplate.queryForObject(GETUSER, BeanPropertyRowMapper.newInstance(Account.class), email);
+            return account;
+        } catch (Exception e) {
+            System.out.println("account not found :" + e.getMessage());
+            return null;
+        }
 
     }
 
