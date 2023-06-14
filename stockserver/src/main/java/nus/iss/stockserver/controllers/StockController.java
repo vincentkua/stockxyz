@@ -57,6 +57,7 @@ public class StockController {
                     .add("stockName", x.getStockName())
                     .add("lastprice", x.getLastprice() == null ? 0 : x.getLastprice())
                     .add("watchlistid", x.getWatchlistid() == null ? 0 : x.getWatchlistid())
+                    .add("portfolioid", x.getPortfolioid() == null ? 0 : x.getPortfolioid())
                     .build();
             jsonArray.add(jsonObject);
         }
@@ -94,6 +95,32 @@ public class StockController {
 
         System.out.println("##################");
         System.out.println("Stocks List Requested " + search);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+    }
+
+    @GetMapping(value = "/portfolio")
+    public ResponseEntity<String> getPortfolio(@RequestParam String search, @RequestParam String email) {
+        List<Stock> stocks = stockRepo.getPortfolio(search , email);
+        JsonArrayBuilder jsonArray = Json.createArrayBuilder();
+        for (Stock x : stocks) {
+            JsonObject jsonObject = Json.createObjectBuilder()
+                    .add("id", x.getId())
+                    .add("market", x.getMarket())
+                    .add("ticker", x.getTicker())
+                    .add("stockName", x.getStockName())
+                    .add("lastprice", x.getLastprice() == null ? 0 : x.getLastprice())
+                    .add("portfolioid", x.getPortfolioid() == null ? 0 : x.getPortfolioid())
+                    .build();
+            jsonArray.add(jsonObject);
+        }
+
+        JsonObject responsejson = Json.createObjectBuilder()
+                .add("stocks", jsonArray)
+                .build();
+
+        System.out.println("##################");
+        System.out.println("Portfolio List Requested " + search);
 
         return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
     }
@@ -587,6 +614,35 @@ public class StockController {
 
     }
 
+    @PostMapping(value = "/addportfolio")
+    public ResponseEntity<String> addPortfolio(@RequestBody String jsonpayload) {
+
+        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+        JsonObject json = reader.readObject();
+
+        Integer stockid = json.getInt("stockid");
+        String email = json.getString("email");
+
+        System.out.println(stockid);
+        System.out.println(email);
+
+
+        Integer rowsupdated = stockRepo.addPortfolio(stockid, email);
+
+        if (rowsupdated == 1) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Portfolio Added")
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+        } else {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Failed to add portfolio")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+
+    }
+
     @PostMapping(value = "/removewatchlist")
     public ResponseEntity<String> removeWatchlist(@RequestBody String jsonpayload) {
 
@@ -610,6 +666,35 @@ public class StockController {
         } else {
             JsonObject responsejson = Json.createObjectBuilder()
                     .add("status", "Failed to remove watchlist")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+
+    }
+
+    @PostMapping(value = "/removeportfolio")
+    public ResponseEntity<String> removePortfolio(@RequestBody String jsonpayload) {
+
+        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+        JsonObject json = reader.readObject();
+
+        Integer portfolioid = json.getInt("portfolioid");
+        String email = json.getString("email");
+
+        System.out.println(portfolioid);
+        System.out.println(email);
+
+
+        Integer rowsupdated = stockRepo.removePortfolio(portfolioid, email);
+
+        if (rowsupdated == 1) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Porfolio Removed")
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+        } else {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Failed to remove portfolio")
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
@@ -670,7 +755,7 @@ public class StockController {
         Double bookvalue = Double.parseDouble(stockjson.getJsonNumber("bookvalue").toString());
         Double pb = Double.parseDouble(stockjson.getJsonNumber("pb").toString());
         Stock stock = new Stock(null, market, ticker, stockName, description, lastprice, targetprice, epsttm, pettm,
-                dps, divyield, bookvalue, pb,null);
+                dps, divyield, bookvalue, pb,null,null);
 
         Integer rowsupdated = stockRepo.updateStock(stock);
 

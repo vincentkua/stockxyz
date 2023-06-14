@@ -11,22 +11,7 @@ import { StockService } from 'src/app/services/stock.service';
 })
 
 export class EditComponent implements OnInit {
-  stock : Stock = {
-    id: 0,
-    market: '',
-    ticker: '',
-    stockName: '',
-    description : '',
-    lastprice: 0,
-    targetprice :0 ,
-    epsttm: 0,
-    pettm: 0,
-    dps: 0,
-    divyield: 0,
-    bookvalue :0,
-    pb: 0,
-    watchlistid :0
-  }
+  stock !: Stock 
   market : string = ""
   ticker : string = ""
   form!:FormGroup

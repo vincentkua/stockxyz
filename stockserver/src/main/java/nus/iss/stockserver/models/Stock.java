@@ -15,14 +15,16 @@ public class Stock {
     private Double bookvalue;
     private Double pb;
     private Integer watchlistid;
+    private Integer portfolioid;
     
 
     public Stock() {
     } 
 
+
     public Stock(Integer id, String market, String ticker, String stockName, String description, Double lastprice,
             Double targetprice, Double epsttm, Double pettm, Double dps, Double divyield, Double bookvalue, Double pb,
-            Integer watchlistid) {
+            Integer watchlistid, Integer portfolioid) {
         this.id = id;
         this.market = market;
         this.ticker = ticker;
@@ -37,7 +39,10 @@ public class Stock {
         this.bookvalue = bookvalue;
         this.pb = pb;
         this.watchlistid = watchlistid;
+        this.portfolioid = portfolioid;
     }
+
+
 
     public Integer getWatchlistid() {
         return watchlistid;
@@ -152,13 +157,26 @@ public class Stock {
         this.bookvalue = bookvalue;
     }
 
+
+    public Integer getPortfolioid() {
+        return portfolioid;
+    }
+
+
+    public void setPortfolioid(Integer portfolioid) {
+        this.portfolioid = portfolioid;
+    }
+
+
     @Override
     public String toString() {
         return "Stock [id=" + id + ", market=" + market + ", ticker=" + ticker + ", stockName=" + stockName
                 + ", description=" + description + ", lastprice=" + lastprice + ", targetprice=" + targetprice
                 + ", epsttm=" + epsttm + ", pettm=" + pettm + ", dps=" + dps + ", divyield=" + divyield + ", bookvalue="
-                + bookvalue + ", pb=" + pb + ", watchlistid=" + watchlistid + "]";
+                + bookvalue + ", pb=" + pb + ", watchlistid=" + watchlistid + ", portfolioid=" + portfolioid + "]";
     }
+
+    
 
 
 

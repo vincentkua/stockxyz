@@ -13,4 +13,5 @@ export interface Stock{
     bookvalue : number
     pb : number
     watchlistid : number
+    portfolioid : number
 }

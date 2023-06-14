@@ -28,16 +28,16 @@ public class StockRepository {
     // }
 
     private static final String FINDBYNAME = """
-            select s.id , s.market , s.ticker , s.stock_name ,s.lastprice , w.id as watchlistid 
-            from stocklist as s
-            left join watchlist as w
-            on s.id = w.stockid and  w.email = ?
-            where s.stock_name like ? 
+            SELECT s.id, s.market, s.ticker, s.stock_name, s.lastprice, w.id AS watchlistid, p.id AS portfolioid
+            FROM stocklist AS s
+            LEFT JOIN watchlist AS w ON s.id = w.stockid AND w.email = ?
+            LEFT JOIN portfolio AS p ON s.id = p.stockid AND p.email = ?
+            WHERE s.stock_name LIKE ?;
             """;
 
     public List<Stock> getStocks(String search , String email) {
         List<Stock> stocks = new LinkedList<>();
-        stocks = jdbcTemplate.query(FINDBYNAME, BeanPropertyRowMapper.newInstance(Stock.class), email, "%" + search + "%" );
+        stocks = jdbcTemplate.query(FINDBYNAME, BeanPropertyRowMapper.newInstance(Stock.class), email, email, "%" + search + "%" );
         // System.out.println(stocks);
         return stocks;
     }
@@ -55,6 +55,21 @@ public class StockRepository {
         stocks = jdbcTemplate.query(FINDWATCHLIST, BeanPropertyRowMapper.newInstance(Stock.class), email, "%" + search + "%" );
         // System.out.println(stocks);
         return stocks;
+    }
+
+    private static final String FINDPORTFOLIO = """
+        select s.id , s.market , s.ticker , s.stock_name ,s.lastprice , p.id as portfolioid 
+        from stocklist as s
+        left join portfolio as p
+        on s.id = p.stockid 
+        where p.email = ? and s.stock_name like ? 
+        """;
+
+    public List<Stock> getPortfolio(String search , String email) {
+    List<Stock> stocks = new LinkedList<>();
+    stocks = jdbcTemplate.query(FINDPORTFOLIO, BeanPropertyRowMapper.newInstance(Stock.class), email, "%" + search + "%" );
+    // System.out.println(stocks);
+    return stocks;
     }
 
 
@@ -80,10 +95,24 @@ public class StockRepository {
         return rowsupdated;
     }
 
+    private static final String ADDPORTFOLIO = "insert into portfolio  (email , stockid) values (? , ?) ";
+
+    public Integer addPortfolio(Integer stockid, String email) {
+        Integer rowsupdated = jdbcTemplate.update(ADDPORTFOLIO, email,stockid);
+        return rowsupdated;
+    }
+
     private static final String REMOVEWATCHLIST = "delete from watchlist where id= ? and email=? ";
 
     public Integer removeWatchlist(Integer watchlistid, String email) {
         Integer rowsupdated = jdbcTemplate.update(REMOVEWATCHLIST, watchlistid , email);
+        return rowsupdated;
+    }
+    
+    private static final String REMOVEPORTFOLIO = "delete from portfolio where id= ? and email=? ";
+
+    public Integer removePortfolio(Integer portfolioid, String email) {
+        Integer rowsupdated = jdbcTemplate.update(REMOVEPORTFOLIO, portfolioid , email);
         return rowsupdated;
     }
 

@@ -4,7 +4,7 @@
 
 <h2>Edit Stock</h2>
 
-<form [formGroup]="form" (ngSubmit)="processform()">
+<form [formGroup]="form" (ngSubmit)="processform()" *ngIf="stock!=null">
   <table>
     <tr>
       <td style="width: 100px">Market</td>

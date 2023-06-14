@@ -18,7 +18,7 @@
   
   <table>
     <thead>
-      <tr>
+      <tr style="background-color: rgb(78, 114, 214);">
         <th>Id</th>
         <th>Market</th>
         <th>Ticker</th>
@@ -35,8 +35,9 @@
         <td> <a style="color: blue; text-decoration: underline; cursor: pointer;" (click)="navstockdetailpage(x.market + ':' + x.ticker)">{{x.stockName}}</a></td>
         <td>{{x.lastprice}}</td>
         <td>
-          <!-- {{x.watchlistid}}  -->
-          <button [disabled]="x.watchlistid>0" (click)="addtowatchlist(x.id)">+ Watchlist</button>
+          <!-- {{x.watchlistid}}  {{x.portfolioid}}  -->
+          <button [disabled]="x.watchlistid>0" (click)="addtowatchlist(x.id)">Watchlist</button>
+          <button [disabled]="x.portfolioid>0" (click)="addtoportfolio(x.id)">Portfolio</button>
         </td>
       </tr>
     </tbody>

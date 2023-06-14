@@ -73,6 +73,16 @@ export class AllComponent implements OnInit {
     })  
   }
 
+  addtoportfolio(stockid : number){
+    this.stockSvc.addPortfolio(stockid, this.email)
+    .then(v => {
+      console.info('>>> Add Status: ', v)
+      this.processform()
+    }).catch(err => {
+      console.error('>>> error: ', err)
+    })  
+  }
+
 
 
 

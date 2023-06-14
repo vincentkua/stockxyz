@@ -1,4 +1,56 @@
-<p>portfolio works!</p>
+
+<h2>Portfolio   
+    <span class="spanlink" [routerLink]="['/add']" *ngIf="roles=='admin'">Add Stock</span>
+    <a class="userinfo" href="/login">logout</a>
+    <span class="userinfo">{{email}}</span>
+  </h2>
+  
+  <div *ngIf="validated">
+    <form [formGroup]="form" (ngSubmit)="processform()">
+      <label for=""></label>
+      <input type="text" formControlName="searchstring" />
+      <button type="submit">Search</button>
+    </form>
+    
+    <br>
+    <br>
+    
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Market</th>
+          <th>Ticker</th>
+          <th>Stock Name</th>
+          <th>Last Price</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let x of stocks">
+          <td>{{x.id}}</td>
+          <td>{{x.market}}</td>
+          <td>{{x.ticker}}</td>
+          <td> <a style="color: blue; text-decoration: underline; cursor: pointer;" (click)="navstockdetailpage(x.market + ':' + x.ticker)">{{x.stockName}}</a></td>
+          <td>{{x.lastprice}}</td>
+          <td>
+            <!-- {{x.portfolioid}}  -->
+            <button [disabled]="x.portfolioid==0" (click)="removeportfolio(x.portfolioid)">Remove</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+  </div>
+  
+  <div *ngIf="!validated">
+    <p>Loading Page...</p>
+    <mat-progress-bar mode="query" style="width: 200px"></mat-progress-bar>
+  </div>
+  
+  
+
 
 
 

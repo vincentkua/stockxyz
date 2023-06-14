@@ -47,6 +47,22 @@ export class StockService {
     )
   }
 
+  getPortfolio(searchstring : string , email : string) : Promise<any>{
+    const GETSTOCKSURL = URL + "/portfolio"
+    const params = new HttpParams()
+    .set("search", searchstring)
+    .set("email", email)
+    return lastValueFrom(
+      this.http.get<any>(GETSTOCKSURL, { params })
+      .pipe(
+        map((v:any)=>{
+          const stocks = v['stocks'] as Stock[]
+          return stocks
+        })
+      )
+    )
+  }
+
   getStock(market:string , ticker:string) : Promise<any>{
     const GETSTOCKURL = URL + "/stock"
     const params = new HttpParams()
@@ -218,10 +234,32 @@ export class StockService {
     )
   }
 
+  addPortfolio(stockid : number , email : string) : Promise<any> {
+    const ADDURL = URL + "/addportfolio"
+    const payload: any = { 
+      stockid : stockid ,
+      email : email 
+    }
+    return lastValueFrom(
+      this.http.post<any>(ADDURL, payload)
+    )
+  }
+
   removeWatchlist(watchlistid : number , email : string) : Promise<any> {
     const REMOVEURL = URL + "/removewatchlist"
     const payload: any = { 
       watchlistid : watchlistid ,
+      email : email 
+    }
+    return lastValueFrom(
+      this.http.post<any>(REMOVEURL, payload)
+    )
+  }
+
+  removePortfolio(portfolioid : number , email : string) : Promise<any> {
+    const REMOVEURL = URL + "/removeportfolio"
+    const payload: any = { 
+      portfolioid : portfolioid ,
       email : email 
     }
     return lastValueFrom(

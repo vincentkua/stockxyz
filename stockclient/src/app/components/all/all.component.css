@@ -5,3 +5,7 @@ table,th,td{
     border: 1px solid black;
 }
 
+button{
+    margin-right: 8px;
+}
+
