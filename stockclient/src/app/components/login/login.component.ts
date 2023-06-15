@@ -20,6 +20,24 @@ export class LoginComponent implements OnInit {
       email : this.fb.control<string>("", Validators.required) ,
       password : this.fb.control<string>("", Validators.required)
     })
+
+    // Check JWT exist and validate it....
+    const token = localStorage.getItem('jwtToken');
+    if(token != null){
+      this.authSvc.validateJWT(token)
+      .then(v=>{
+        alert("Welcome Back...")
+        this.router.navigate(['/all'])
+
+      })
+      .catch(err=>{
+        console.log(">>> Error :" , err)
+        alert(err["error"]["status"])
+        localStorage.removeItem('jwtToken')  
+      })
+
+    }
+    
       
   }
 
@@ -27,11 +45,8 @@ export class LoginComponent implements OnInit {
     this.authSvc.signinUser(this.loginform.value)
     .then(v=>{
       console.log(">>> Resolved:" , v)
-      //preset the auth setting for auth later....
-      this.authSvc.email = this.loginform.value["email"]
-      this.authSvc.password = this.loginform.value["password"]
-      this.authSvc.roles = v["roles"]
-      this.authSvc.islogin = true
+      // save JWT Token
+      localStorage.setItem('jwtToken', v["jwtToken"]);
       // nav to main page
       this.router.navigate(['/all'])
       

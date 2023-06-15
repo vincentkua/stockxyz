@@ -22,30 +22,63 @@ export class WatchlistComponent implements OnInit {
   constructor(private fb: FormBuilder , private stockSvc:StockService , private authSvc : AuthService , private router : Router){}
 
   ngOnInit(): void {
-    this.email = this.authSvc.email
-    this.roles = this.authSvc.roles
+    this.initializeForm();
+    this.checkAndValidateToken();
+    localStorage.setItem('rootpage', 'watchlist');
+  }
 
+  initializeForm(): void {
     this.form = this.fb.group({
-      searchstring : this.fb.control<string>("", Validators.required)
-    })  
+      searchstring: this.fb.control<string>('', Validators.required)
+    });
+  }
 
-    if (this.email == ""){
-      alert("Please login to continue ...")
-      this.router.navigate(['/login'])
-    }else{
-      this.authSvc.revalidate()
-      .then(v=>{
-        console.log(">>> User Revalidated:" , v)
-        this.validated = true
-        this.processform()
-      })
-      .catch(err=>{
-        console.log(">>> Error :" , err)
-        alert(err["error"]["status"])
-  
-      })
+  checkAndValidateToken(): void {
+    const token = localStorage.getItem('jwtToken');
 
+    if (token) {
+      console.log('>>> Validating JWT Token...');
+      this.authSvc
+        .validateJWT(token)
+        .then(() => {
+          console.log('>>> JWT Token verified... Getting Email and role....');
+          this.parseAndProcessToken(token);
+        })
+        .catch((err) => {
+          console.log('>>> Error :', err);
+          alert(err.error.status);
+          this.handleInvalidToken();
+        });
+    } else {
+      this.handleMissingToken();
     }
+  }
+
+  parseAndProcessToken(token: string): void {
+    this.authSvc
+      .parseJWT(token)
+      .then((result) => {
+        console.log('>>> ', result);
+        this.email = result.email;
+        this.roles = result.role;
+        this.validated = true;
+        this.processform();
+      })
+      .catch((err) => {
+        console.log('>>> Error:', err);
+        this.handleInvalidToken();
+      });
+  }
+
+  handleInvalidToken(): void {
+    localStorage.removeItem('jwtToken');
+    alert('Invalid JWT ... Rerouting to Login Page...');
+    this.router.navigate(['/login']);
+  }
+
+  handleMissingToken(): void {
+    alert('JWT not found ... Rerouting to Login Page...');
+    this.router.navigate(['/login']);
   }
 
   processform(){
@@ -71,6 +104,11 @@ export class WatchlistComponent implements OnInit {
     }).catch(err => {
       console.error('>>> error: ', err)
     })  
+  }
+
+  logout (){
+    localStorage.removeItem('jwtToken') 
+    this.router.navigate(['/login'])
   }
 
 

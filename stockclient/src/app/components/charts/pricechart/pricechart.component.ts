@@ -77,7 +77,7 @@ export class PricechartComponent implements AfterViewInit{
       this.chart?.update();
     }).catch(err => {
       console.error('>>> error: ', err)
-      alert("Price Chart Data Not Found...")
+      // alert("Price Chart Data Not Found...")
     })
   }
 

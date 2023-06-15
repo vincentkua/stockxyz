@@ -31,6 +31,7 @@ export class AddComponent implements OnInit{
       this.ngOnInit()
     }).catch(err => {
       console.error('>>> error: ', err)
+      alert("failed to add this stock...")
     })
   }
 

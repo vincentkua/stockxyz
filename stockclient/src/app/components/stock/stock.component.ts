@@ -34,30 +34,67 @@ export class StockComponent implements OnInit , AfterViewInit {
 
   constructor(private activatedRoute : ActivatedRoute , private stockSvc : StockService , private router: Router , private fb:FormBuilder , private authSvc : AuthService){}
 
-
   ngOnInit(): void {
-    this.email = this.authSvc.email
-    this.roles = this.authSvc.roles
-    this.rootpage = this.authSvc.rootpage
+    this.checkAndValidateToken();
+    this.getUserRootPage();
+  }
 
-    if (this.email == ""){
-      alert("Please login to continue ...")
-      this.router.navigate(['/login'])
+  getUserRootPage(){
+    const rootpage = localStorage.getItem('rootpage');
+    if (rootpage == null){
+      this.rootpage = "all"
     }else{
-      this.authSvc.revalidate()
-      .then(v=>{
-        console.log(">>> User Revalidated:" , v)
-        this.validated = true
-        this.loadalldata()
-      })
-      .catch(err=>{
-        console.log(">>> Error :" , err)
-        alert(err["error"]["status"])
-        })
-
+      this.rootpage = rootpage
     }
-    
-   
+  }
+
+  checkAndValidateToken(): void {
+    const token = localStorage.getItem('jwtToken');
+
+
+    if (token) {
+      console.log('>>> Validating JWT Token...');
+      this.authSvc
+        .validateJWT(token)
+        .then(() => {
+          console.log('>>> JWT Token verified... Getting Email and role....');
+          this.parseAndProcessToken(token);
+        })
+        .catch((err) => {
+          console.log('>>> Error :', err);
+          alert(err.error.status);
+          this.handleInvalidToken();
+        });
+    } else {
+      this.handleMissingToken();
+    }
+  }
+
+  parseAndProcessToken(token: string): void {
+    this.authSvc
+      .parseJWT(token)
+      .then((result) => {
+        console.log('>>> ', result);
+        this.email = result.email;
+        this.roles = result.role;
+        this.validated = true;
+        this.loadalldata();
+      })
+      .catch((err) => {
+        console.log('>>> Error:', err);
+        this.handleInvalidToken();
+      });
+  }
+
+  handleInvalidToken(): void {
+    localStorage.removeItem('jwtToken');
+    alert('Invalid JWT ... Rerouting to Login Page...');
+    this.router.navigate(['/login']);
+  }
+
+  handleMissingToken(): void {
+    alert('JWT not found ... Rerouting to Login Page...');
+    this.router.navigate(['/login']);
   }
 
   loadalldata(){
@@ -279,6 +316,11 @@ export class StockComponent implements OnInit , AfterViewInit {
       console.error('>>> error: ', err)
       alert("Failed to update Cash Flow Chart !!!")
     })
+  }
+
+  logout (){
+    localStorage.removeItem('jwtToken') 
+    this.router.navigate(['/login'])
   }
 
 

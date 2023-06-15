@@ -31,6 +31,83 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
+
+    @GetMapping(value = "/validatejwt")
+    public ResponseEntity<String> validatejwt(@RequestParam String jwt) {
+
+        System.out.println(jwt);
+        Boolean jwtvalidity = jwtUtils.validateJWT(jwt);
+        if (jwtvalidity) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "JWT is Valid")
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+        }else{
+        JsonObject responsejson = Json.createObjectBuilder()
+                .add("status", "Invalid JWT")
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+    }
+
+    @GetMapping(value = "/parsejwt")
+    public ResponseEntity<String> parsejwt(@RequestParam String jwt) {
+
+        System.out.println(jwt);
+
+        Account account =jwtUtils.getJWTaccount(jwt);
+
+        if ( account != null) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("email", account.getEmail())
+                    .add("role", account.getRoles())
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+        }else{
+        JsonObject responsejson = Json.createObjectBuilder()
+                .add("status", "Invalid JWT")
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        }
+    }
+
+    @GetMapping(value = "/signin")
+    public ResponseEntity<String> userlogin(@RequestParam String email, @RequestParam String password) {
+
+        // Call Repo to get and check hpassword
+        Account account = new Account();
+        account = stockRepo.getUser(email);
+
+        if (account == null) {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Account Not Existed!!!")
+                    .build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+        } else {
+            String pw_hash = account.getHpassword();
+            if (BCrypt.checkpw(password, pw_hash)) {
+
+                // Generate JWT Token
+                String jwtToken = jwtUtils.generateJWT(email,account.getRoles());
+
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Success Login")
+                        .add("roles", account.getRoles())
+                        .add("jwtToken", jwtToken)
+                        .build();
+                return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+            } else {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Invalid Password")
+                        .build();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+            }
+        }
+    }
+
+
+
+
     @PostMapping(value = "/signup")
     public ResponseEntity<String> signupuser(@RequestBody String jsonbody) {
         System.out.println("signup request received");
@@ -64,36 +141,6 @@ public class AuthController {
         }
     }
 
-    @GetMapping(value = "/signin")
-    public ResponseEntity<String> userlogin(@RequestParam String email, @RequestParam String password) {
 
-        // Call Repo to get hpassword
-        Account account = new Account();
-        account = stockRepo.getUser(email);
-
-        if (account == null) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Account Not Existed!!!")
-                    .build();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
-        } else {
-            String pw_hash = account.getHpassword();
-            if (BCrypt.checkpw(password, pw_hash)) {
-
-                jwtUtils.generateJWT(email);
-
-                JsonObject responsejson = Json.createObjectBuilder()
-                        .add("status", "Success Login")
-                        .add("roles", account.getRoles())
-                        .build();
-                return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
-            } else {
-                JsonObject responsejson = Json.createObjectBuilder()
-                        .add("status", "Invalid Password")
-                        .build();
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
-            }
-        }
-    }
 
 }

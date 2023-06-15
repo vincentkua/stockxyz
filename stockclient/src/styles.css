@@ -31,3 +31,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     padding-left: 8px;
     font-weight: normal;
 }
+
+.logoutlink{
+    float: right;
+    font-size: 12px;
+    padding-left: 8px;
+    font-weight: normal;
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+}

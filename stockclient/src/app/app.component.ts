@@ -17,7 +17,5 @@ export class AppComponent {
 
   routepage(pagename : string){
     this.router.navigate(['/' + pagename])
-    this.authSvc.rootpage = pagename
-
   }
 }

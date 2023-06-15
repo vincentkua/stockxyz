@@ -1,5 +1,5 @@
 <a [routerLink]="['/'+ rootpage]">&lt; back </a>
-<a class="userinfo" [routerLink]="['/login']">logout</a>
+<a class="logoutlink" (click)="logout()">logout</a>
 <span class="userinfo">{{email}}</span>
 
 <br /><br />

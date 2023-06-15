@@ -10,13 +10,31 @@ const APIURL = "http://127.0.0.1:8080/api"
 })
 export class AuthService {
 
-  islogin : boolean = false
-  email : string = ""
-  password : string = ""
-  roles : string = ""
   rootpage : string = "all"
 
   constructor(private http: HttpClient) { }
+
+  validateJWT(jwtString : string){
+    const VALIDATEURL = APIURL + "/validatejwt"
+
+    const params = new HttpParams()
+    .set("jwt", jwtString)
+    
+    return lastValueFrom(
+      this.http.get<any>(VALIDATEURL,{params})
+    )
+  }
+
+  parseJWT(jwtString : string){
+    const PARSEURL = APIURL + "/parsejwt"
+
+    const params = new HttpParams()
+    .set("jwt", jwtString)
+    
+    return lastValueFrom(
+      this.http.get<any>(PARSEURL,{params})
+    )
+  }
 
   signinUser(loginrequest : any){
     const CHECKUSERURL = APIURL + "/signin"
@@ -24,18 +42,6 @@ export class AuthService {
     const params = new HttpParams()
     .set("email", loginrequest["email"])
     .set("password", loginrequest["password"])
-    
-    return lastValueFrom(
-      this.http.get<any>(CHECKUSERURL,{params})
-    )
-  }
-
-  revalidate(){
-    const CHECKUSERURL = APIURL + "/signin"
-
-    const params = new HttpParams()
-    .set("email", this.email)
-    .set("password", this.password)
     
     return lastValueFrom(
       this.http.get<any>(CHECKUSERURL,{params})
