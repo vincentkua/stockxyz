@@ -18,6 +18,7 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import nus.iss.stockserver.models.Account;
 import nus.iss.stockserver.repository.StockRepository;
+import nus.iss.stockserver.utils.JwtUtils;
 
 @RestController
 @RequestMapping(path = "/api")
@@ -25,6 +26,10 @@ public class AuthController {
 
     @Autowired
     StockRepository stockRepo;
+
+
+    @Autowired
+    JwtUtils jwtUtils;
 
     @PostMapping(value = "/signup")
     public ResponseEntity<String> signupuser(@RequestBody String jsonbody) {
@@ -74,6 +79,9 @@ public class AuthController {
         } else {
             String pw_hash = account.getHpassword();
             if (BCrypt.checkpw(password, pw_hash)) {
+
+                jwtUtils.generateJWT(email);
+
                 JsonObject responsejson = Json.createObjectBuilder()
                         .add("status", "Success Login")
                         .add("roles", account.getRoles())
