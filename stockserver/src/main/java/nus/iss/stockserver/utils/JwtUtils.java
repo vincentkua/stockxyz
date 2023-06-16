@@ -3,9 +3,11 @@ package nus.iss.stockserver.utils;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import nus.iss.stockserver.models.Account;
 
@@ -39,19 +41,28 @@ public class JwtUtils {
     }
 
     public boolean validateJWT(String jwtToken) {
-        Jws<Claims> claimsJws;
+
         try {
-            claimsJws = Jwts.parserBuilder()
+            Jwts.parserBuilder()
                     .setSigningKey(SECRET_KEY)
                     .build()
                     .parseClaimsJws(jwtToken);
 
-            System.out.println(">>> JWT is valid.");
-            System.out.println(claimsJws.toString());
+            System.out.println(">>> JWT Token Validated.");
+            // System.out.println(claimsJws.toString());
             return true;
 
+        } catch (ExpiredJwtException e) {
+            System.out.println(">>> JWT is expired.");
+            // Handle token expiration
+            return false;
+        } catch (UnsupportedJwtException e) {
+            System.out.println(">>> Unsupported JWT.");
+            // Handle unsupported token
+            return false;
         } catch (Exception e) {
-            System.out.println(">>> JWT is invalid.");
+            System.out.println(">>> JWT is invalid: " + e.getMessage());
+            // Handle other exceptions
             return false;
         }
 

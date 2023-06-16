@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,11 +21,13 @@ import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
+import nus.iss.stockserver.models.Account;
 import nus.iss.stockserver.models.Stock;
 import nus.iss.stockserver.repository.ChartRepository;
 import nus.iss.stockserver.repository.StockRepository;
 import nus.iss.stockserver.services.StockService;
 import nus.iss.stockserver.services.WebScraperService;
+import nus.iss.stockserver.utils.JwtUtils;
 
 @RestController
 @RequestMapping(path = "/api")
@@ -42,87 +45,134 @@ public class StockController {
     @Autowired
     WebScraperService webScraperSvc;
 
+    @Autowired
+    JwtUtils jwtUtils;
+
     // =================================================================================
     // Main Page Request (Stock List)
     // =================================================================================
     @GetMapping(value = "/stocks")
-    public ResponseEntity<String> getStocks(@RequestParam String search, @RequestParam String email) {
-        List<Stock> stocks = stockRepo.getStocks(search , email);
-        JsonArrayBuilder jsonArray = Json.createArrayBuilder();
-        for (Stock x : stocks) {
-            JsonObject jsonObject = Json.createObjectBuilder()
-                    .add("id", x.getId())
-                    .add("market", x.getMarket())
-                    .add("ticker", x.getTicker())
-                    .add("stockName", x.getStockName())
-                    .add("lastprice", x.getLastprice() == null ? 0 : x.getLastprice())
-                    .add("watchlistid", x.getWatchlistid() == null ? 0 : x.getWatchlistid())
-                    .add("portfolioid", x.getPortfolioid() == null ? 0 : x.getPortfolioid())
+    public ResponseEntity<String> getStocks(@RequestParam String search, @RequestHeader String Authorization) {
+        String jwtToken = Authorization.substring(7); // skip the bearer_ by 7 chars
+        Boolean validToken = jwtUtils.validateJWT(jwtToken);
+
+        if (validToken) {
+            Account user = jwtUtils.getJWTaccount(jwtToken);
+
+            List<Stock> stocks = stockRepo.getStocks(search, user.getEmail());
+            JsonArrayBuilder jsonArray = Json.createArrayBuilder();
+            for (Stock x : stocks) {
+                JsonObject jsonObject = Json.createObjectBuilder()
+                        .add("id", x.getId())
+                        .add("market", x.getMarket())
+                        .add("ticker", x.getTicker())
+                        .add("stockName", x.getStockName())
+                        .add("lastprice", x.getLastprice() == null ? 0 : x.getLastprice())
+                        .add("watchlistid", x.getWatchlistid() == null ? 0 : x.getWatchlistid())
+                        .add("portfolioid", x.getPortfolioid() == null ? 0 : x.getPortfolioid())
+                        .build();
+                jsonArray.add(jsonObject);
+            }
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("stocks", jsonArray)
                     .build();
-            jsonArray.add(jsonObject);
+
+            System.out.println("##################");
+            System.out.println("Stocks List Requested " + search);
+
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+        } else {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Invalid JWT Token")
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
         }
 
-        JsonObject responsejson = Json.createObjectBuilder()
-                .add("stocks", jsonArray)
-                .build();
-
-        System.out.println("##################");
-        System.out.println("Stocks List Requested " + search);
-
-        return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
     }
 
-
     @GetMapping(value = "/watchlist")
-    public ResponseEntity<String> getWatchlist(@RequestParam String search, @RequestParam String email) {
-        List<Stock> stocks = stockRepo.getWatchlist(search , email);
-        JsonArrayBuilder jsonArray = Json.createArrayBuilder();
-        for (Stock x : stocks) {
-            JsonObject jsonObject = Json.createObjectBuilder()
-                    .add("id", x.getId())
-                    .add("market", x.getMarket())
-                    .add("ticker", x.getTicker())
-                    .add("stockName", x.getStockName())
-                    .add("lastprice", x.getLastprice() == null ? 0 : x.getLastprice())
-                    .add("watchlistid", x.getWatchlistid() == null ? 0 : x.getWatchlistid())
+    public ResponseEntity<String> getWatchlist(@RequestParam String search, @RequestHeader String Authorization) {
+        String jwtToken = Authorization.substring(7); // skip the bearer_ by 7 chars
+        Boolean validToken = jwtUtils.validateJWT(jwtToken);
+
+        if (validToken) {
+            Account user = jwtUtils.getJWTaccount(jwtToken);
+
+            List<Stock> stocks = stockRepo.getWatchlist(search, user.getEmail());
+            JsonArrayBuilder jsonArray = Json.createArrayBuilder();
+            for (Stock x : stocks) {
+                JsonObject jsonObject = Json.createObjectBuilder()
+                        .add("id", x.getId())
+                        .add("market", x.getMarket())
+                        .add("ticker", x.getTicker())
+                        .add("stockName", x.getStockName())
+                        .add("lastprice", x.getLastprice() == null ? 0 : x.getLastprice())
+                        .add("watchlistid", x.getWatchlistid() == null ? 0 : x.getWatchlistid())
+                        .build();
+                jsonArray.add(jsonObject);
+            }
+
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("stocks", jsonArray)
                     .build();
-            jsonArray.add(jsonObject);
+
+            System.out.println("##################");
+            System.out.println("Watch List Requested " + search);
+
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+
+        } else {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Invalid JWT Token")
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
         }
 
-        JsonObject responsejson = Json.createObjectBuilder()
-                .add("stocks", jsonArray)
-                .build();
-
-        System.out.println("##################");
-        System.out.println("Stocks List Requested " + search);
-
-        return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
     }
 
     @GetMapping(value = "/portfolio")
-    public ResponseEntity<String> getPortfolio(@RequestParam String search, @RequestParam String email) {
-        List<Stock> stocks = stockRepo.getPortfolio(search , email);
-        JsonArrayBuilder jsonArray = Json.createArrayBuilder();
-        for (Stock x : stocks) {
-            JsonObject jsonObject = Json.createObjectBuilder()
-                    .add("id", x.getId())
-                    .add("market", x.getMarket())
-                    .add("ticker", x.getTicker())
-                    .add("stockName", x.getStockName())
-                    .add("lastprice", x.getLastprice() == null ? 0 : x.getLastprice())
-                    .add("portfolioid", x.getPortfolioid() == null ? 0 : x.getPortfolioid())
+    public ResponseEntity<String> getPortfolio(@RequestParam String search, @RequestHeader String Authorization) {
+        String jwtToken = Authorization.substring(7); // skip the bearer_ by 7 chars
+        Boolean validToken = jwtUtils.validateJWT(jwtToken);
+
+        if (validToken) {
+            Account user = jwtUtils.getJWTaccount(jwtToken);
+
+            List<Stock> stocks = stockRepo.getPortfolio(search, user.getEmail());
+            JsonArrayBuilder jsonArray = Json.createArrayBuilder();
+            for (Stock x : stocks) {
+                JsonObject jsonObject = Json.createObjectBuilder()
+                        .add("id", x.getId())
+                        .add("market", x.getMarket())
+                        .add("ticker", x.getTicker())
+                        .add("stockName", x.getStockName())
+                        .add("lastprice", x.getLastprice() == null ? 0 : x.getLastprice())
+                        .add("portfolioid", x.getPortfolioid() == null ? 0 : x.getPortfolioid())
+                        .build();
+                jsonArray.add(jsonObject);
+            }
+
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("stocks", jsonArray)
                     .build();
-            jsonArray.add(jsonObject);
+
+            System.out.println("##################");
+            System.out.println("Portfolio List Requested " + search);
+
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+
+        } else {
+
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Invalid JWT Token")
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+
         }
 
-        JsonObject responsejson = Json.createObjectBuilder()
-                .add("stocks", jsonArray)
-                .build();
-
-        System.out.println("##################");
-        System.out.println("Portfolio List Requested " + search);
-
-        return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
     }
 
     // =================================================================================
@@ -137,8 +187,14 @@ public class StockController {
 
             } catch (Exception e) {
                 System.out.println("######################");
-                System.out.println("API calling method failed!!!");
+                System.out.println("API Price method failed!!!");
                 System.out.println(e.getMessage());
+                System.out.println("Retry with Yahoo Method");
+                try {
+                    webScraperSvc.scrapeYahooPrice(market, ticker);
+                } catch (Exception e2) {
+                    System.out.println(e2.getMessage());
+                }
             }
         } else {
             try {
@@ -171,78 +227,82 @@ public class StockController {
     }
 
     @GetMapping(value = "/fundamentalapi")
-    public ResponseEntity<String> getStockApi(@RequestParam String market, @RequestParam String ticker) {
+    public ResponseEntity<String> getStockApi(@RequestParam String market, @RequestParam String ticker,
+            @RequestHeader String Authorization) {
+        String jwtToken = Authorization.substring(7); // skip the bearer_ by 7 chars
+        Boolean validToken = jwtUtils.validateJWT(jwtToken);
 
-        Integer rowsupdated = stockSvc.getAlphaFundamental(market, ticker);
+        if (validToken) {
+            Account user = jwtUtils.getJWTaccount(jwtToken);
 
-        if (rowsupdated == 1) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Stock Fundamental updated")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+            if (user.getRoles().equals("admin")) {
+                Integer rowsupdated = stockSvc.getAlphaFundamental(market, ticker);
+
+                if (rowsupdated == 1) {
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "Stock Fundamental updated")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+                } else {
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "Failed to update stock")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+                }
+            } else {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Only Admin is allowed to use fundamental api")
+                        .build();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+            }
+
         } else {
             JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Failed to update stock")
+                    .add("status", "Invalid JWT Token")
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
-        }
-    }
 
-    @GetMapping(value = "/priceapi")
-    public ResponseEntity<String> getPriceApi(@RequestParam String market, @RequestParam String ticker) {
-
-        Integer rowsupdated = stockSvc.getTwelveDataPrice(market, ticker);
-
-        if (rowsupdated == 1) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Stock Price updated")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
-        } else {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Failed to update stock")
-                    .build();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
-        }
-
-    }
-
-    @GetMapping(value = "/webscraper")
-    public ResponseEntity<String> getFromYahoo(@RequestParam String market, @RequestParam String ticker) {
-
-        Integer rowsupdated = webScraperSvc.scrapeYahooPrice(market, ticker);
-
-        if (rowsupdated == 1) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Stock updated")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
-        } else {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Failed to update stock")
-                    .build();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
 
     }
 
     @PostMapping(value = "/delete/{id}")
-    public ResponseEntity<String> deleteStock(@PathVariable Integer id) {
+    public ResponseEntity<String> deleteStock(@PathVariable Integer id, @RequestHeader String Authorization) {
+        String jwtToken = Authorization.substring(7); // skip the bearer_ by 7 chars
+        Boolean validToken = jwtUtils.validateJWT(jwtToken);
         System.out.println("Delete Request Received..." + id);
 
-        Integer rowdeleted = stockRepo.deleteStock(id);
+        if (validToken) {
+            Account user = jwtUtils.getJWTaccount(jwtToken);
 
-        if (rowdeleted == 1) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Stock deleted")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+            if (user.getRoles().equals("admin")) {
+                Integer rowdeleted = stockRepo.deleteStock(id);
+
+                if (rowdeleted == 1) {
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "Stock deleted")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+                } else {
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "Failed to delete stock")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+                }
+            } else {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Only Admin is allowed to delete the stock")
+                        .build();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+            }
+
         } else {
             JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Failed to delete stock")
+                    .add("status", "Invalid JWT Token")
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
+
     }
 
     @GetMapping(value = "/pricechart")
@@ -320,99 +380,140 @@ public class StockController {
     }
 
     @PostMapping(value = "/pricechart")
-    public ResponseEntity<String> upsertPriceData(@RequestBody String jsonpayload) {
-        System.out.println("Update Chart Request Received");
-        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
-        JsonObject pricedatajson = reader.readObject();
+    public ResponseEntity<String> upsertPriceData(@RequestBody String jsonpayload,
+            @RequestHeader String Authorization) {
+        String jwtToken = Authorization.substring(7); // skip the bearer_ by 7 chars
+        Boolean validToken = jwtUtils.validateJWT(jwtToken);
 
-        List<String> pricechartlabel = new LinkedList<>();
-        List<Double> pricechartdata = new LinkedList<>();
+        if (validToken) {
+            Account user = jwtUtils.getJWTaccount(jwtToken);
 
-        String market = pricedatajson.getString("market");
-        String ticker = pricedatajson.getString("ticker");
-        String chartlabel = pricedatajson.getString("pricechartlabel");
-        String chartdata = pricedatajson.getString("pricechartdata");
+            if (user.getRoles().equals("admin")) {
+                System.out.println("Update Chart Request Received");
+                JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+                JsonObject pricedatajson = reader.readObject();
 
-        String[] labelsArray = chartlabel.split("\\s+|\\t|\\n");
-        for (int i = 0; i < labelsArray.length; i++) {
-            System.out.println(labelsArray[i]);
-            pricechartlabel.add(labelsArray[i]);
-        }
+                List<String> pricechartlabel = new LinkedList<>();
+                List<Double> pricechartdata = new LinkedList<>();
 
-        String[] dataArray = chartdata.split("\\s+|\\t|\\n");
-        for (int i = 0; i < dataArray.length; i++) {
-            System.out.println(dataArray[i]);
-            pricechartdata.add(Double.parseDouble(dataArray[i]));
-        }
+                String market = pricedatajson.getString("market");
+                String ticker = pricedatajson.getString("ticker");
+                String chartlabel = pricedatajson.getString("pricechartlabel");
+                String chartdata = pricedatajson.getString("pricechartdata");
 
-        try {
-            chartRepo.upsertStockPriceData(market, ticker, pricechartlabel, pricechartdata);
+                String[] labelsArray = chartlabel.split("\\s+|\\t|\\n");
+                for (int i = 0; i < labelsArray.length; i++) {
+                    System.out.println(labelsArray[i]);
+                    pricechartlabel.add(labelsArray[i]);
+                }
 
+                String[] dataArray = chartdata.split("\\s+|\\t|\\n");
+                for (int i = 0; i < dataArray.length; i++) {
+                    System.out.println(dataArray[i]);
+                    pricechartdata.add(Double.parseDouble(dataArray[i]));
+                }
+
+                try {
+                    chartRepo.upsertStockPriceData(market, ticker, pricechartlabel, pricechartdata);
+
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "Price Chart Updated")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+
+                } catch (Exception e) {
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "Unable to Update")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+                }
+            } else {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Only admin is allowed to update the chart data")
+                        .build();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+            }
+        } else {
             JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Price Chart Updated")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
-
-        } catch (Exception e) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Unable to Update")
+                    .add("status", "Invalid JWT Token")
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
+
     }
 
     @PostMapping(value = "/earningchart")
-    public ResponseEntity<String> upsertEarningData(@RequestBody String jsonpayload) {
-        System.out.println("Update Earning Chart Request Received");
-        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
-        JsonObject pricedatajson = reader.readObject();
+    public ResponseEntity<String> upsertEarningData(@RequestBody String jsonpayload,
+            @RequestHeader String Authorization) {
+        String jwtToken = Authorization.substring(7); // skip the bearer_ by 7 chars
+        Boolean validToken = jwtUtils.validateJWT(jwtToken);
 
-        List<String> labelList = new LinkedList<>();
-        List<Double> revenueList = new LinkedList<>();
-        List<Double> grossprofitList = new LinkedList<>();
-        List<Double> netprofitList = new LinkedList<>();
+        if (validToken) {
+            Account user = jwtUtils.getJWTaccount(jwtToken);
 
-        String market = pricedatajson.getString("market");
-        String ticker = pricedatajson.getString("ticker");
-        String label = pricedatajson.getString("label");
-        String revenue = pricedatajson.getString("revenue");
-        String grossprofit = pricedatajson.getString("grossprofit");
-        String netprofit = pricedatajson.getString("netprofit");
+            if (user.getRoles().equals("admin")) {
+                System.out.println("Update Earning Chart Request Received");
+                JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+                JsonObject pricedatajson = reader.readObject();
 
-        String[] labelArray = label.split("\\s+|\\t|\\n");
-        for (int i = 0; i < labelArray.length; i++) {
-            System.out.println(labelArray[i]);
-            labelList.add(labelArray[i]);
-        }
+                List<String> labelList = new LinkedList<>();
+                List<Double> revenueList = new LinkedList<>();
+                List<Double> grossprofitList = new LinkedList<>();
+                List<Double> netprofitList = new LinkedList<>();
 
-        String[] revenueArray = revenue.replace(",", "").split("\\s+|\\t|\\n");
-        for (int i = 0; i < revenueArray.length; i++) {
-            System.out.println(revenueArray[i]);
-            revenueList.add(Double.parseDouble(revenueArray[i]));
-        }
+                String market = pricedatajson.getString("market");
+                String ticker = pricedatajson.getString("ticker");
+                String label = pricedatajson.getString("label");
+                String revenue = pricedatajson.getString("revenue");
+                String grossprofit = pricedatajson.getString("grossprofit");
+                String netprofit = pricedatajson.getString("netprofit");
 
-        String[] grossprofitArray = grossprofit.replace(",", "").split("\\s+|\\t|\\n");
-        for (int i = 0; i < grossprofitArray.length; i++) {
-            System.out.println(grossprofitArray[i]);
-            grossprofitList.add(Double.parseDouble(grossprofitArray[i]));
-        }
+                String[] labelArray = label.split("\\s+|\\t|\\n");
+                for (int i = 0; i < labelArray.length; i++) {
+                    System.out.println(labelArray[i]);
+                    labelList.add(labelArray[i]);
+                }
 
-        String[] netprofitArray = netprofit.replace(",", "").split("\\s+|\\t|\\n");
-        for (int i = 0; i < netprofitArray.length; i++) {
-            System.out.println(netprofitArray[i]);
-            netprofitList.add(Double.parseDouble(netprofitArray[i]));
-        }
+                String[] revenueArray = revenue.replace(",", "").split("\\s+|\\t|\\n");
+                for (int i = 0; i < revenueArray.length; i++) {
+                    System.out.println(revenueArray[i]);
+                    revenueList.add(Double.parseDouble(revenueArray[i]));
+                }
 
-        try {
-            chartRepo.upsertEarningData(market, ticker, labelList, revenueList, grossprofitList, netprofitList);
+                String[] grossprofitArray = grossprofit.replace(",", "").split("\\s+|\\t|\\n");
+                for (int i = 0; i < grossprofitArray.length; i++) {
+                    System.out.println(grossprofitArray[i]);
+                    grossprofitList.add(Double.parseDouble(grossprofitArray[i]));
+                }
+
+                String[] netprofitArray = netprofit.replace(",", "").split("\\s+|\\t|\\n");
+                for (int i = 0; i < netprofitArray.length; i++) {
+                    System.out.println(netprofitArray[i]);
+                    netprofitList.add(Double.parseDouble(netprofitArray[i]));
+                }
+
+                try {
+                    chartRepo.upsertEarningData(market, ticker, labelList, revenueList, grossprofitList, netprofitList);
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "Earning Chart Updated")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+
+                } catch (Exception e) {
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "Unable to Update")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+                }
+            } else {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Only admin is allowed to update the chart data")
+                        .build();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+            }
+        } else {
             JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Earning Chart Updated")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
-
-        } catch (Exception e) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Unable to Update")
+                    .add("status", "Invalid JWT Token")
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
@@ -420,57 +521,77 @@ public class StockController {
     }
 
     @PostMapping(value = "/balancechart")
-    public ResponseEntity<String> upsertBalanceData(@RequestBody String jsonpayload) {
-        System.out.println("Update Balance Chart Request Received");
-        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
-        JsonObject datajson = reader.readObject();
+    public ResponseEntity<String> upsertBalanceData(@RequestBody String jsonpayload,
+            @RequestHeader String Authorization) {
+        String jwtToken = Authorization.substring(7); // skip the bearer_ by 7 chars
+        Boolean validToken = jwtUtils.validateJWT(jwtToken);
 
-        List<String> labelList = new LinkedList<>();
-        List<Double> assetList = new LinkedList<>();
-        List<Double> liabilityList = new LinkedList<>();
-        List<Double> debtList = new LinkedList<>();
+        if (validToken) {
+            Account user = jwtUtils.getJWTaccount(jwtToken);
 
-        String market = datajson.getString("market");
-        String ticker = datajson.getString("ticker");
-        String label = datajson.getString("label");
-        String asset = datajson.getString("asset");
-        String liability = datajson.getString("liability");
-        String debt = datajson.getString("debt");
+            if (user.getRoles().equals("admin")) {
+                System.out.println("Update Balance Chart Request Received");
+                JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+                JsonObject datajson = reader.readObject();
 
-        String[] labelArray = label.split("\\s+|\\t|\\n");
-        for (int i = 0; i < labelArray.length; i++) {
-            System.out.println(labelArray[i]);
-            labelList.add(labelArray[i]);
-        }
+                List<String> labelList = new LinkedList<>();
+                List<Double> assetList = new LinkedList<>();
+                List<Double> liabilityList = new LinkedList<>();
+                List<Double> debtList = new LinkedList<>();
 
-        String[] assetArray = asset.replace(",", "").split("\\s+|\\t|\\n");
-        for (int i = 0; i < assetArray.length; i++) {
-            System.out.println(assetArray[i]);
-            assetList.add(Double.parseDouble(assetArray[i]));
-        }
+                String market = datajson.getString("market");
+                String ticker = datajson.getString("ticker");
+                String label = datajson.getString("label");
+                String asset = datajson.getString("asset");
+                String liability = datajson.getString("liability");
+                String debt = datajson.getString("debt");
 
-        String[] liabilityArray = liability.replace(",", "").split("\\s+|\\t|\\n");
-        for (int i = 0; i < liabilityArray.length; i++) {
-            System.out.println(liabilityArray[i]);
-            liabilityList.add(Double.parseDouble(liabilityArray[i]));
-        }
+                String[] labelArray = label.split("\\s+|\\t|\\n");
+                for (int i = 0; i < labelArray.length; i++) {
+                    System.out.println(labelArray[i]);
+                    labelList.add(labelArray[i]);
+                }
 
-        String[] debtArray = debt.replace(",", "").split("\\s+|\\t|\\n");
-        for (int i = 0; i < debtArray.length; i++) {
-            System.out.println(debtArray[i]);
-            debtList.add(Double.parseDouble(debtArray[i]));
-        }
+                String[] assetArray = asset.replace(",", "").split("\\s+|\\t|\\n");
+                for (int i = 0; i < assetArray.length; i++) {
+                    System.out.println(assetArray[i]);
+                    assetList.add(Double.parseDouble(assetArray[i]));
+                }
 
-        try {
-            chartRepo.upsertBalanceData(market, ticker, labelList, assetList, liabilityList, debtList);
+                String[] liabilityArray = liability.replace(",", "").split("\\s+|\\t|\\n");
+                for (int i = 0; i < liabilityArray.length; i++) {
+                    System.out.println(liabilityArray[i]);
+                    liabilityList.add(Double.parseDouble(liabilityArray[i]));
+                }
+
+                String[] debtArray = debt.replace(",", "").split("\\s+|\\t|\\n");
+                for (int i = 0; i < debtArray.length; i++) {
+                    System.out.println(debtArray[i]);
+                    debtList.add(Double.parseDouble(debtArray[i]));
+                }
+
+                try {
+                    chartRepo.upsertBalanceData(market, ticker, labelList, assetList, liabilityList, debtList);
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "Balance Chart Updated")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+
+                } catch (Exception e) {
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "Unable to Update")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+                }
+            } else {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Only admin is allowed to update the chart data")
+                        .build();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+            }
+        } else {
             JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Balance Chart Updated")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
-
-        } catch (Exception e) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Unable to Update")
+                    .add("status", "Invalid JWT Token")
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
@@ -478,49 +599,69 @@ public class StockController {
     }
 
     @PostMapping(value = "/epsdpschart")
-    public ResponseEntity<String> upsertEpsDpsData(@RequestBody String jsonpayload) {
-        System.out.println("Update Eps Dps Chart Request Received");
-        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
-        JsonObject datajson = reader.readObject();
+    public ResponseEntity<String> upsertEpsDpsData(@RequestBody String jsonpayload,
+            @RequestHeader String Authorization) {
+        String jwtToken = Authorization.substring(7); // skip the bearer_ by 7 chars
+        Boolean validToken = jwtUtils.validateJWT(jwtToken);
 
-        List<String> labelList = new LinkedList<>();
-        List<Double> epsList = new LinkedList<>();
-        List<Double> dpsList = new LinkedList<>();
+        if (validToken) {
+            Account user = jwtUtils.getJWTaccount(jwtToken);
 
-        String market = datajson.getString("market");
-        String ticker = datajson.getString("ticker");
-        String label = datajson.getString("label");
-        String eps = datajson.getString("eps");
-        String dps = datajson.getString("dps");
+            if (user.getRoles().equals("admin")) {
+                System.out.println("Update Eps Dps Chart Request Received");
+                JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+                JsonObject datajson = reader.readObject();
 
-        String[] labelArray = label.split("\\s+|\\t|\\n");
-        for (int i = 0; i < labelArray.length; i++) {
-            System.out.println(labelArray[i]);
-            labelList.add(labelArray[i]);
-        }
+                List<String> labelList = new LinkedList<>();
+                List<Double> epsList = new LinkedList<>();
+                List<Double> dpsList = new LinkedList<>();
 
-        String[] epsArray = eps.replace(",", "").split("\\s+|\\t|\\n");
-        for (int i = 0; i < epsArray.length; i++) {
-            System.out.println(epsArray[i]);
-            epsList.add(Double.parseDouble(epsArray[i]));
-        }
+                String market = datajson.getString("market");
+                String ticker = datajson.getString("ticker");
+                String label = datajson.getString("label");
+                String eps = datajson.getString("eps");
+                String dps = datajson.getString("dps");
 
-        String[] dpsArray = dps.replace(",", "").split("\\s+|\\t|\\n");
-        for (int i = 0; i < dpsArray.length; i++) {
-            System.out.println(dpsArray[i]);
-            dpsList.add(Double.parseDouble(dpsArray[i]));
-        }
+                String[] labelArray = label.split("\\s+|\\t|\\n");
+                for (int i = 0; i < labelArray.length; i++) {
+                    System.out.println(labelArray[i]);
+                    labelList.add(labelArray[i]);
+                }
 
-        try {
-            chartRepo.upsertEpsDpsData(market, ticker, labelList, epsList, dpsList);
+                String[] epsArray = eps.replace(",", "").split("\\s+|\\t|\\n");
+                for (int i = 0; i < epsArray.length; i++) {
+                    System.out.println(epsArray[i]);
+                    epsList.add(Double.parseDouble(epsArray[i]));
+                }
+
+                String[] dpsArray = dps.replace(",", "").split("\\s+|\\t|\\n");
+                for (int i = 0; i < dpsArray.length; i++) {
+                    System.out.println(dpsArray[i]);
+                    dpsList.add(Double.parseDouble(dpsArray[i]));
+                }
+
+                try {
+                    chartRepo.upsertEpsDpsData(market, ticker, labelList, epsList, dpsList);
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "EPS DPS Chart Updated")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+
+                } catch (Exception e) {
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "Unable to Update")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+                }
+            } else {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Only admin is allowed to update the chart data")
+                        .build();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+            }
+        } else {
             JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "EPS DPS Chart Updated")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
-
-        } catch (Exception e) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Unable to Update")
+                    .add("status", "Invalid JWT Token")
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
@@ -528,57 +669,78 @@ public class StockController {
     }
 
     @PostMapping(value = "/cashflowchart")
-    public ResponseEntity<String> upsertCashflowData(@RequestBody String jsonpayload) {
-        System.out.println("Update Cashflow Chart Request Received");
-        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
-        JsonObject datajson = reader.readObject();
+    public ResponseEntity<String> upsertCashflowData(@RequestBody String jsonpayload,
+            @RequestHeader String Authorization) {
+        String jwtToken = Authorization.substring(7); // skip the bearer_ by 7 chars
+        Boolean validToken = jwtUtils.validateJWT(jwtToken);
 
-        List<String> labelList = new LinkedList<>();
-        List<Double> operatingList = new LinkedList<>();
-        List<Double> investingList = new LinkedList<>();
-        List<Double> financingList = new LinkedList<>();
+        if (validToken) {
+            Account user = jwtUtils.getJWTaccount(jwtToken);
 
-        String market = datajson.getString("market");
-        String ticker = datajson.getString("ticker");
-        String label = datajson.getString("label");
-        String operating = datajson.getString("operating");
-        String investing = datajson.getString("investing");
-        String financing = datajson.getString("financing");
+            if (user.getRoles().equals("admin")) {
+                System.out.println("Update Cashflow Chart Request Received");
+                JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+                JsonObject datajson = reader.readObject();
 
-        String[] labelArray = label.split("\\s+|\\t|\\n");
-        for (int i = 0; i < labelArray.length; i++) {
-            System.out.println(labelArray[i]);
-            labelList.add(labelArray[i]);
-        }
+                List<String> labelList = new LinkedList<>();
+                List<Double> operatingList = new LinkedList<>();
+                List<Double> investingList = new LinkedList<>();
+                List<Double> financingList = new LinkedList<>();
 
-        String[] operatingArray = operating.replace(",", "").split("\\s+|\\t|\\n");
-        for (int i = 0; i < operatingArray.length; i++) {
-            System.out.println(operatingArray[i]);
-            operatingList.add(Double.parseDouble(operatingArray[i]));
-        }
+                String market = datajson.getString("market");
+                String ticker = datajson.getString("ticker");
+                String label = datajson.getString("label");
+                String operating = datajson.getString("operating");
+                String investing = datajson.getString("investing");
+                String financing = datajson.getString("financing");
 
-        String[] investingArray = investing.replace(",", "").split("\\s+|\\t|\\n");
-        for (int i = 0; i < investingArray.length; i++) {
-            System.out.println(investingArray[i]);
-            investingList.add(Double.parseDouble(investingArray[i]));
-        }
+                String[] labelArray = label.split("\\s+|\\t|\\n");
+                for (int i = 0; i < labelArray.length; i++) {
+                    System.out.println(labelArray[i]);
+                    labelList.add(labelArray[i]);
+                }
 
-        String[] financingArray = financing.replace(",", "").split("\\s+|\\t|\\n");
-        for (int i = 0; i < financingArray.length; i++) {
-            System.out.println(financingArray[i]);
-            financingList.add(Double.parseDouble(financingArray[i]));
-        }
+                String[] operatingArray = operating.replace(",", "").split("\\s+|\\t|\\n");
+                for (int i = 0; i < operatingArray.length; i++) {
+                    System.out.println(operatingArray[i]);
+                    operatingList.add(Double.parseDouble(operatingArray[i]));
+                }
 
-        try {
-            chartRepo.upsertCashflowData(market, ticker, labelList, operatingList, investingList , financingList);
+                String[] investingArray = investing.replace(",", "").split("\\s+|\\t|\\n");
+                for (int i = 0; i < investingArray.length; i++) {
+                    System.out.println(investingArray[i]);
+                    investingList.add(Double.parseDouble(investingArray[i]));
+                }
+
+                String[] financingArray = financing.replace(",", "").split("\\s+|\\t|\\n");
+                for (int i = 0; i < financingArray.length; i++) {
+                    System.out.println(financingArray[i]);
+                    financingList.add(Double.parseDouble(financingArray[i]));
+                }
+
+                try {
+                    chartRepo.upsertCashflowData(market, ticker, labelList, operatingList, investingList,
+                            financingList);
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "Cashflow Chart Updated")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+
+                } catch (Exception e) {
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "Unable to Update")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+                }
+            } else {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Only admin is allowed to update the chart data")
+                        .build();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+            }
+        } else {
             JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Cashflow Chart Updated")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
-
-        } catch (Exception e) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Unable to Update")
+                    .add("status", "Invalid JWT Token")
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
@@ -586,28 +748,33 @@ public class StockController {
     }
 
     @PostMapping(value = "/addwatchlist")
-    public ResponseEntity<String> addWatchlist(@RequestBody String jsonpayload) {
+    public ResponseEntity<String> addWatchlist(@RequestBody String jsonpayload, @RequestHeader String Authorization) {
+        String jwtToken = Authorization.substring(7); // skip the bearer_ by 7 chars
+        Boolean validToken = jwtUtils.validateJWT(jwtToken);
 
-        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
-        JsonObject json = reader.readObject();
+        if (validToken) {
+            Account user = jwtUtils.getJWTaccount(jwtToken);
+            JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+            JsonObject json = reader.readObject();
+            Integer stockid = json.getInt("stockid");
 
-        Integer stockid = json.getInt("stockid");
-        String email = json.getString("email");
+            Integer rowsupdated = stockRepo.addWatchlist(stockid, user.getEmail());
 
-        System.out.println(stockid);
-        System.out.println(email);
+            if (rowsupdated == 1) {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Watchlist Added")
+                        .build();
+                return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+            } else {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Failed to add watchlist")
+                        .build();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+            }
 
-
-        Integer rowsupdated = stockRepo.addWatchlist(stockid, email);
-
-        if (rowsupdated == 1) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Watchlist Added")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
         } else {
             JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Failed to add watchlist")
+                    .add("status", "Invalid JWT Token")
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
@@ -615,28 +782,32 @@ public class StockController {
     }
 
     @PostMapping(value = "/addportfolio")
-    public ResponseEntity<String> addPortfolio(@RequestBody String jsonpayload) {
+    public ResponseEntity<String> addPortfolio(@RequestBody String jsonpayload, @RequestHeader String Authorization) {
+        String jwtToken = Authorization.substring(7); // skip the bearer_ by 7 chars
+        Boolean validToken = jwtUtils.validateJWT(jwtToken);
 
-        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
-        JsonObject json = reader.readObject();
+        if (validToken) {
+            Account user = jwtUtils.getJWTaccount(jwtToken);
+            JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+            JsonObject json = reader.readObject();
+            Integer stockid = json.getInt("stockid");
 
-        Integer stockid = json.getInt("stockid");
-        String email = json.getString("email");
+            Integer rowsupdated = stockRepo.addPortfolio(stockid, user.getEmail());
 
-        System.out.println(stockid);
-        System.out.println(email);
-
-
-        Integer rowsupdated = stockRepo.addPortfolio(stockid, email);
-
-        if (rowsupdated == 1) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Portfolio Added")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+            if (rowsupdated == 1) {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Portfolio Added")
+                        .build();
+                return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+            } else {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Failed to add portfolio")
+                        .build();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+            }
         } else {
             JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Failed to add portfolio")
+                    .add("status", "Invalid JWT Token")
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
@@ -644,28 +815,34 @@ public class StockController {
     }
 
     @PostMapping(value = "/removewatchlist")
-    public ResponseEntity<String> removeWatchlist(@RequestBody String jsonpayload) {
+    public ResponseEntity<String> removeWatchlist(@RequestBody String jsonpayload,
+            @RequestHeader String Authorization) {
+        String jwtToken = Authorization.substring(7); // skip the bearer_ by 7 chars
+        Boolean validToken = jwtUtils.validateJWT(jwtToken);
 
-        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
-        JsonObject json = reader.readObject();
+        if (validToken) {
+            Account user = jwtUtils.getJWTaccount(jwtToken);
+            JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+            JsonObject json = reader.readObject();
 
-        Integer watchlistid = json.getInt("watchlistid");
-        String email = json.getString("email");
+            Integer watchlistid = json.getInt("watchlistid");
 
-        System.out.println(watchlistid);
-        System.out.println(email);
+            Integer rowsupdated = stockRepo.removeWatchlist(watchlistid, user.getEmail());
 
-
-        Integer rowsupdated = stockRepo.removeWatchlist(watchlistid, email);
-
-        if (rowsupdated == 1) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Watchlist Removed")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+            if (rowsupdated == 1) {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Watchlist Removed")
+                        .build();
+                return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+            } else {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Failed to remove watchlist")
+                        .build();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+            }
         } else {
             JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Failed to remove watchlist")
+                    .add("status", "Invalid JWT Token")
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
@@ -673,28 +850,31 @@ public class StockController {
     }
 
     @PostMapping(value = "/removeportfolio")
-    public ResponseEntity<String> removePortfolio(@RequestBody String jsonpayload) {
+    public ResponseEntity<String> removePortfolio(@RequestBody String jsonpayload,
+            @RequestHeader String Authorization) {
+        String jwtToken = Authorization.substring(7); // skip the bearer_ by 7 chars
+        Boolean validToken = jwtUtils.validateJWT(jwtToken);
 
-        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
-        JsonObject json = reader.readObject();
-
-        Integer portfolioid = json.getInt("portfolioid");
-        String email = json.getString("email");
-
-        System.out.println(portfolioid);
-        System.out.println(email);
-
-
-        Integer rowsupdated = stockRepo.removePortfolio(portfolioid, email);
-
-        if (rowsupdated == 1) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Porfolio Removed")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+        if (validToken) {
+            Account user = jwtUtils.getJWTaccount(jwtToken);
+            JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+            JsonObject json = reader.readObject();
+            Integer portfolioid = json.getInt("portfolioid");
+            Integer rowsupdated = stockRepo.removePortfolio(portfolioid, user.getEmail());
+            if (rowsupdated == 1) {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Porfolio Removed")
+                        .build();
+                return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+            } else {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Failed to remove portfolio")
+                        .build();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+            }
         } else {
             JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Failed to remove portfolio")
+                    .add("status", "Invalid JWT Token")
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
@@ -706,26 +886,44 @@ public class StockController {
     // =================================================================================
 
     @PostMapping(value = "/stocks")
-    public ResponseEntity<String> addStock(@RequestBody String jsonpayload) {
+    public ResponseEntity<String> addStock(@RequestBody String jsonpayload, @RequestHeader String Authorization) {
+        String jwtToken = Authorization.substring(7); // skip the bearer_ by 7 chars
+        Boolean validToken = jwtUtils.validateJWT(jwtToken);
 
-        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
-        JsonObject json = reader.readObject();
-        JsonObject stockjson = json.getJsonObject("stock");
+        if (validToken) {
+            Account user = jwtUtils.getJWTaccount(jwtToken);
+            if (user.getRoles().equals("admin")) {
+                JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+                JsonObject json = reader.readObject();
+                JsonObject stockjson = json.getJsonObject("stock");
 
-        String market = stockjson.getString("market");
-        String ticker = stockjson.getString("ticker");
-        String stockName = stockjson.getString("stockName");
+                String market = stockjson.getString("market");
+                String ticker = stockjson.getString("ticker");
+                String stockName = stockjson.getString("stockName");
 
-        Integer rowsupdated = stockRepo.insertStock(market, ticker, stockName);
+                Integer rowsupdated = stockRepo.insertStock(market, ticker, stockName);
 
-        if (rowsupdated == 1) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Stock inserted")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+                if (rowsupdated == 1) {
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "Stock inserted")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+                } else {
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "Failed to add stock")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+                }
+            } else {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Only Admin is allowed to add stock")
+                        .build();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+            }
+
         } else {
             JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Failed to add stock")
+                    .add("status", "Invalid JWT Token")
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
@@ -737,38 +935,60 @@ public class StockController {
     // =================================================================================
 
     @PostMapping(value = "/update")
-    public ResponseEntity<String> updateStock(@RequestBody String jsonpayload) {
-        JsonReader reader = Json.createReader(new StringReader(jsonpayload));
-        JsonObject json = reader.readObject();
-        JsonObject stockjson = json.getJsonObject("stock");
+    public ResponseEntity<String> updateStock(@RequestBody String jsonpayload, @RequestHeader String Authorization) {
+        String jwtToken = Authorization.substring(7); // skip the bearer_ by 7 chars
+        Boolean validToken = jwtUtils.validateJWT(jwtToken);
 
-        String market = stockjson.getString("market");
-        String ticker = stockjson.getString("ticker");
-        String stockName = stockjson.getString("stockName");
-        String description = stockjson.getString("description");
-        Double lastprice = Double.parseDouble(stockjson.getJsonNumber("lastprice").toString());
-        Double targetprice = Double.parseDouble(stockjson.getJsonNumber("targetprice").toString());
-        Double epsttm = Double.parseDouble(stockjson.getJsonNumber("epsttm").toString());
-        Double pettm = Double.parseDouble(stockjson.getJsonNumber("pettm").toString());
-        Double dps = Double.parseDouble(stockjson.getJsonNumber("dps").toString());
-        Double divyield = Double.parseDouble(stockjson.getJsonNumber("divyield").toString());
-        Double bookvalue = Double.parseDouble(stockjson.getJsonNumber("bookvalue").toString());
-        Double pb = Double.parseDouble(stockjson.getJsonNumber("pb").toString());
-        Stock stock = new Stock(null, market, ticker, stockName, description, lastprice, targetprice, epsttm, pettm,
-                dps, divyield, bookvalue, pb,null,null);
+        if (validToken) {
+            Account user = jwtUtils.getJWTaccount(jwtToken);
 
-        Integer rowsupdated = stockRepo.updateStock(stock);
+            if (user.getRoles().equals("admin")) {
+                JsonReader reader = Json.createReader(new StringReader(jsonpayload));
+                JsonObject json = reader.readObject();
+                JsonObject stockjson = json.getJsonObject("stock");
 
-        if (rowsupdated == 1) {
-            JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Stock updated")
-                    .build();
-            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+                String market = stockjson.getString("market");
+                String ticker = stockjson.getString("ticker");
+                String stockName = stockjson.getString("stockName");
+                String description = stockjson.getString("description");
+                Double lastprice = Double.parseDouble(stockjson.getJsonNumber("lastprice").toString());
+                Double targetprice = Double.parseDouble(stockjson.getJsonNumber("targetprice").toString());
+                Double epsttm = Double.parseDouble(stockjson.getJsonNumber("epsttm").toString());
+                Double pettm = Double.parseDouble(stockjson.getJsonNumber("pettm").toString());
+                Double dps = Double.parseDouble(stockjson.getJsonNumber("dps").toString());
+                Double divyield = Double.parseDouble(stockjson.getJsonNumber("divyield").toString());
+                Double bookvalue = Double.parseDouble(stockjson.getJsonNumber("bookvalue").toString());
+                Double pb = Double.parseDouble(stockjson.getJsonNumber("pb").toString());
+                Stock stock = new Stock(null, market, ticker, stockName, description, lastprice, targetprice, epsttm,
+                        pettm,
+                        dps, divyield, bookvalue, pb, null, null);
+
+                Integer rowsupdated = stockRepo.updateStock(stock);
+
+                if (rowsupdated == 1) {
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "Stock updated")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+                } else {
+                    JsonObject responsejson = Json.createObjectBuilder()
+                            .add("status", "Failed to update stock")
+                            .build();
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+                }
+            } else {
+                JsonObject responsejson = Json.createObjectBuilder()
+                        .add("status", "Only Admin is allowed to update the stock details")
+                        .build();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
+            }
+
         } else {
             JsonObject responsejson = Json.createObjectBuilder()
-                    .add("status", "Failed to update stock")
+                    .add("status", "Invalid JWT Token")
                     .build();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
+
     }
 }

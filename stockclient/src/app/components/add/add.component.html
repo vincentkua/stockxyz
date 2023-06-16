@@ -2,7 +2,7 @@
 <br><br>
 <h2>Add Stock</h2>
 
-<form [formGroup]="form" (ngSubmit)="processform()">
+<form [formGroup]="form" (ngSubmit)="processform()" *ngIf="validated">
 
     <table>
         <tr>

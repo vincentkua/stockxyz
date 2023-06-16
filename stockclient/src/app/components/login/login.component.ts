@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.loginform = this.fb.group({
-      email : this.fb.control<string>("", Validators.required) ,
+      email : this.fb.control<string>("", [Validators.required, Validators.email]) ,
       password : this.fb.control<string>("", Validators.required)
     })
 
@@ -31,8 +31,12 @@ export class LoginComponent implements OnInit {
 
       })
       .catch(err=>{
-        console.log(">>> Error :" , err)
-        alert(err["error"]["status"])
+        console.warn(">>> Error :" , err)
+        if(err["error"]["status"] != null){
+          alert(err["error"]["status"])
+        }else{
+          alert(err["message"])
+        }  
         localStorage.removeItem('jwtToken')  
       })
 
@@ -52,8 +56,12 @@ export class LoginComponent implements OnInit {
       
     })
     .catch(err=>{
-      console.log(">>> Error :" , err)
-      alert(err["error"]["status"])
+      console.warn(">>> Error :" , err)
+      if(err["error"]["status"] != null){
+        alert(err["error"]["status"])
+      }else{
+        alert(err["message"])
+      }    
 
     })
 

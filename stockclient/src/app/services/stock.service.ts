@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { lastValueFrom, map } from 'rxjs';
 import { Stock } from '../models/models';
@@ -15,29 +15,34 @@ export class StockService {
   constructor(private http:HttpClient) { }
 
 
-  getStocks(searchstring : string , email : string) : Promise<any>{
-    const GETSTOCKSURL = URL + "/stocks"
+  getStocks(searchstring: string): Promise<any> {
+    const GETSTOCKSURL = URL + "/stocks";
     const params = new HttpParams()
-    .set("search", searchstring)
-    .set("email", email)
+      .set("search", searchstring);
+  
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
+  
     return lastValueFrom(
-      this.http.get<any>(GETSTOCKSURL, { params })
-      .pipe(
-        map((v:any)=>{
-          const stocks = v['stocks'] as Stock[]
-          return stocks
+      this.http.get<any>(GETSTOCKSURL, { params, headers }).pipe(
+        map((v: any) => {
+          const stocks = v['stocks'] as Stock[];
+          return stocks;
         })
       )
-    )
+    );
   }
 
-  getWatchlist(searchstring : string , email : string) : Promise<any>{
+  getWatchlist(searchstring : string ) : Promise<any>{
     const GETSTOCKSURL = URL + "/watchlist"
     const params = new HttpParams()
     .set("search", searchstring)
-    .set("email", email)
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
+
     return lastValueFrom(
-      this.http.get<any>(GETSTOCKSURL, { params })
+      this.http.get<any>(GETSTOCKSURL, { params , headers  })
       .pipe(
         map((v:any)=>{
           const stocks = v['stocks'] as Stock[]
@@ -47,13 +52,16 @@ export class StockService {
     )
   }
 
-  getPortfolio(searchstring : string , email : string) : Promise<any>{
+  getPortfolio(searchstring : string ) : Promise<any>{
     const GETSTOCKSURL = URL + "/portfolio"
     const params = new HttpParams()
     .set("search", searchstring)
-    .set("email", email)
+  
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
+
     return lastValueFrom(
-      this.http.get<any>(GETSTOCKSURL, { params })
+      this.http.get<any>(GETSTOCKSURL, { params ,headers })
       .pipe(
         map((v:any)=>{
           const stocks = v['stocks'] as Stock[]
@@ -131,7 +139,8 @@ export class StockService {
 
   updatePriceChart(market:string , ticker:string , pricechartlabel : string , pricechartdata : string ) : Promise<any>{
     const POSTPRICECHARTURL = URL + "/pricechart"
-
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
     const payload: any = { 
       market : market ,
       ticker : ticker ,
@@ -140,12 +149,15 @@ export class StockService {
     }
 
     return lastValueFrom(
-      this.http.post<any>(POSTPRICECHARTURL,payload)
+      this.http.post<any>(POSTPRICECHARTURL,payload , {headers})
     )
   }  
 
   updateEarningChart(market:string , ticker:string , label : string , revenue : string , grossprofit : string  , netprofit : string  ) : Promise<any>{
     const POSTEARNINGCHARTURL = URL + "/earningchart"
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
 
     const payload: any = { 
       market : market ,
@@ -157,12 +169,15 @@ export class StockService {
     }
 
     return lastValueFrom(
-      this.http.post<any>(POSTEARNINGCHARTURL,payload)
+      this.http.post<any>(POSTEARNINGCHARTURL,payload ,{headers})
     )
   }  
 
   updateBalanceChart(market:string , ticker:string , label : string , asset : string , liability : string  , debt : string  ) : Promise<any>{
     const POSTURL = URL + "/balancechart"
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
 
     const payload: any = { 
       market : market ,
@@ -174,12 +189,14 @@ export class StockService {
     }
 
     return lastValueFrom(
-      this.http.post<any>(POSTURL,payload)
+      this.http.post<any>(POSTURL,payload , {headers})
     )
   }  
 
   updateEpsDpsChart(market:string , ticker:string , label : string , eps : string , dps : string   ) : Promise<any>{
     const POSTURL = URL + "/epsdpschart"
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
 
     const payload: any = { 
       market : market ,
@@ -189,12 +206,14 @@ export class StockService {
       dps : dps 
     }
     return lastValueFrom(
-      this.http.post<any>(POSTURL,payload)
+      this.http.post<any>(POSTURL,payload , {headers})
     )
   }  
 
   updateCashflowChart(market:string , ticker:string , label : string , operating : string , investing : string , financing : string  ) : Promise<any>{
     const POSTURL = URL + "/cashflowchart"
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
 
     const payload: any = { 
       market : market ,
@@ -205,15 +224,17 @@ export class StockService {
       financing : financing  
     }
     return lastValueFrom(
-      this.http.post<any>(POSTURL,payload)
+      this.http.post<any>(POSTURL,payload , {headers})
     )
   }  
 
   addStocks(stock : Stock) : Promise<any> {
     const ADDSTOCKURL = URL + "/stocks"
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
     const payload: any = { stock }
     return lastValueFrom(
-      this.http.post<any>(ADDSTOCKURL, payload)
+      this.http.post<any>(ADDSTOCKURL, payload, {headers})
       .pipe(
         map((v:any)=>{
           const status = v['status'] as string
@@ -223,54 +244,61 @@ export class StockService {
     )
   }
 
-  addWatchlist(stockid : number , email : string) : Promise<any> {
+  addWatchlist(stockid : number) : Promise<any> {
     const ADDURL = URL + "/addwatchlist"
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
     const payload: any = { 
-      stockid : stockid ,
-      email : email 
+      stockid : stockid
     }
     return lastValueFrom(
-      this.http.post<any>(ADDURL, payload)
+      this.http.post<any>(ADDURL, payload , { headers: headers })
     )
   }
 
-  addPortfolio(stockid : number , email : string) : Promise<any> {
+  addPortfolio(stockid : number ) : Promise<any> {
     const ADDURL = URL + "/addportfolio"
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
     const payload: any = { 
-      stockid : stockid ,
-      email : email 
+      stockid : stockid
     }
     return lastValueFrom(
-      this.http.post<any>(ADDURL, payload)
+      this.http.post<any>(ADDURL, payload , { headers: headers })
     )
   }
 
   removeWatchlist(watchlistid : number , email : string) : Promise<any> {
     const REMOVEURL = URL + "/removewatchlist"
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
     const payload: any = { 
-      watchlistid : watchlistid ,
-      email : email 
+      watchlistid : watchlistid 
     }
     return lastValueFrom(
-      this.http.post<any>(REMOVEURL, payload)
+      this.http.post<any>(REMOVEURL, payload , {headers : headers})
     )
   }
 
-  removePortfolio(portfolioid : number , email : string) : Promise<any> {
+  removePortfolio(portfolioid : number ) : Promise<any> {
     const REMOVEURL = URL + "/removeportfolio"
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
+
     const payload: any = { 
-      portfolioid : portfolioid ,
-      email : email 
+      portfolioid : portfolioid 
     }
     return lastValueFrom(
-      this.http.post<any>(REMOVEURL, payload)
+      this.http.post<any>(REMOVEURL, payload , {headers : headers})
     )
   }
 
   deleteStock(id : number ){
     const DELETEURL = URL + "/delete/" + id 
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
     return lastValueFrom(
-      this.http.post<any>(DELETEURL,null)
+      this.http.post<any>(DELETEURL,null, {headers : headers})
       .pipe(
         map((v:any)=>{
           const status = v['status'] as string
@@ -284,9 +312,11 @@ export class StockService {
 
   updateStock(stock : Stock) : Promise<any> {
     const UPDATESTOCKURL = URL + "/update"
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
     const payload: any = { stock }
     return lastValueFrom(
-      this.http.post<any>(UPDATESTOCKURL, payload)
+      this.http.post<any>(UPDATESTOCKURL, payload, {headers : headers})
       .pipe(
         map((v:any)=>{
           const status = v['status'] as string
@@ -298,12 +328,14 @@ export class StockService {
 
   getFundamentalApi(market:string , ticker:string) : Promise<any>{
     const GETSTOCKAPIURL = URL + "/fundamentalapi"
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
     const params = new HttpParams()
     .set("market", market)
     .set("ticker", ticker)
 
     return lastValueFrom(
-      this.http.get<any>(GETSTOCKAPIURL, { params })
+      this.http.get<any>(GETSTOCKAPIURL, { params ,headers })
       .pipe(
         map((v:any)=>{
           const status = v['status'] as string
@@ -313,29 +345,6 @@ export class StockService {
     )
 
   }
-
-  getPriceApi(market:string , ticker:string){
-    const GETSTOCKAPIURL = URL + "/priceapi"
-    const params = new HttpParams()
-    .set("market", market)
-    .set("ticker", ticker)
-
-    return lastValueFrom(
-      this.http.get<any>(GETSTOCKAPIURL, { params })
-    )
-  }
-
-  getByWebScraper(market:string , ticker:string){
-    const GETSTOCKAPIURL = URL + "/webscraper"
-    const params = new HttpParams()
-    .set("market", market)
-    .set("ticker", ticker)
-
-    return lastValueFrom(
-      this.http.get<any>(GETSTOCKAPIURL, { params })
-    )
-  }
-
 
 
 }

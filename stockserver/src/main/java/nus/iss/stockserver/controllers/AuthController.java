@@ -35,7 +35,7 @@ public class AuthController {
     @GetMapping(value = "/validatejwt")
     public ResponseEntity<String> validatejwt(@RequestParam String jwt) {
 
-        System.out.println(jwt);
+        // System.out.println(jwt);
         Boolean jwtvalidity = jwtUtils.validateJWT(jwt);
         if (jwtvalidity) {
             JsonObject responsejson = Json.createObjectBuilder()
@@ -53,7 +53,7 @@ public class AuthController {
     @GetMapping(value = "/parsejwt")
     public ResponseEntity<String> parsejwt(@RequestParam String jwt) {
 
-        System.out.println(jwt);
+        // System.out.println(jwt);
 
         Account account =jwtUtils.getJWTaccount(jwt);
 
@@ -65,11 +65,11 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
         }else{
         JsonObject responsejson = Json.createObjectBuilder()
-                .add("status", "Invalid JWT")
+                .add("status", "Invalid JWT Token , Please Login to Continue")
                 .build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responsejson.toString());
         }
-    }
+    } 
 
     @GetMapping(value = "/signin")
     public ResponseEntity<String> userlogin(@RequestParam String email, @RequestParam String password) {

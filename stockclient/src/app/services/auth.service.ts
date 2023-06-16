@@ -5,12 +5,12 @@ import { lastValueFrom } from 'rxjs';
 const APIURL = "http://127.0.0.1:8080/api"
 // const APIURL = "https://stockxyz-production.up.railway.app/api"
 
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-
-  rootpage : string = "all"
 
   constructor(private http: HttpClient) { }
 

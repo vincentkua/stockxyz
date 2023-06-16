@@ -46,7 +46,11 @@ export class WatchlistComponent implements OnInit {
         })
         .catch((err) => {
           console.log('>>> Error :', err);
-          alert(err.error.status);
+          if(err["error"]["status"] != null){
+            alert(err["error"]["status"])
+          }else{
+            alert(err["message"])
+          }  
           this.handleInvalidToken();
         });
     } else {
@@ -83,7 +87,7 @@ export class WatchlistComponent implements OnInit {
 
   processform(){
     this.stocksearch = this.form.value["searchstring"]
-    this.stockSvc.getWatchlist(this.stocksearch, this.email)
+    this.stockSvc.getWatchlist(this.stocksearch)
     .then(v => {
       console.info('>>> Stock List: ', v)
       this.stocks = v

@@ -46,7 +46,11 @@ export class AllComponent implements OnInit {
         })
         .catch((err) => {
           console.log('>>> Error :', err);
-          alert(err.error.status);
+          if(err["error"]["status"] != null){
+            alert(err["error"]["status"])
+          }else{
+            alert(err["message"])
+          }  
           this.handleInvalidToken();
         });
     } else {
@@ -72,18 +76,18 @@ export class AllComponent implements OnInit {
 
   handleInvalidToken(): void {
     localStorage.removeItem('jwtToken');
-    alert('Invalid JWT ... Rerouting to Login Page...');
+    // alert('Invalid JWT ... Rerouting to Login Page...');
     this.router.navigate(['/login']);
   }
 
   handleMissingToken(): void {
-    alert('JWT not found ... Rerouting to Login Page...');
+    alert('Plase login to continue...');
     this.router.navigate(['/login']);
   }
 
   processform() : void{
     this.stocksearch = this.form.value["searchstring"]
-    this.stockSvc.getStocks(this.stocksearch, this.email)
+    this.stockSvc.getStocks(this.stocksearch)
     .then(v => {
       console.info('>>> Stock List: ', v)
       this.stocks = v
@@ -97,7 +101,7 @@ export class AllComponent implements OnInit {
   }
 
   addtowatchlist(stockid : number){
-    this.stockSvc.addWatchlist(stockid, this.email)
+    this.stockSvc.addWatchlist(stockid)
     .then(v => {
       console.info('>>> Add Status: ', v)
       this.processform()
@@ -107,7 +111,7 @@ export class AllComponent implements OnInit {
   }
 
   addtoportfolio(stockid : number){
-    this.stockSvc.addPortfolio(stockid, this.email)
+    this.stockSvc.addPortfolio(stockid)
     .then(v => {
       console.info('>>> Add Status: ', v)
       this.processform()

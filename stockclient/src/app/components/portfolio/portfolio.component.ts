@@ -47,7 +47,11 @@ export class PortfolioComponent implements OnInit {
         })
         .catch((err) => {
           console.log('>>> Error :', err);
-          alert(err.error.status);
+          if(err["error"]["status"] != null){
+            alert(err["error"]["status"])
+          }else{
+            alert(err["message"])
+          }  
           this.handleInvalidToken();
         });
     } else {
@@ -84,7 +88,7 @@ export class PortfolioComponent implements OnInit {
 
   processform(){
     this.stocksearch = this.form.value["searchstring"]
-    this.stockSvc.getPortfolio(this.stocksearch, this.email)
+    this.stockSvc.getPortfolio(this.stocksearch)
     .then(v => {
       console.info('>>> Stock List: ', v)
       this.stocks = v
@@ -98,7 +102,7 @@ export class PortfolioComponent implements OnInit {
   }
 
   removeportfolio(portfolioid : number){
-    this.stockSvc.removePortfolio(portfolioid, this.email)
+    this.stockSvc.removePortfolio(portfolioid)
     .then(v => {
       console.info('>>> Add Status: ', v)
       this.processform()

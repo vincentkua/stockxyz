@@ -218,29 +218,6 @@ export class StockComponent implements OnInit , AfterViewInit {
     })
   }
 
-  priceApi(){
-    this.stockSvc.getPriceApi(this.market , this.ticker)
-    .then(v => {
-      console.info('resolved: ', v)
-      this.getFundamental()
-    }).catch(err => {
-      console.error('>>> error: ', err)
-      alert("Failed to get price api")
-    })
-
-  }
-
-  webscraper(){
-    this.stockSvc.getByWebScraper(this.market , this.ticker)
-    .then(v => {
-      console.info('resolved: ', v)
-      this.getFundamental()
-    }).catch(err => {
-      console.error('>>> error: ', err)
-    })
-
-  }
-
   updatePriceChartData(){
     const pricelabel : string = this.pricechartform.value["pricelabel"]
     const pricedata : string = this.pricechartform.value["pricedata"]
