@@ -1,3 +1,4 @@
+// ng serve --proxy-config proxy-config.js
 module.exports = [
     {
         context : ['/**'],

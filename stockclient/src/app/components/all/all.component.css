@@ -7,5 +7,8 @@ table,th,td{
 
 button{
     margin-right: 8px;
+    margin-bottom: 4px;
+    width: 80px;
+    font-size: 12px;
 }
 

@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { lastValueFrom, map } from 'rxjs';
 import { Stock } from '../models/models';
 
-const URL = "http://127.0.0.1:8080/api"
+// const URL = "http://127.0.0.1:8080/api"
 // const URL = "https://stockxyz-production.up.railway.app/api"
+const URL = "/api"
 
 
 @Injectable({
@@ -298,7 +299,7 @@ export class StockService {
     const jwtToken = localStorage.getItem('jwtToken');
     const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
     return lastValueFrom(
-      this.http.post<any>(DELETEURL,null, {headers : headers})
+      this.http.delete<any>(DELETEURL, {headers : headers})
       .pipe(
         map((v:any)=>{
           const status = v['status'] as string
