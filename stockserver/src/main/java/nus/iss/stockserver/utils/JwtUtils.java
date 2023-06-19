@@ -21,6 +21,8 @@ public class JwtUtils {
                                                                                        // when server restart
     private static final long EXPIRATION_TIME = 864_000_000; // 10 days
 
+    private static final long RESET_TIME = 600_000; // 10 minutes
+
     public String generateJWT(String email, String role) {
         // Generate JWT Token
         Date now = new Date();
@@ -87,6 +89,43 @@ public class JwtUtils {
             account.setRoles(role);
 
             return account;
+
+        } catch (Exception e) {
+            System.out.println(">>> error while parsing jwt email and roles ");
+            return null;
+        }
+    }
+
+    public String generatepassresetJWT(String email) {
+        // Generate JWT Token
+        Date now = new Date();
+        Date expirationDate = new Date(now.getTime() + RESET_TIME);
+
+        String jwtToken = Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(now)
+                .setExpiration(expirationDate)
+                .signWith(SECRET_KEY)
+                .compact();
+
+        // System.out.println(">>> SECRET:" + SECRET_KEY);
+        // System.out.println(">>> JWTTOKEN:" + jwtToken);
+
+        return jwtToken;
+    }
+
+    public String getJWTResetMail(String jwtToken) {
+        Jws<Claims> claimsJws;
+        try {
+            claimsJws = Jwts.parserBuilder()
+                    .setSigningKey(SECRET_KEY)
+                    .build()
+                    .parseClaimsJws(jwtToken);
+
+            // Get JWT Subject (Email)
+            String subject = claimsJws.getBody().getSubject();
+
+            return subject;
 
         } catch (Exception e) {
             System.out.println(">>> error while parsing jwt email and roles ");

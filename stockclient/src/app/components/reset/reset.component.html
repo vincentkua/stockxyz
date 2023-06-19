@@ -1,0 +1,45 @@
+<mat-card *ngIf="status=='validated'">
+    <mat-card-title>Password Reset</mat-card-title>
+    <p class="emailp">Email : {{email}}</p>
+    
+<!-- <p>{{email}}</p> -->
+    <br>
+    <mat-card-content>
+      <form [formGroup]="resetform" (ngSubmit)="processform()">
+        <!-- <mat-form-field style="width: 100%;">
+          <mat-label >Email</mat-label>
+          <input matInput type="email" formControlName="email" [disabled]="true"/>
+        </mat-form-field> -->
+  
+
+        <mat-form-field style="width: 280px;">
+          <mat-label>New Password</mat-label>
+          <input matInput type="password" formControlName="newpassword"/>
+        </mat-form-field>
+  
+        <br>
+        <br>
+  
+        <div class="right">
+          <button type="submit" mat-raised-button color="primary" style="width: 130px;">Update</button>
+        </div>
+  
+        <br>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <div *ngIf="status=='checking'">
+    <p>Validating...</p>
+    <mat-progress-bar mode="query" style="width: 200px"></mat-progress-bar>
+  </div>
+
+  <div *ngIf="status=='error'">
+    <a href="/">&lt; back</a>
+    <br>
+    <br>
+    <h2>Password Reset</h2>
+    <p>Unable to Proceed. The reset token is invalid!!!</p>
+
+  </div>
+  

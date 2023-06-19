@@ -125,6 +125,8 @@ public class StockRepository {
         return rowsupdated;
     }
 
+
+
     private static final String UPDATEALPHA = "update stocklist set  description = ?, targetprice = ? , epsttm = ? , pettm = ? , dps = ? , divyield = ?, bookvalue= ? , pb= ? where market =? AND ticker=?";
 
     public Integer updateFundamental(Stock stock) {
@@ -170,6 +172,13 @@ public class StockRepository {
             return 0;
         }
 
+    }
+
+    private static final String UPDATEPASSWORD = "update userlist set hpassword = ?  where email =? ";
+
+    public Integer updateUserPassword(String email , String hpassword ) {
+        Integer rowsupdated = jdbcTemplate.update(UPDATEPASSWORD, hpassword , email);
+        return rowsupdated;
     }
 
     private static final String GETUSER = "select * from  userlist where email = ?";

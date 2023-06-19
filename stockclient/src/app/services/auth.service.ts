@@ -2,9 +2,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 
-// const APIURL = "http://127.0.0.1:8080/api"
+const APIURL = "http://127.0.0.1:8080/api"
 // const APIURL = "https://stockxyz-production.up.railway.app/api"
-const APIURL = "/api"
+// const APIURL = "/api"
 
 
 
@@ -62,4 +62,45 @@ export class AuthService {
     )
     
   }
+
+  resetUserpassword(token : string , newpassword: string ){
+    const POSTURL = APIURL + "/updatePassword"
+
+    const payload: any = { 
+      token : token ,
+      newpassword : newpassword
+    }
+
+    return lastValueFrom(
+      this.http.post<any>(POSTURL,payload)
+    )
+    
+  }
+
+  resetPassword(email : string){
+    const GETURL = APIURL + "/resetEmail"
+
+    const params = new HttpParams()
+    .set("email", email)
+
+    return lastValueFrom(
+      this.http.get<any>(GETURL,{params})
+    )
+
+  }
+
+  getResetEmail(token : string){
+    const GETURL = APIURL + "/getResetEmail"
+
+    const params = new HttpParams()
+    .set("token", token)
+
+    return lastValueFrom(
+      this.http.get<any>(GETURL,{params})
+    )
+
+  }
+
+
+
 }

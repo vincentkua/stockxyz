@@ -24,6 +24,7 @@ import { BalancechartComponent } from './components/charts/balancechart/balancec
 import { EpsdpschartComponent } from './components/charts/epsdpschart/epsdpschart.component';
 import { CashflowchartComponent } from './components/charts/cashflowchart/cashflowchart.component';
 import { SignupComponent } from './components/signup/signup.component';
+import { ResetComponent } from './components/reset/reset.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { SignupComponent } from './components/signup/signup.component';
     BalancechartComponent,
     EpsdpschartComponent,
     CashflowchartComponent,
-    SignupComponent
+    SignupComponent,
+    ResetComponent
   ],
   imports: [
     BrowserModule,

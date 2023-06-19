@@ -11,6 +11,7 @@ import { AuthService } from 'src/app/services/auth.service';
 export class LoginComponent implements OnInit {
 
   loginform !: FormGroup
+  disableresetbtn : boolean = false
 
 
   constructor(private fb : FormBuilder , private authSvc : AuthService , private router : Router){}
@@ -66,4 +67,36 @@ export class LoginComponent implements OnInit {
     })
 
   }
+
+  resetpass() {
+
+    if(this.disableresetbtn == false){
+      this.disableresetbtn = true;
+      const email = this.loginform.value["email"];
+      const emailRegex = /^\S+@\S+\.\S+$/; // Regular expression for email validation
+    
+      if (!emailRegex.test(email)) {
+        alert("Please enter a valid email address");
+        this.disableresetbtn = false;
+      } else {
+        this.authSvc.resetPassword(email)
+        .then(v=>{
+          console.log(">>> Resolved:" , v) 
+          alert(v["status"]) 
+          this.disableresetbtn = false;      
+        })
+        .catch(err=>{
+          console.warn(">>> Error :" , err)
+          if(err["error"]["status"] != null){
+            alert(err["error"]["status"])
+          }else{
+            alert(err["message"])
+          }     
+          this.disableresetbtn = false;
+        })
+      }
+    }
+
+  }
+
 }

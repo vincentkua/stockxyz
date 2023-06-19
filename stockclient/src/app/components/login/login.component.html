@@ -14,8 +14,8 @@
       </mat-form-field>
 
       <br>
-      <p>No Account? <a href="/signup">Create One !</a></p>
-
+      <p>No Account? <a class="spanlink" [routerLink]="['/signup']">Create Account</a></p>
+      <p>Forget Password? <a class="spanlink" [class.isDisabled]="disableresetbtn" (click)="resetpass()" >Reset Password</a></p>
       <br>
 
       <div class="right">

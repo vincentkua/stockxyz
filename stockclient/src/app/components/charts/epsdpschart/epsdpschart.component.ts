@@ -46,7 +46,7 @@ export class EpsdpschartComponent implements AfterViewInit{
         display: true   
       },
       datalabels: {
-        display: true,
+        display: false,
         anchor: 'end',
         align: 'end' 
       }

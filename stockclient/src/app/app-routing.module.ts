@@ -9,11 +9,13 @@ import { PortfolioComponent } from './components/portfolio/portfolio.component';
 import { AddComponent } from './components/add/add.component';
 import { EditComponent } from './components/edit/edit.component';
 import { SignupComponent } from './components/signup/signup.component';
+import { ResetComponent } from './components/reset/reset.component';
 
 const routes: Routes = [
   {path:"" , component:AllComponent},
   {path:"all" , component:AllComponent},
   {path:"add" , component:AddComponent},
+  {path:"reset/:token" , component:ResetComponent},
   {path:"edit/:ticker" , component:EditComponent},
   {path:"watchlist" , component:WatchlistComponent},
   {path:"portfolio" , component:PortfolioComponent},
