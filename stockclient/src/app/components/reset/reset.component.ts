@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -10,32 +10,37 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class ResetComponent implements OnInit {
 
+  tokenform !: FormGroup
   resetform !: FormGroup
   token : string = ""
   email : string = ""
-  status : string = "checking"
+  status : string = "tokeninput"
 
 
-  constructor(private fb : FormBuilder , private authSvc : AuthService , private router : Router, private activatedRoute : ActivatedRoute){}
+  constructor(private fb : FormBuilder , private authSvc : AuthService , private router : Router){}
 
   ngOnInit(): void {
-    this.activatedRoute.params.subscribe((params)=>{
-      this.token = params["token"]
-      console.log(this.token)
+
+    this.tokenform = this.fb.group({
+      token : this.fb.control<string>("", Validators.required)
     })
 
     this.resetform = this.fb.group({
       newpassword : this.fb.control<string>("", Validators.required)
-    })
-    
-    if(this.token != ""){
+    })  
+   
+      
+  }
+
+  checktoken(){
+    this.status= "validating"
+    this.token = this.tokenform.value["token"]
+        if(this.token != ""){
       this.authSvc.getResetEmail(this.token)
       .then(v=>{
         console.log(">>> Resolved :" , v)
         this.email = v["email"]
         this.status= "validated"
-
-
       })
       .catch(err=>{
         console.warn(">>> Error :" , err)
@@ -44,12 +49,11 @@ export class ResetComponent implements OnInit {
         }else{
           alert(err["message"])
         }  
-        this.status= "error"
+        this.status= "tokeninput"
       })
 
     }
-    
-      
+
   }
 
   processform(){

@@ -12,6 +12,7 @@ export class LoginComponent implements OnInit {
 
   loginform !: FormGroup
   disableresetbtn : boolean = false
+  displaymode : string = "default"
 
 
   constructor(private fb : FormBuilder , private authSvc : AuthService , private router : Router){}
@@ -72,18 +73,22 @@ export class LoginComponent implements OnInit {
 
     if(this.disableresetbtn == false){
       this.disableresetbtn = true;
+      this.displaymode = "sendingmail"
       const email = this.loginform.value["email"];
       const emailRegex = /^\S+@\S+\.\S+$/; // Regular expression for email validation
     
       if (!emailRegex.test(email)) {
         alert("Please enter a valid email address");
         this.disableresetbtn = false;
+        this.displaymode = "default"
       } else {
         this.authSvc.resetPassword(email)
         .then(v=>{
           console.log(">>> Resolved:" , v) 
           alert(v["status"]) 
-          this.disableresetbtn = false;      
+          this.disableresetbtn = false;  
+          this.displaymode = "default"
+          this.router.navigate(['/reset'])    
         })
         .catch(err=>{
           console.warn(">>> Error :" , err)
@@ -93,6 +98,7 @@ export class LoginComponent implements OnInit {
             alert(err["message"])
           }     
           this.disableresetbtn = false;
+          this.displaymode = "default"
         })
       }
     }

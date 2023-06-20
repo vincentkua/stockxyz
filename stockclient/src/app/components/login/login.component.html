@@ -1,28 +1,58 @@
 <mat-card>
-  <mat-card-title>Sign In</mat-card-title>
-  <br>
-  <mat-card-content>
-    <form [formGroup]="loginform" (ngSubmit)="processform()">
-      <mat-form-field style="width: 100%;">
-        <mat-label >Email</mat-label>
-        <input matInput type="email" formControlName="email"/>
-      </mat-form-field>
+  <div *ngIf="displaymode == 'default'">
+    <mat-card-title>Sign In</mat-card-title>
+    <br />
+    <mat-card-content>
+      <form [formGroup]="loginform" (ngSubmit)="processform()">
+        <mat-form-field style="width: 100%">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" />
+        </mat-form-field>
 
-      <mat-form-field style="width: 100%;">
-        <mat-label>Password</mat-label>
-        <input matInput type="password" formControlName="password"/>
-      </mat-form-field>
+        <mat-form-field style="width: 100%">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password" />
+        </mat-form-field>
 
-      <br>
-      <p>No Account? <a class="spanlink" [routerLink]="['/signup']">Create Account</a></p>
-      <p>Forget Password? <a class="spanlink" [class.isDisabled]="disableresetbtn" (click)="resetpass()" >Reset Password</a></p>
-      <br>
+        <br />
+        <p>
+          No Account?
+          <a class="spanlink" [routerLink]="['/signup']">Create Account</a>
+        </p>
+        <p>
+          Forget Password?
+          <a
+            class="spanlink"
+            [class.isDisabled]="disableresetbtn"
+            (click)="resetpass()"
+            >Reset Password</a
+          >
+        </p>
+        <br />
 
-      <div class="right">
-        <button type="submit" mat-raised-button color="primary" style="width: 130px;">Sign In</button>
-      </div>
+        <div class="right">
+          <button
+            type="submit"
+            mat-raised-button
+            color="primary"
+            style="width: 130px"
+          >
+            Sign In
+          </button>
+        </div>
 
-      <br>
-    </form>
-  </mat-card-content>
+        <br />
+      </form>
+    </mat-card-content>
+  </div>
+
+  <div class="centerdiv" *ngIf="displaymode == 'sendingmail'">
+    <mat-card-title>Please Wait...</mat-card-title>
+    <br />
+    <p>Sending Reset Token by Email...</p>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+
+    <br />
+    <br />
+  </div>
 </mat-card>

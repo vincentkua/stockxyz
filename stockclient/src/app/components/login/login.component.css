@@ -9,6 +9,10 @@ mat-card-title,mat-card-content {
   display: flex;
   justify-content: center;
 }
+.centerdiv{
+  padding: 20px;
+  text-align: center;
+}
 
 
 

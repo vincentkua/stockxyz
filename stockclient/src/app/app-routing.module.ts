@@ -15,7 +15,7 @@ const routes: Routes = [
   {path:"" , component:AllComponent},
   {path:"all" , component:AllComponent},
   {path:"add" , component:AddComponent},
-  {path:"reset/:token" , component:ResetComponent},
+  {path:"reset" , component:ResetComponent},
   {path:"edit/:ticker" , component:EditComponent},
   {path:"watchlist" , component:WatchlistComponent},
   {path:"portfolio" , component:PortfolioComponent},

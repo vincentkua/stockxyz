@@ -5,7 +5,7 @@ mat-card{
     width: 40%;
     padding: 15px;
 }
-mat-card-title,mat-card-content, .emailp {
+mat-card-title,mat-card-content, .emailp , .centerp {
   display: flex;
   justify-content: center;
 }

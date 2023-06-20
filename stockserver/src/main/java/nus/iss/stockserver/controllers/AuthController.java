@@ -183,14 +183,15 @@ public class AuthController {
         System.out.println(email);
         Account account = stockRepo.getUser(email);
         if (account != null) {
-            String passresetJWT = this.jwtUtils.generatepassresetJWT(email);
-            System.out.println(passresetJWT);
-            String resetLink = "http://localhost:4200/reset/" + passresetJWT;
+            String passresetJWT = this.jwtUtils.generatepassresetJWT(email);  
 
             String emailContent = String.format("""
-                    <p>Your Stock XYZ account password reset link: <a href='%s'>Click here</a></p>
+                    <h3>Your password reset token:</h3>
+                    <hr>
+                    <p>%s</p>
+                    <hr>
                     <p>Please ignore this email if you did not request a password reset.</p>
-                    """, resetLink);
+                    """, passresetJWT);
 
             Boolean emailsent = emailSvc.sendEmail(email, emailContent);
             if (emailsent) {
