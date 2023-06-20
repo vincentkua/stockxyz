@@ -25,6 +25,9 @@ import { EpsdpschartComponent } from './components/charts/epsdpschart/epsdpschar
 import { CashflowchartComponent } from './components/charts/cashflowchart/cashflowchart.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { ResetComponent } from './components/reset/reset.component';
+import { environment } from "../environments/environment";
+import { initializeApp } from "firebase/app";
+initializeApp(environment.firebase);
 
 @NgModule({
   declarations: [

@@ -23,6 +23,7 @@
     "@angular/service-worker": "^15.2.0",
     "chart.js": "^3.6.0",
     "chartjs-plugin-datalabels": "^2.2.0",
+    "firebase": "^9.22.2",
     "ng2-charts": "^4.1.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
