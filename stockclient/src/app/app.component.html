@@ -48,17 +48,7 @@
         <span style="font-weight: normal;">Guest</span> -->
       </mat-toolbar-row>
     </mat-toolbar>
-    <div style="padding: 30px">
-
-      <div *ngIf="message;">
-        <h1>{{ message.notification.title }}</h1>
-        <h2>{{ message.notification.body }}</h2>
-      </div>
-      <div *ngIf="!message;">
-        No Message Arrived
-      </div>
-      
-
+    <div style="padding: 30px">    
       <router-outlet></router-outlet>
     </div>
   </div>

@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { lastValueFrom, map } from 'rxjs';
 import { Stock } from '../models/models';
 
-const URL = "http://127.0.0.1:8080/api"
+// const URL = "http://127.0.0.1:8080/api"
 // const URL = "https://stockxyz-production.up.railway.app/api"
-// const URL = "/api"
+const URL = "/api"
 
 
 @Injectable({

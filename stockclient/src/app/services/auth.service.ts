@@ -2,9 +2,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 
-const APIURL = "http://127.0.0.1:8080/api"
+// const APIURL = "http://127.0.0.1:8080/api"
 // const APIURL = "https://stockxyz-production.up.railway.app/api"
-// const APIURL = "/api"
+const APIURL = "/api"
 
 
 
@@ -12,6 +12,8 @@ const APIURL = "http://127.0.0.1:8080/api"
   providedIn: 'root'
 })
 export class AuthService {
+
+  notificationToken : string = "";
 
   constructor(private http: HttpClient) { }
 
@@ -37,12 +39,14 @@ export class AuthService {
     )
   }
 
-  signinUser(loginrequest : any){
+  signinUser(loginrequest : any , notificationToken : string){
     const CHECKUSERURL = APIURL + "/signin"
 
     const params = new HttpParams()
     .set("email", loginrequest["email"])
     .set("password", loginrequest["password"])
+    .set("notificationToken", notificationToken)
+
     
     return lastValueFrom(
       this.http.get<any>(CHECKUSERURL,{params})

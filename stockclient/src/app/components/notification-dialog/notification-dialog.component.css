@@ -1,0 +1,18 @@
+.container{
+    padding: 20px;
+}
+
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* .dialog-header button {
+    margin-top: -12px;
+    background-color: red;
+  } */
+  
+  .dialog-content {
+    margin-top: 0px;
+  }

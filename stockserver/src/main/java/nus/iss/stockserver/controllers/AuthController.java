@@ -19,6 +19,7 @@ import jakarta.json.JsonReader;
 import nus.iss.stockserver.models.Account;
 import nus.iss.stockserver.repository.StockRepository;
 import nus.iss.stockserver.services.EmailService;
+import nus.iss.stockserver.services.NotificationService;
 import nus.iss.stockserver.utils.JwtUtils;
 
 @RestController
@@ -33,6 +34,9 @@ public class AuthController {
 
     @Autowired
     EmailService emailSvc;
+
+    @Autowired
+    NotificationService notificationSvc;
 
     @GetMapping(value = "/validatejwt")
     public ResponseEntity<String> validatejwt(@RequestParam String jwt) {
@@ -74,7 +78,7 @@ public class AuthController {
     }
 
     @GetMapping(value = "/signin")
-    public ResponseEntity<String> userlogin(@RequestParam String email, @RequestParam String password) {
+    public ResponseEntity<String> userlogin(@RequestParam String email, @RequestParam String password , @RequestParam String notificationToken) {
 
         // Call Repo to get and check hpassword
         Account account = new Account();
@@ -88,6 +92,11 @@ public class AuthController {
         } else {
             String pw_hash = account.getHpassword();
             if (BCrypt.checkpw(password, pw_hash)) {
+
+                // Check NotificationToken , add to Listener List if not empty
+                if(!notificationToken.equals("")){
+                    notificationSvc.addListenToken(notificationToken);
+                }
 
                 // Generate JWT Token
                 String jwtToken = jwtUtils.generateJWT(email, account.getRoles());

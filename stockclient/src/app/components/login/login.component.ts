@@ -48,7 +48,8 @@ export class LoginComponent implements OnInit {
   }
 
   processform(){
-    this.authSvc.signinUser(this.loginform.value)
+    const notificationToken : string = this.authSvc.notificationToken;
+    this.authSvc.signinUser(this.loginform.value , notificationToken)
     .then(v=>{
       console.log(">>> Resolved:" , v)
       // save JWT Token
