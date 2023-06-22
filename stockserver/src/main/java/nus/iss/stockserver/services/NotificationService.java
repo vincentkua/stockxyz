@@ -23,8 +23,6 @@ public class NotificationService {
 
     public final static String FCMURL = "https://fcm.googleapis.com/fcm/send";
 
-
-
     List<String> clientListenTokens = new LinkedList<>();
 
     public Boolean addListenToken(String newToken) {
@@ -39,43 +37,45 @@ public class NotificationService {
 
     }
 
-    public void sendNotification(String title, String content) {
-        for (String targetClient : clientListenTokens) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.add("Authorization","key=" + FCMSERVERKEY);
+    public Boolean sendNotification(String title, String content) {
+        try {
+            for (String targetClient : clientListenTokens) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                headers.add("Authorization", "key=" + FCMSERVERKEY);
 
-            Map<String, String> notification = new HashMap<>();
-            notification.put("title", title);
-            notification.put("body", content);
+                Map<String, String> notification = new HashMap<>();
+                notification.put("title", title);
+                notification.put("body", content);
 
-            Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("notification", notification);
-            requestBody.put("to", targetClient);
+                Map<String, Object> requestBody = new HashMap<>();
+                requestBody.put("notification", notification);
+                requestBody.put("to", targetClient);
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            String jsonBody;
-            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                String jsonBody = "";
+
                 jsonBody = objectMapper.writeValueAsString(requestBody);
-            } catch (Exception e) {
-                System.out.println("Error while converting request body to JSON: " + e.getMessage());
-                return;
+
+                HttpEntity<String> requestEntity = new HttpEntity<>(jsonBody, headers);
+
+                RestTemplate restTemplate = new RestTemplate();
+                ResponseEntity<String> responseEntity = restTemplate.exchange(
+                        FCMURL,
+                        HttpMethod.POST,
+                        requestEntity,
+                        String.class);
+
+                String payload = responseEntity.getBody();
+                System.out.println(payload);
+
             }
+            
+            return true;
 
-            HttpEntity<String> requestEntity = new HttpEntity<>(jsonBody, headers);
+        } catch (Exception e) {
 
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<String> responseEntity = restTemplate.exchange(
-                    FCMURL,
-                    HttpMethod.POST,
-                    requestEntity,
-                    String.class);
-
-            String payload = responseEntity.getBody();
-            // Process the payload as needed
-            // ...
-
-            System.out.println(payload);
+            return false;
         }
 
     }

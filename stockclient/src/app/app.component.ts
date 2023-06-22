@@ -1,13 +1,11 @@
-import { Component , OnInit} from '@angular/core';
+import { Component , OnInit, ViewChild} from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { environment } from "../environments/environment";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import { MatDialog } from '@angular/material/dialog';
 import { NotificationDialogComponent } from './components/notification-dialog/notification-dialog.component';
-
-
-
+import { NotificationComponent } from './components/notification/notification.component';
 
 
 @Component({
@@ -15,11 +13,12 @@ import { NotificationDialogComponent } from './components/notification-dialog/no
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class AppComponent implements OnInit {
   title = 'stockxyz';
   message:any = null;
-
-
+  @ViewChild(NotificationComponent)
+  NotifyComp !: NotificationComponent
 
   constructor(private router:Router , private authSvc : AuthService , private dialog : MatDialog){}
 
@@ -67,5 +66,9 @@ export class AppComponent implements OnInit {
     dialogRef.afterClosed().subscribe(() => {
       // Handle any actions after the dialog is closed, if needed
     });
+  }
+
+  initNotificationView(){
+    this.NotifyComp.ngOnInit();
   }
 }

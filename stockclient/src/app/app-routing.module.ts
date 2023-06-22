@@ -10,6 +10,7 @@ import { AddComponent } from './components/add/add.component';
 import { EditComponent } from './components/edit/edit.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { ResetComponent } from './components/reset/reset.component';
+import { NotificationComponent } from './components/notification/notification.component';
 
 const routes: Routes = [
   {path:"" , component:AllComponent},
@@ -23,6 +24,7 @@ const routes: Routes = [
   {path:"login" , component:LoginComponent},
   {path:"signup" , component:SignupComponent},
   {path:"about" , component:AboutComponent},
+  {path:"notification" , component:NotificationComponent},
   {path:"**" , redirectTo:"/", pathMatch:'full'}
 
 ];

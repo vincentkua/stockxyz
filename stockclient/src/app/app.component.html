@@ -2,10 +2,11 @@
   <mat-drawer
     #drawer
     class="sidenav"
-    mode="push"
+    mode="over"
     (click)="sidenav.toggle()"
     #sidenav
   >
+    <!-- Content of the left sidenav -->
     <mat-list>
       <mat-list-item (click)="routepage('all')">
         <mat-icon style="margin-top: -2px">home</mat-icon>
@@ -30,6 +31,21 @@
     </mat-list>
   </mat-drawer>
 
+  <mat-drawer
+    #notificationDrawer
+    class="sidenav"
+    position="end"
+    mode="over"
+    style="width: 400px; max-width: 90%;"
+   
+  >
+  <div style="padding: 20px;">
+    <app-notification></app-notification>
+  </div>
+    <!-- Content of the right sidenav -->
+    <!-- Add your content here -->
+  </mat-drawer>
+
   <div class="sidenav-content">
     <mat-toolbar color="primary">
       <mat-toolbar-row>
@@ -41,14 +57,17 @@
           <mat-icon aria-hidden="menu icon" fontIcon="menu"></mat-icon>
         </button>
         <span>Stock XYZ</span>
-        <!-- <span style="flex: 1 1 auto"></span> -->
-        <!-- <button mat-icon-button class="example-icon favorite-icon">
-          <mat-icon aria-hidden="person icon" fontIcon="person"></mat-icon>
+        <span style="flex: 1 1 auto"></span>
+        <button
+          mat-icon-button
+          class="example-icon favorite-icon"
+          (click)="notificationDrawer.toggle() ; initNotificationView()"
+        >
+          <mat-icon aria-hidden="notification" fontIcon="notifications icon"></mat-icon>
         </button>
-        <span style="font-weight: normal;">Guest</span> -->
       </mat-toolbar-row>
     </mat-toolbar>
-    <div style="padding: 30px">    
+    <div style="padding: 30px">
       <router-outlet></router-outlet>
     </div>
   </div>

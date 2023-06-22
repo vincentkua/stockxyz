@@ -28,6 +28,7 @@ import { ResetComponent } from './components/reset/reset.component';
 import { environment } from "../environments/environment";
 import { initializeApp } from "firebase/app";
 import { NotificationDialogComponent } from './components/notification-dialog/notification-dialog.component';
+import { NotificationComponent } from './components/notification/notification.component';
 initializeApp(environment.firebase);
 
 @NgModule({
@@ -49,7 +50,8 @@ initializeApp(environment.firebase);
     CashflowchartComponent,
     SignupComponent,
     ResetComponent,
-    NotificationDialogComponent
+    NotificationDialogComponent,
+    NotificationComponent
   ],
   imports: [
     BrowserModule,
