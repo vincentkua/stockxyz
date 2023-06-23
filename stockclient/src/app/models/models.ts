@@ -15,3 +15,10 @@ export interface Stock{
     watchlistid : number
     portfolioid : number
 }
+
+export interface Notification{
+    id: number
+    title :  string
+    content : string 
+    uploaded : string
+}

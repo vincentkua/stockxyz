@@ -47,6 +47,7 @@ export class AppComponent implements OnInit {
         console.log('An error occurred while retrieving token. ', err);
     });
   }
+
   listen() {
     const messaging = getMessaging();
     onMessage(messaging, (payload) => {
@@ -54,13 +55,15 @@ export class AppComponent implements OnInit {
       this.message = payload;
       this.openNotificationDialog(payload);
     });
+ 
   }
   
   openNotificationDialog(payload: any): void {
     const dialogRef = this.dialog.open(NotificationDialogComponent, {
       data: payload,
       height: '400px',
-      width: '600px',
+      width: '600px'
+      
     });
   
     dialogRef.afterClosed().subscribe(() => {

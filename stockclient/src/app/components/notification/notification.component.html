@@ -1,59 +1,30 @@
-<div *ngIf="roles == 'admin'">
+  <div *ngIf="roles == 'admin'">
     <h2>Send New Notification</h2>
     <form [formGroup]="notificationform" (ngSubmit)="processform()">
-        <table>
-            <tr>
-                <td>Title</td>
-                <td><input type="text" formControlName="title"></td>
-            </tr>
-            <tr>
-                <td>Content</td>
-                <td><input type="text" formControlName="content"></td>
-            </tr>
-        </table>
-        <br>
-        <button type="submit">Send</button>
+      <table>
+        <tr>
+          <td>Title</td>
+          <td><input type="text" formControlName="title" /></td>
+        </tr>
+        <tr>
+          <td>Content</td>
+          <td><input type="text" formControlName="content" /></td>
+        </tr>
+      </table>
+      <br />
+      <button type="button" (click)="clearNotification()">Clear All</button> &nbsp;
+      <button type="submit" >Send New</button>
     </form>
-    <br>
-    <hr>
-</div>
+    <br />
+    <hr />
+  </div>
 
+  <h2>Notification</h2>
 
-
-<h2>Notification History</h2>
-
-<h2>Notification</h2>
-
-<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Delectus quam corrupti quod, cupiditate sunt repudiandae nobis alias ipsum aliquam, ea illum eveniet, ex libero odio soluta tempore veritatis quis ad.</p>
-
-<h2>Notification</h2>
-
-<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Delectus quam corrupti quod, cupiditate sunt repudiandae nobis alias ipsum aliquam, ea illum eveniet, ex libero odio soluta tempore veritatis quis ad.</p>
-
-<h2>Notification</h2>
-
-<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Delectus quam corrupti quod, cupiditate sunt repudiandae nobis alias ipsum aliquam, ea illum eveniet, ex libero odio soluta tempore veritatis quis ad.</p>
-
-<h2>Notification</h2>
-
-<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Delectus quam corrupti quod, cupiditate sunt repudiandae nobis alias ipsum aliquam, ea illum eveniet, ex libero odio soluta tempore veritatis quis ad.</p>
-
-<h2>Notification</h2>
-
-<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Delectus quam corrupti quod, cupiditate sunt repudiandae nobis alias ipsum aliquam, ea illum eveniet, ex libero odio soluta tempore veritatis quis ad.</p>
-
-<h2>Notification</h2>
-
-<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Delectus quam corrupti quod, cupiditate sunt repudiandae nobis alias ipsum aliquam, ea illum eveniet, ex libero odio soluta tempore veritatis quis ad.</p>
-
-<h2>Notification</h2>
-
-<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Delectus quam corrupti quod, cupiditate sunt repudiandae nobis alias ipsum aliquam, ea illum eveniet, ex libero odio soluta tempore veritatis quis ad.</p>
-
-<h2>Notification</h2>
-
-<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Delectus quam corrupti quod, cupiditate sunt repudiandae nobis alias ipsum aliquam, ea illum eveniet, ex libero odio soluta tempore veritatis quis ad.</p>
-
-<h2>Notification</h2>
-
-<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Delectus quam corrupti quod, cupiditate sunt repudiandae nobis alias ipsum aliquam, ea illum eveniet, ex libero odio soluta tempore veritatis quis ad.</p>
+  <mat-card *ngFor="let x of notifications" style="margin-bottom: 8px ; background-color: rgb(245, 245, 245);">
+    <mat-card-content>
+      <h2 style="margin-bottom: 0px;">{{ x.title }}</h2>
+      <p>{{ x.content }}</p>
+      <p style="font-size: 10px;">{{ x.uploaded }}</p>
+    </mat-card-content>
+  </mat-card>

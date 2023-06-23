@@ -2,9 +2,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 
-const APIURL = "http://127.0.0.1:8080/api"
+// const APIURL = "http://127.0.0.1:8080/api"
 // const APIURL = "https://stockxyz-production.up.railway.app/api"
-// const APIURL = "/api"
+const APIURL = "/api"
 
 
 
