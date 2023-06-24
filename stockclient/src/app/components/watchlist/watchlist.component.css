@@ -4,3 +4,7 @@ table,th,td{
     text-align: left;
     border: 1px solid black;
 }
+
+mat-slide-toggle {
+    transform: scale(0.9);
+}

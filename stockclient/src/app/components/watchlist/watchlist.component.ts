@@ -100,19 +100,31 @@ export class WatchlistComponent implements OnInit {
     this.router.navigate(['/stock/' + stockcode])
   }
 
-  removewatchlist(watchlistid : number){
-    this.stockSvc.removeWatchlist(watchlistid, this.email)
-    .then(v => {
-      console.info('>>> Add Status: ', v)
-      this.processform()
-    }).catch(err => {
-      console.error('>>> error: ', err)
-    })  
-  }
-
   logout (){
     localStorage.removeItem('jwtToken') 
     this.router.navigate(['/login'])
+  }
+
+  togglewatchlist(stockid : number , watchlistid : number, newcheckedstatus : boolean){
+    
+    if(newcheckedstatus == true){
+      this.stockSvc.addWatchlist(stockid)
+      .then(v => {
+        console.info('>>> Add Status: ', v)
+        this.processform()
+      }).catch(err => {
+        console.error('>>> error: ', err)
+      })  
+    }else{
+      this.stockSvc.removeWatchlist(watchlistid)
+      .then(v => {
+        console.info('>>> Add Status: ', v)
+        this.processform()
+      }).catch(err => {
+        console.error('>>> error: ', err)
+      })  
+    }
+
   }
 
 

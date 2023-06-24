@@ -269,7 +269,7 @@ export class StockService {
     )
   }
 
-  removeWatchlist(watchlistid : number , email : string) : Promise<any> {
+  removeWatchlist(watchlistid : number) : Promise<any> {
     const REMOVEURL = URL + "/removewatchlist"
     const jwtToken = localStorage.getItem('jwtToken');
     const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);

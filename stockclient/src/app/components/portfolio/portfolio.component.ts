@@ -101,19 +101,31 @@ export class PortfolioComponent implements OnInit {
     this.router.navigate(['/stock/' + stockcode])
   }
 
-  removeportfolio(portfolioid : number){
-    this.stockSvc.removePortfolio(portfolioid)
-    .then(v => {
-      console.info('>>> Add Status: ', v)
-      this.processform()
-    }).catch(err => {
-      console.error('>>> error: ', err)
-    })  
-  }
-
   logout (){
     localStorage.removeItem('jwtToken') 
     this.router.navigate(['/login'])
+  }
+
+  toggleportfolio(stockid : number , portfolioid : number, newcheckedstatus : boolean){
+    
+    if(newcheckedstatus == true){
+      this.stockSvc.addPortfolio(stockid)
+      .then(v => {
+        console.info('>>> Add Status: ', v)
+        this.processform()
+      }).catch(err => {
+        console.error('>>> error: ', err)
+      })  
+    }else{
+      this.stockSvc.removePortfolio(portfolioid)
+      .then(v => {
+        console.info('>>> Add Status: ', v)
+        this.processform()
+      }).catch(err => {
+        console.error('>>> error: ', err)
+      })  
+    }
+
   }
 
 

@@ -11,7 +11,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     cursor: pointer;
     font-weight: normal;
     font-size: 12px;
-    margin-right: 5px;
+    /* margin-right: 5px; */
 }
 
 

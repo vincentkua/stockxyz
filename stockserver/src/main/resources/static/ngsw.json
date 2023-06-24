@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1687504492524,
+  "timestamp": 1687623486814,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -14,11 +14,11 @@
         "/favicon.ico",
         "/firebase-messaging-sw.js",
         "/index.html",
-        "/main.b62bb7f2317c44b0.js",
+        "/main.97830f3f326eacde.js",
         "/manifest.webmanifest",
         "/polyfills.2cb39fbc379ab978.js",
         "/runtime.8edffa17751f0a36.js",
-        "/styles.fe34ade2c352c66b.css"
+        "/styles.dc72e847cf2b022b.css"
       ],
       "patterns": []
     },
@@ -37,7 +37,8 @@
         "/assets/icons/icon-384x384.png",
         "/assets/icons/icon-512x512.png",
         "/assets/icons/icon-72x72.png",
-        "/assets/icons/icon-96x96.png"
+        "/assets/icons/icon-96x96.png",
+        "/assets/img/investment.jpg"
       ],
       "patterns": []
     }
@@ -52,14 +53,15 @@
     "/assets/icons/icon-512x512.png": "01e54334802b562dab72695e84b89b74435835cc",
     "/assets/icons/icon-72x72.png": "baaa738c51bc9735b3e3c24b150d408204173bbb",
     "/assets/icons/icon-96x96.png": "aad73f27e8a7917655e2f13a6a35a408142a2f8a",
+    "/assets/img/investment.jpg": "38695661a33d434e818e97fb4f59cc22936e5dac",
     "/favicon.ico": "e999fb49f3ae364845f5ea0900578d47f39fe7f1",
-    "/firebase-messaging-sw.js": "14d8322931ab7c56dee986ca74d44731160e0fa4",
-    "/index.html": "90728f48da02c60e290a8ee0b08ec9eb4ef4072c",
-    "/main.b62bb7f2317c44b0.js": "9fa3baadbc0dc4d10681d6b87e0a18756e6079c2",
+    "/firebase-messaging-sw.js": "924598df05b8e22475ba3d4bc6b81140d00a77f9",
+    "/index.html": "a358696b17554ecc0330126301bf440480dd219d",
+    "/main.97830f3f326eacde.js": "1019f10151d9e452e49367bc3b24885be0f82679",
     "/manifest.webmanifest": "aec4c8e29f472d7b3a420bb6e98dd8719eb11198",
     "/polyfills.2cb39fbc379ab978.js": "29a67d0d582de489cbf3fff0f8beffa0884cfd0d",
     "/runtime.8edffa17751f0a36.js": "65a329b43b5eb7ee54f3b776ebea8dac310d5ab2",
-    "/styles.fe34ade2c352c66b.css": "e361327f922d472a6c778415d79f1282b7a1a8ae"
+    "/styles.dc72e847cf2b022b.css": "292941c79e1218edd56e03f772438dfc9395eef4"
   },
   "navigationUrls": [
     {

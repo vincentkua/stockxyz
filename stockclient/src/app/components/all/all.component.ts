@@ -29,7 +29,7 @@ export class AllComponent implements OnInit {
 
   initializeForm(): void {
     this.form = this.fb.group({
-      searchstring: this.fb.control<string>('', Validators.required)
+      searchstring: this.fb.control<string>('')
     });
   }
 
@@ -100,29 +100,53 @@ export class AllComponent implements OnInit {
     this.router.navigate(['/stock/' + stockcode])
   }
 
-  addtowatchlist(stockid : number){
-    this.stockSvc.addWatchlist(stockid)
-    .then(v => {
-      console.info('>>> Add Status: ', v)
-      this.processform()
-    }).catch(err => {
-      console.error('>>> error: ', err)
-    })  
-  }
-
-  addtoportfolio(stockid : number){
-    this.stockSvc.addPortfolio(stockid)
-    .then(v => {
-      console.info('>>> Add Status: ', v)
-      this.processform()
-    }).catch(err => {
-      console.error('>>> error: ', err)
-    })  
-  }
-
   logout (){
     localStorage.removeItem('jwtToken') 
     this.router.navigate(['/login'])
+  }
+
+  togglewatchlist(stockid : number , watchlistid : number, newcheckedstatus : boolean){
+    
+    if(newcheckedstatus == true){
+      this.stockSvc.addWatchlist(stockid)
+      .then(v => {
+        console.info('>>> Add Status: ', v)
+        this.processform()
+      }).catch(err => {
+        console.error('>>> error: ', err)
+      })  
+    }else{
+      this.stockSvc.removeWatchlist(watchlistid)
+      .then(v => {
+        console.info('>>> Add Status: ', v)
+        this.processform()
+      }).catch(err => {
+        console.error('>>> error: ', err)
+      })  
+    }
+
+  }
+
+  toggleportfolio(stockid : number , portfolioid : number, newcheckedstatus : boolean){
+    
+    if(newcheckedstatus == true){
+      this.stockSvc.addPortfolio(stockid)
+      .then(v => {
+        console.info('>>> Add Status: ', v)
+        this.processform()
+      }).catch(err => {
+        console.error('>>> error: ', err)
+      })  
+    }else{
+      this.stockSvc.removePortfolio(portfolioid)
+      .then(v => {
+        console.info('>>> Add Status: ', v)
+        this.processform()
+      }).catch(err => {
+        console.error('>>> error: ', err)
+      })  
+    }
+
   }
 
 
