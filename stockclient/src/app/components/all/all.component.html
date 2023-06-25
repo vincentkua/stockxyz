@@ -7,7 +7,6 @@
 
 <div *ngIf="validated">
   <form [formGroup]="form" (ngSubmit)="processform()">
-    <label for=""></label>
     <input type="text" formControlName="searchstring" />
     <button type="submit">Search</button>
   </form>
@@ -20,7 +19,7 @@
       <tr style="background-color: rgb(78, 114, 214);">
         <th style="min-width: 90px; width: 150px;">Stock / Code</th>
         <th style="min-width: 55px; width: 70px;">Price</th>
-        <th style="width: 250px;">Action</th>
+        <th style="width: 240px;">Action</th>
       </tr>
     </thead>
     <tbody>
@@ -33,18 +32,21 @@
         </a></td>
         <td>{{x.lastprice.toFixed(3)}}</td>
         <td>
-          <div style=" margin: 5px 15px 5px 0px;  display: inline-block; font-size: 10px;">
+          <!-- <div style=" margin: 5px 15px 5px 0px;  display: inline-block; font-size: 10px;">
             <mat-slide-toggle [checked]="x.watchlistid>0" [color]="'primary'" (change)="togglewatchlist(x.id,x.watchlistid , $event.checked)">Watchlist</mat-slide-toggle>
           </div>
-          
           <div style="padding-bottom: 5px; display: inline-block;">
             <mat-slide-toggle [checked]="x.portfolioid>0" [color]="'accent'" (change)="toggleportfolio(x.id,x.portfolioid , $event.checked)">Portfolio</mat-slide-toggle>
-          </div>
+          </div> -->
+          <mat-chip-option style="height: 24px;" [color]="'primary'" [selected]="x.watchlistid > 0" (click)="togglewatchlist(x.id, x.watchlistid , x.watchlistid == 0)"><mat-icon matChipAvatar style="color: gray;">star</mat-icon>Watchlist</mat-chip-option>
+          <mat-chip-option style="height: 24px;" [color]="'accent'" [selected]="x.portfolioid > 0" (click)="toggleportfolio(x.id, x.portfolioid , x.portfolioid == 0)"><mat-icon matChipAvatar style="color: gray;">work</mat-icon>Portfolio</mat-chip-option>
           
         </td>
       </tr>
     </tbody>
   </table>
+  <br>
+  <span>Not Found? Email us : <a href="mailto:stocksxyz@outlook.com">stocksxyz@outlook.com</a></span>
 
 </div>
 

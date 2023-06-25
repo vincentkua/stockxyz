@@ -179,22 +179,123 @@ export class StockComponent implements OnInit , AfterViewInit {
   
   togglepricechartmode(mode : string){
     this.pricechartmode = mode
+    if(this.pricechartmode == "edit"){
+
+      this.stockSvc.getPriceChartdata(this.market , this.ticker)
+      .then(v => {
+        console.log('>>> Price Chart : ', v)
+        const labels = v['pricechartlabel']
+        const prices = v['pricechartdata']
+        const labelsstring : string  = labels.join(' ');
+        const pricesstring : string  = prices.join(' ');
+
+        this.pricechartform= this.fb.group({
+          pricelabel : this.fb.control<string>(labelsstring , Validators.required),
+          pricedata : this.fb.control<string>(pricesstring,Validators.required),
+        })
+      }).catch(err => {
+        console.error('>>> error: ', err)
+      })
+    }
   }
 
   toggleearningchartmode(mode : string){
     this.earningchartmode = mode
+
+    if(this.earningchartmode == "edit"){
+
+      this.stockSvc.getEarningChartdata(this.market , this.ticker)
+      .then(v => {
+        console.log('>>> Earning Chart : ', v)
+        const labels = v['chartlabel'].join(' ');
+        const revenues = v['chartrevenue'].join(' ');
+        const chartgrossprofits = v['chartgrossprofit'].join(' ');
+        const chartnetprofits = v['chartnetprofit'].join(' ');
+
+        this.earningchartform= this.fb.group({
+          earninglabel : this.fb.control<string>(labels , Validators.required),
+          revenuedata : this.fb.control<string>(revenues,Validators.required),
+          grossprofitdata : this.fb.control<string>(chartgrossprofits,Validators.required),
+          netprofitdata : this.fb.control<string>(chartnetprofits,Validators.required),
+        })
+      }).catch(err => {
+        console.error('>>> error: ', err)
+      })
+    }
   }
 
   togglebalancechartmode(mode : string){
     this.balancechartmode = mode
+
+    if(this.balancechartmode == "edit"){
+
+      this.stockSvc.getBalanceChartdata(this.market , this.ticker)
+      .then(v => {
+        console.log('>>> Balance Chart : ', v)
+        const chartlabel = v['chartlabel'].join(' ');
+        const chartasset = v['chartasset'].join(' ');
+        const chartliability = v['chartliability'].join(' ');
+        const chartdebt = v['chartdebt'].join(' ');
+
+        this.balancechartform= this.fb.group({
+          balancelabel : this.fb.control<string>(chartlabel , Validators.required),
+          assetdata : this.fb.control<string>(chartasset,Validators.required),
+          liabilitydata : this.fb.control<string>(chartliability,Validators.required),
+          debtdata : this.fb.control<string>(chartdebt,Validators.required),
+        })
+      }).catch(err => {
+        console.error('>>> error: ', err)
+      })
+    }
+
   }
 
   toggleepsdpschartmode(mode : string){
     this.epsdpschartmode = mode
+
+    if(this.epsdpschartmode == "edit"){
+
+      this.stockSvc.getEpsDpsChartdata(this.market , this.ticker)
+      .then(v => {
+        console.log('>>> EPSDPS Chart : ', v)
+        const chartlabel = v['chartlabel'].join(' ');
+        const charteps = v['charteps'].join(' ');
+        const chartdps = v['chartdps'].join(' ');
+
+        this.epsdpschartform= this.fb.group({
+          epsdpslabel : this.fb.control<string>(chartlabel , Validators.required),
+          epsdata : this.fb.control<string>(charteps,Validators.required),
+          dpsdata : this.fb.control<string>(chartdps,Validators.required),
+        })
+      }).catch(err => {
+        console.error('>>> error: ', err)
+      })
+    }
   }
 
   togglecashflowchartmode(mode : string){
     this.cashflowchartmode = mode
+
+    if(this.cashflowchartmode == "edit"){
+
+      this.stockSvc.getCashflowChartdata(this.market , this.ticker)
+      .then(v => {
+        console.log('>>> Cashflow Chart : ', v)
+        const chartlabel = v['chartlabel'].join(' ');
+        const chartoperating = v['chartoperating'].join(' ');
+        const chartinvesting = v['chartinvesting'].join(' ');
+        const chartfinancing = v['chartfinancing'].join(' ');
+
+        this.cashflowchartform= this.fb.group({
+          cashflowlabel : this.fb.control<string>(chartlabel , Validators.required),
+          operatingdata : this.fb.control<string>(chartoperating,Validators.required),
+          investingdata : this.fb.control<string>(chartinvesting,Validators.required),
+          financingdata : this.fb.control<string>(chartfinancing,Validators.required),
+        })
+      }).catch(err => {
+        console.error('>>> error: ', err)
+      })
+    }
   }
 
   navyahoofinance(){

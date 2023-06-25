@@ -12,8 +12,9 @@ button{
     font-size: 12px;
 }
 
-mat-slide-toggle {
-    transform: scale(0.9);
+mat-slide-toggle , mat-chip-option {
+    transform: scale(0.8);
+    margin-left: -10px;
 }
 
 
