@@ -76,7 +76,6 @@ export class AllComponent implements OnInit {
 
   handleInvalidToken(): void {
     localStorage.removeItem('jwtToken');
-    // alert('Invalid JWT ... Rerouting to Login Page...');
     this.router.navigate(['/login']);
   }
 

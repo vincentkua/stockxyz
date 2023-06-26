@@ -32,9 +32,6 @@
           </a></td>
           <td>{{x.lastprice.toFixed(3)}}</td>
           <td>           
-            <!-- <div style="padding-bottom: 5px; display: inline-block;">
-              <mat-slide-toggle [checked]="x.watchlistid>0" [color]="'primary'" (change)="togglewatchlist(x.id,x.watchlistid , $event.checked)">Watchlist</mat-slide-toggle>
-            </div> -->
             <mat-chip-option style="height: 24px;" [color]="'primary'" [selected]="x.watchlistid > 0" (click)="togglewatchlist(x.id, x.watchlistid , x.watchlistid == 0)"><mat-icon matChipAvatar style="color: gray;">star</mat-icon>Watchlist</mat-chip-option>            
           </td>
         </tr>
