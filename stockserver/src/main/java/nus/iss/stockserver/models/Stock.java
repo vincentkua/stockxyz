@@ -16,15 +16,17 @@ public class Stock {
     private Double pb;
     private Integer watchlistid;
     private Integer portfolioid;
+    private Boolean stockx;
+    private Boolean stocky;
+    private Boolean stockz;
     
 
     public Stock() {
-    } 
-
+    }   
 
     public Stock(Integer id, String market, String ticker, String stockName, String description, Double lastprice,
             Double targetprice, Double epsttm, Double pettm, Double dps, Double divyield, Double bookvalue, Double pb,
-            Integer watchlistid, Integer portfolioid) {
+            Integer watchlistid, Integer portfolioid, Boolean stockx, Boolean stocky, Boolean stockz) {
         this.id = id;
         this.market = market;
         this.ticker = ticker;
@@ -40,7 +42,13 @@ public class Stock {
         this.pb = pb;
         this.watchlistid = watchlistid;
         this.portfolioid = portfolioid;
+        this.stockx = stockx;
+        this.stocky = stocky;
+        this.stockz = stockz;
     }
+
+
+
 
 
 
@@ -167,14 +175,43 @@ public class Stock {
         this.portfolioid = portfolioid;
     }
 
+    public Boolean getStockx() {
+        return stockx;
+    }
+
+    public void setStockx(Boolean stockx) {
+        this.stockx = stockx;
+    }
+
+    public Boolean getStocky() {
+        return stocky;
+    }
+
+    public void setStocky(Boolean stocky) {
+        this.stocky = stocky;
+    }
+
+    public Boolean getStockz() {
+        return stockz;
+    }
+
+    public void setStockz(Boolean stockz) {
+        this.stockz = stockz;
+    }
 
     @Override
     public String toString() {
         return "Stock [id=" + id + ", market=" + market + ", ticker=" + ticker + ", stockName=" + stockName
                 + ", description=" + description + ", lastprice=" + lastprice + ", targetprice=" + targetprice
                 + ", epsttm=" + epsttm + ", pettm=" + pettm + ", dps=" + dps + ", divyield=" + divyield + ", bookvalue="
-                + bookvalue + ", pb=" + pb + ", watchlistid=" + watchlistid + ", portfolioid=" + portfolioid + "]";
+                + bookvalue + ", pb=" + pb + ", watchlistid=" + watchlistid + ", portfolioid=" + portfolioid
+                + ", stockx=" + stockx + ", stocky=" + stocky + ", stockz=" + stockz + "]";
     }
+
+    
+
+
+
 
     
 

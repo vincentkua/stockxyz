@@ -47,6 +47,9 @@ export class EditComponent implements OnInit {
       divyield : this.fb.control<number>(0,Validators.required),
       bookvalue : this.fb.control<number>(0,Validators.required),
       pb : this.fb.control<number>(0,Validators.required),
+      stockx : this.fb.control<boolean>(false),
+      stocky : this.fb.control<boolean>(false),
+      stockz : this.fb.control<boolean>(false),
     })
   }
 
@@ -128,6 +131,9 @@ export class EditComponent implements OnInit {
         divyield : this.fb.control<number>(this.stock.divyield,Validators.required),
         bookvalue : this.fb.control<number>(this.stock.bookvalue,Validators.required),
         pb : this.fb.control<number>(this.stock.pb,Validators.required),
+        stockx : this.fb.control<boolean>(this.stock.stockx),
+        stocky : this.fb.control<boolean>(this.stock.stocky),
+        stockz : this.fb.control<boolean>(this.stock.stockz),
       })
 
     }).catch(err => {

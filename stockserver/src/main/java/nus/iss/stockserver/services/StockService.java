@@ -60,7 +60,7 @@ public class StockService {
                 Double pb = Double.parseDouble(json.getString("PriceToBookRatio"));
                 Double targetprice = Double.parseDouble(json.getString("AnalystTargetPrice"));
                 Stock stock = new Stock(null, market, ticker, null, description, null, targetprice, epsttm, pettm, dps,
-                                divyield, bookvalue, pb,null,null);
+                                divyield, bookvalue, pb,null,null,null,null,null);
                 System.out.println("########################");
                 System.out.println("AlphaAPI Called");
                 System.out.println("Ticker : " + ticker);

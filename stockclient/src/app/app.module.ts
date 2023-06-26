@@ -29,6 +29,7 @@ import { environment } from "../environments/environment";
 import { initializeApp } from "firebase/app";
 import { NotificationDialogComponent } from './components/notification-dialog/notification-dialog.component';
 import { NotificationComponent } from './components/notification/notification.component';
+import { StrategyComponent } from './components/strategy/strategy.component';
 initializeApp(environment.firebase);
 
 @NgModule({
@@ -51,7 +52,8 @@ initializeApp(environment.firebase);
     SignupComponent,
     ResetComponent,
     NotificationDialogComponent,
-    NotificationComponent
+    NotificationComponent,
+    StrategyComponent
   ],
   imports: [
     BrowserModule,

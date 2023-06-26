@@ -28,17 +28,64 @@ public class StockRepository {
     // }
 
     private static final String FINDBYNAME = """
-            SELECT s.id, s.market, s.ticker, s.stock_name, s.lastprice, w.id AS watchlistid, p.id AS portfolioid
+            SELECT s.id, s.market, s.ticker, s.stock_name, s.lastprice,s.stockx,s.stocky,s.stockz, w.id AS watchlistid, p.id AS portfolioid
             FROM stocklist AS s
             LEFT JOIN watchlist AS w ON s.id = w.stockid AND w.email = ?
             LEFT JOIN portfolio AS p ON s.id = p.stockid AND p.email = ?
-            WHERE s.stock_name LIKE ?;
+            WHERE s.stock_name LIKE ?
+            ORDER BY s.stock_name ASC;
             """;
 
     public List<Stock> getStocks(String search , String email) {
         List<Stock> stocks = new LinkedList<>();
         stocks = jdbcTemplate.query(FINDBYNAME, BeanPropertyRowMapper.newInstance(Stock.class), email, email, "%" + search + "%" );
-        // System.out.println(stocks);
+        System.out.println(stocks);
+        return stocks;
+    }
+
+    private static final String FINDSTOCKX = """
+            SELECT s.id, s.market, s.ticker, s.stock_name, s.lastprice,s.stockx,s.stocky,s.stockz, w.id AS watchlistid, p.id AS portfolioid
+            FROM stocklist AS s
+            LEFT JOIN watchlist AS w ON s.id = w.stockid AND w.email = ?
+            LEFT JOIN portfolio AS p ON s.id = p.stockid AND p.email = ?
+            WHERE s.stockx = ?
+            ORDER BY s.stock_name ASC;
+            """;
+    private static final String FINDSTOCKY = """
+            SELECT s.id, s.market, s.ticker, s.stock_name, s.lastprice,s.stockx,s.stocky,s.stockz, w.id AS watchlistid, p.id AS portfolioid
+            FROM stocklist AS s
+            LEFT JOIN watchlist AS w ON s.id = w.stockid AND w.email = ?
+            LEFT JOIN portfolio AS p ON s.id = p.stockid AND p.email = ?
+            WHERE s.stocky = ?
+            ORDER BY s.stock_name ASC;
+            """;
+    private static final String FINDSTOCKZ = """
+            SELECT s.id, s.market, s.ticker, s.stock_name, s.lastprice,s.stockx,s.stocky,s.stockz, w.id AS watchlistid, p.id AS portfolioid
+            FROM stocklist AS s
+            LEFT JOIN watchlist AS w ON s.id = w.stockid AND w.email = ?
+            LEFT JOIN portfolio AS p ON s.id = p.stockid AND p.email = ?
+            WHERE s.stockz = ?
+            ORDER BY s.stock_name ASC;
+            """;
+
+    public List<Stock> getStocksXYZ(String strategy , String email) {
+        List<Stock> stocks = new LinkedList<>();
+        
+        switch (strategy) {
+        case "x":
+            stocks = jdbcTemplate.query(FINDSTOCKX, BeanPropertyRowMapper.newInstance(Stock.class), email, email, true);
+            break;
+        case "y":
+            stocks = jdbcTemplate.query(FINDSTOCKY, BeanPropertyRowMapper.newInstance(Stock.class), email, email, true);
+            break;
+        case "z":
+            stocks = jdbcTemplate.query(FINDSTOCKZ, BeanPropertyRowMapper.newInstance(Stock.class), email, email, true);
+            break;
+        default:
+            // Do nothing.....
+            break;
+        }
+        System.out.println(stocks);
         return stocks;
     }
 
@@ -116,12 +163,12 @@ public class StockRepository {
         return rowsupdated;
     }
 
-    private static final String UPDATESTOCK = "update stocklist set stock_name = ? , description = ?, lastprice = ? , targetprice = ?,  epsttm = ? , pettm = ? , dps = ? , divyield = ? ,bookvalue = ? , pb= ? where market =? AND ticker=?";
+    private static final String UPDATESTOCK = "update stocklist set stock_name = ? , description = ?, lastprice = ? , targetprice = ?,  epsttm = ? , pettm = ? , dps = ? , divyield = ? ,bookvalue = ? , pb= ? ,stockx = ? , stocky = ? , stockz = ? where market =? AND ticker=?";
 
     public Integer updateStock(Stock stock) {
         Integer rowsupdated = jdbcTemplate.update(UPDATESTOCK, stock.getStockName(), stock.getDescription(),
                 stock.getLastprice(), stock.getTargetprice(), stock.getEpsttm(), stock.getPettm(), stock.getDps(),
-                stock.getDivyield(), stock.getBookvalue(), stock.getPb(), stock.getMarket(), stock.getTicker());
+                stock.getDivyield(), stock.getBookvalue(), stock.getPb(),stock.getStockx(),stock.getStocky(),stock.getStockz(), stock.getMarket(), stock.getTicker() );
         return rowsupdated;
     }
 

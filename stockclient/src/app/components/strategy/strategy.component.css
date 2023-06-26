@@ -1,0 +1,35 @@
+table,th,td{
+    border-collapse: collapse;
+    padding: 2px 10px;
+    text-align: left;
+    border: 1px solid black;
+}
+
+button{
+    margin-right: 8px;
+    margin-bottom: 4px;
+    width: 80px;
+    font-size: 12px;
+}
+
+mat-slide-toggle , mat-chip-option {
+    transform: scale(0.8);
+    margin-left: -10px;
+}
+
+.mat-button-toggle-checked {
+    background-color: rgb(34, 74, 255);
+    color: white;
+  }
+
+  mat-button-toggle{
+    height: 32px;
+    align-items: center;
+  }
+
+
+
+
+
+
+

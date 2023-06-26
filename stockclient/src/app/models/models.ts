@@ -14,6 +14,9 @@ export interface Stock{
     pb : number
     watchlistid : number
     portfolioid : number
+    stockx : boolean
+    stocky : boolean
+    stockz : boolean
 }
 
 export interface Notification{

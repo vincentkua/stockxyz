@@ -1,0 +1,106 @@
+<h2>
+  Strategy XYZ
+  <a class="logoutlink" (click)="logout()">logout</a>
+  <span class="userinfo">{{ email }}</span>
+</h2>
+
+<div *ngIf="validated">
+  <mat-button-toggle-group
+    appearance="legacy"
+    name="favoriteColor"
+    (change)="strategyChange($event)"
+  >
+    <mat-button-toggle value="x" [checked]="strategy == 'x'"
+      >Stock X</mat-button-toggle
+    >
+    <mat-button-toggle value="y" [checked]="strategy == 'y'"
+      >Stock Y</mat-button-toggle
+    >
+    <mat-button-toggle value="z" [checked]="strategy == 'z'"
+      >Stock Z</mat-button-toggle
+    >
+  </mat-button-toggle-group>
+
+  <br />
+  <br />
+  <div *ngIf="strategy == 'x'">
+     <b>Stock X (Growths)</b>
+    <ul>
+        <li>Growth-oriented Company</li>
+        <li>Suitable for long-term investors</li>
+        <li>Sustainable returns with low risk</li>
+        <li>Focuses on the US stock market</li>
+      </ul>
+  </div>
+
+  <div *ngIf="strategy == 'y'">
+    <b>Stock Y (Undervalued)</b>
+   <ul>
+       <li>Undervalued Company</li>
+       <li>Higher-risk investment option</li>
+       <li>Huat Big Lose Big nature</li>
+       <li>Focuses on the US / HK / China-based ADR Company</li>
+     </ul>
+ </div>
+
+ <div *ngIf="strategy == 'z'">
+    <b>Stock Y (Dividends)</b>
+   <ul>
+       <li>High Dividends and Cash Rich Company</li>
+       <li>Sustainable returns</li>
+       <li>Buy and wait for Ang Pow</li>
+       <li>Focuses on the SG / HK stock market</li>
+     </ul>
+ </div>
+
+  <table style="font-size: 12px">
+    <thead>
+      <tr style="background-color: rgb(78, 114, 214)">
+        <th style="min-width: 90px; width: 150px">Stock / Code</th>
+        <th style="min-width: 55px; width: 70px">Price</th>
+        <th style="width: 240px">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let x of stocks">
+        <td>
+          <a
+            style="cursor: pointer"
+            (click)="navstockdetailpage(x.market + ':' + x.ticker)"
+          >
+            <span style="color: rgb(34, 74, 255); font-weight: bold">{{
+              x.stockName
+            }}</span>
+            <br />
+            <span>{{ x.market }}:{{ x.ticker }}</span>
+          </a>
+        </td>
+        <td>{{ x.lastprice.toFixed(3) }}</td>
+        <td>
+          <mat-chip-option
+            style="height: 24px"
+            [color]="'primary'"
+            [selected]="x.watchlistid > 0"
+            (click)="togglewatchlist(x.id, x.watchlistid, x.watchlistid == 0)"
+            ><mat-icon matChipAvatar style="color: gray">star</mat-icon
+            >Watchlist</mat-chip-option
+          >
+          <mat-chip-option
+            style="height: 24px"
+            [color]="'accent'"
+            [selected]="x.portfolioid > 0"
+            (click)="toggleportfolio(x.id, x.portfolioid, x.portfolioid == 0)"
+            ><mat-icon matChipAvatar style="color: gray">work</mat-icon
+            >Portfolio</mat-chip-option
+          >
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br />
+</div>
+
+<div *ngIf="!validated">
+  <p>Loading Page...</p>
+  <mat-progress-bar mode="query" style="width: 200px"></mat-progress-bar>
+</div>

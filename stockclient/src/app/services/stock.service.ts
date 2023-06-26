@@ -34,6 +34,24 @@ export class StockService {
     );
   }
 
+  getStocksXYZ(strategy : string): Promise<any> {
+    const GETSTOCKSURL = URL + "/stocksxyz";
+    const params = new HttpParams()
+      .set("strategy", strategy);
+  
+    const jwtToken = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders().set("Authorization", `Bearer ${jwtToken}`);
+  
+    return lastValueFrom(
+      this.http.get<any>(GETSTOCKSURL, { params, headers }).pipe(
+        map((v: any) => {
+          const stocks = v['stocks'] as Stock[];
+          return stocks;
+        })
+      )
+    );
+  }
+
   getWatchlist(searchstring : string ) : Promise<any>{
     const GETSTOCKSURL = URL + "/watchlist"
     const params = new HttpParams()

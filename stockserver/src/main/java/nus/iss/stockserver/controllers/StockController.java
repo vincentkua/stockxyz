@@ -71,6 +71,9 @@ public class StockController {
                         .add("lastprice", x.getLastprice() == null ? 0 : x.getLastprice())
                         .add("watchlistid", x.getWatchlistid() == null ? 0 : x.getWatchlistid())
                         .add("portfolioid", x.getPortfolioid() == null ? 0 : x.getPortfolioid())
+                        .add("stockx" , x.getStockx() == null ? false : x.getStockx())
+                        .add("stocky" , x.getStocky() == null ? false : x.getStocky())
+                        .add("stockz" , x.getStockz() == null ? false : x.getStockz())
                         .build();
                 jsonArray.add(jsonObject);
             }
@@ -80,6 +83,49 @@ public class StockController {
 
             System.out.println("##################");
             System.out.println("Stocks List Requested " + search);
+
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+        } else {
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("status", "Invalid JWT Token")
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
+        }
+
+    }
+
+    @GetMapping(value = "/stocksxyz")
+    public ResponseEntity<String> getStocksXYZ(@RequestParam String strategy, @RequestHeader String Authorization) {
+        String jwtToken = Authorization.substring(7); // skip the bearer_ by 7 chars
+        Boolean validToken = jwtUtils.validateJWT(jwtToken);
+
+        if (validToken) {
+            Account user = jwtUtils.getJWTaccount(jwtToken);
+
+            List<Stock> stocks = stockRepo.getStocksXYZ(strategy, user.getEmail());
+            JsonArrayBuilder jsonArray = Json.createArrayBuilder();
+            for (Stock x : stocks) {
+                JsonObject jsonObject = Json.createObjectBuilder()
+                        .add("id", x.getId())
+                        .add("market", x.getMarket())
+                        .add("ticker", x.getTicker())
+                        .add("stockName", x.getStockName())
+                        .add("lastprice", x.getLastprice() == null ? 0 : x.getLastprice())
+                        .add("watchlistid", x.getWatchlistid() == null ? 0 : x.getWatchlistid())
+                        .add("portfolioid", x.getPortfolioid() == null ? 0 : x.getPortfolioid())
+                        .add("stockx" , x.getStockx() == null ? false : x.getStockx())
+                        .add("stocky" , x.getStocky() == null ? false : x.getStocky())
+                        .add("stockz" , x.getStockz() == null ? false : x.getStockz())
+                        .build();
+                jsonArray.add(jsonObject);
+            }
+            JsonObject responsejson = Json.createObjectBuilder()
+                    .add("stocks", jsonArray)
+                    .build();
+
+            System.out.println("##################");
+            System.out.println("Stocks Strategy Requested " + strategy);
 
             return ResponseEntity.status(HttpStatus.OK).body(responsejson.toString());
         } else {
@@ -222,6 +268,9 @@ public class StockController {
                 .add("divyield", stock.getDivyield() == null ? 0 : stock.getDivyield())
                 .add("bookvalue", stock.getBookvalue() == null ? 0 : stock.getBookvalue())
                 .add("pb", stock.getPb() == null ? 0 : stock.getPb())
+                .add("stockx" , stock.getStockx() == null ? false : stock.getStockx())
+                .add("stocky" , stock.getStocky() == null ? false : stock.getStocky())
+                .add("stockz" , stock.getStockz() == null ? false : stock.getStockz())
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(jsonObject.toString());
@@ -960,9 +1009,12 @@ public class StockController {
                 Double divyield = Double.parseDouble(stockjson.getJsonNumber("divyield").toString());
                 Double bookvalue = Double.parseDouble(stockjson.getJsonNumber("bookvalue").toString());
                 Double pb = Double.parseDouble(stockjson.getJsonNumber("pb").toString());
+                Boolean stockx = stockjson.getBoolean("stockx");
+                Boolean stocky = stockjson.getBoolean("stocky");
+                Boolean stockz = stockjson.getBoolean("stockz");
                 Stock stock = new Stock(null, market, ticker, stockName, description, lastprice, targetprice, epsttm,
                         pettm,
-                        dps, divyield, bookvalue, pb, null, null);
+                        dps, divyield, bookvalue, pb, null, null, stockx, stocky ,stockz);
 
                 Integer rowsupdated = stockRepo.updateStock(stock);
 
