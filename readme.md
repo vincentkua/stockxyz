@@ -4,8 +4,8 @@ StockXYZ is a stock investment references tools. Stock Fundamental data and char
 
 ## Description
 
-Create by Kua Zi Lin for IBF B2 Mini-Project (TFIP 2023 Batch 2 Jan 03 2023). This project consist of 2 parts , client(Angular) and server(Spring-boot). SQL Database Initialisation code was included in the stockserver folder. Both Client App and Server has been hosted on railway[https://stockxyz-production.up.railway.app/]
-
+Create by Kua Zi Lin for IBF B2 Mini-Project (TFIP 2023 Batch 2 Jan 03 2023). This project consist of 2 parts , client(Angular) and server(Spring-boot). SQL Database Initialisation code was included in the stockserver folder. Both Client App and Server has been hosted on [https://stockxyz-production.up.railway.app/] and [https://stockxyz.online/]
+ 
 
 ## Table of Contents
 
@@ -50,6 +50,8 @@ Optional Requirements implemented:
   - ng material was used in this project
 - Adding a service worker to precache application assets (4pts)
   - service worker was added and precache all the html/js/css/assets
+- Apply a domain name and configure your application to use the domain name (3pts)
+  - domain name > [https://stockxyz.online/]
 
 
 ## References
