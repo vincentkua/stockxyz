@@ -43,7 +43,7 @@ public class AppConfig {
 		http
             .csrf(csrf -> csrf.disable())
 			.authorizeHttpRequests((requests) -> requests
-				.requestMatchers("/api/**","*").permitAll()  //allow home page and all api access
+				.requestMatchers("/api/**","**").permitAll()  //allow home page and all api access
 				.anyRequest().authenticated()
 			);
             

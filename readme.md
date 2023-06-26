@@ -11,7 +11,6 @@ Create by Kua Zi Lin for IBF B2 Mini-Project (TFIP 2023 Batch 2 Jan 03 2023). Th
 
 - [Feature](#feature)
 - [Requirements](#requirements)
-- [Author](#author)
 - [References](#references)
 
 ## Feature
@@ -52,8 +51,6 @@ Optional Requirements implemented:
 - Adding a service worker to precache application assets (4pts)
   - service worker was added and precache all the html/js/css/assets
 
-## Author
-- Kua Zi Lin (Vincent Kua)
 
 ## References
 - Api 1 > alphavantage [https://www.alphavantage.co/documentation/]
