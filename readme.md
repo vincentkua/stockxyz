@@ -1,21 +1,27 @@
 # StockXYZ
 
-IBF B2 Mini-Project (TFIP 2023 Batch 2 Jan 03 2023)
+StockXYZ is a stock investment references tools
 
 ## Description
 
-A brief description of the project and its purpose. Provide an overview of what the project does, its main features, and any relevant information.
+Create by Kua Zi Lin for IBF B2 Mini-Project (TFIP 2023 Batch 2 Jan 03 2023). This project consist of 2 parts , client(Angular) and server(Spring-boot). SQL Database Initialisation code was included in the stockserver folder. Both Client App and Server has been hosted on railway https://stockxyz-production.up.railway.app[https://stockxyz-production.up.railway.app/]
+
 
 ## Table of Contents
 
-- [Installation](#installation)
+- [Feature](#feature)
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
 
-## Installation
+## Feature
 
-Explain how to install and set up the project. Include any dependencies that need to be installed and provide step-by-step instructions.
+- Stock Fundamental
+Test 123, what 
+- Stock Charts (Price , Earning , Balance Sheet , EPS/DPS , Cashflow)
+- Stock Recommendation (Strategy X/Y/Z)
+- Watchlist and Portfolio
+- Web Notification (Buy or Sell Signal)
 
 ```shell
 $ npm install
